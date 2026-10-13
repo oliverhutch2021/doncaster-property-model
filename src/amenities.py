@@ -8,7 +8,7 @@ Sources (all Open Government Licence):
   - ONS LSOA 2021 boundaries with 2021 rural-urban classification
 
 Schools are matched in time: a sale only "sees" schools that were open in its year.
-Flood risk, transport and Ofsted grades are current snapshots (see DECISIONS.md)."""
+Flood risk, transport and Ofsted grades are current snapshots (see docs/DECISIONS.md)."""
 import json, pathlib, numpy as np, pandas as pd
 from sklearn.neighbors import BallTree
 from pyproj import Transformer

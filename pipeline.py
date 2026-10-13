@@ -6,7 +6,7 @@
   python pipeline.py --only evaluate     run one stage (or one script)
   python pipeline.py --dry-run ...       print what would run
 
-The scripts carry version numbers because the project grew a layer at a time (README, DECISIONS.md); each later
+The scripts carry version numbers because the project grew a layer at a time (README, docs/DECISIONS.md); each later
 export adds to or replaces the datasets of the ones before, so the order below is the order the published files were
 built in, and it matters. Experiments whose only output is a table of test results now live in experiments/ (their
 results are kept in outputs/*.json and read from there); nothing here needs them to run.

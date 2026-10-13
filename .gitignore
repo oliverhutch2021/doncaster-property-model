@@ -9,3 +9,5 @@ outputs/dash2/epc_*.csv
 model/epc_*.csv
 tests/.private/
 outputs/standalone/
+# Claude Code personal settings
+.claude/settings.local.json

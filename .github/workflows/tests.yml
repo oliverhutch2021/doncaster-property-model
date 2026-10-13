@@ -1,0 +1,35 @@
+# Runs every test that works without the private address lookup, on every push and pull request.
+# Belongs in .github/workflows/tests.yml; the README's Tests badge shows its latest result.
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          pip install lightgbm pandas numpy playwright
+          python -m playwright install --with-deps chromium
+      - name: Unit tests (tax, IRR, projections, listing parser)
+        run: node tests/test_units.js
+      - name: The public page rebuilds from source byte for byte
+        run: python tests/test_build.py
+      - name: No house-level address data in anything shared
+        run: python tests/test_privacy.py
+      - name: Browser tests
+        run: python tests/test_ui.py
+      - name: The command-line model runs
+        run: python src/predict.py --postcode "DN1 2EG" --type T --area 70 --prev-price 65000 --prev-month 2016-05
