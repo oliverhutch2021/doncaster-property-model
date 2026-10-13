@@ -91,3 +91,7 @@ version,date,model_version,headline,change
 26,2026-10-13,8,Labels that fit on a phone,"On a phone, the rent estimate's labels (housing benefit cap, the break-even and gilt-matching rents and the others) no longer print over each other: each takes the first row where it fits, and the chart grows when it needs more rows."
 26,2026-10-13,8,Labels that fit on a phone,"The 'Prices since 1995' line labels its boom, peak, low and recovery in fewer words on a narrow screen, and leaves out a label that would overlap another (its dot stays)."
 26,2026-10-13,8,Labels that fit on a phone,"Rebuilding the public copy on Windows gives the same file as anywhere else: d3 is read as UTF-8, so its minus sign and µ come through, and lines end the same way."
+27,2026-10-13,8,Tidier forms and tables,"The ownership, scope-of-works and refurbishment lists are two columns wide, so their longer choices aren't cut off."
+27,2026-10-13,8,Tidier forms and tables,"Rounded money figures put the minus sign first, as everywhere else: the projection's cash line reads −£2k, not £−2k."
+27,2026-10-13,8,Tidier forms and tables,"The best buy-to-let table's headings and names wrap, so all fifteen columns fit on a desktop screen without scrolling sideways."
+27,2026-10-13,8,Tidier forms and tables,"On a phone, a long value such as a school's name wraps, instead of squeezing its label to one word a line."

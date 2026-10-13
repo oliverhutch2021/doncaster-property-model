@@ -113,6 +113,8 @@
 .dpm .kv { display: grid; grid-template-columns: 1fr auto; gap: 5px var(--cds-gap-md); font-size: var(--cds-font-size-caption); margin: 0; }
 .dpm .kv dt { color: var(--color-fg-muted); } .dpm .kv dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
 .dpm .kv .sep { grid-column: 1 / -1; border-top: 1px solid var(--color-border-line); }
+/* on a phone a long value (a school's name) wraps rather than squeezing its label to one word a line */
+@media (max-width: 640px) { .dpm .kv { grid-template-columns: minmax(45%, 1fr) auto; } }
 .dpm .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
 .dpm .seg button { all: unset; cursor: pointer; padding: 4px 10px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .dpm .seg button[aria-pressed="true"] { background: var(--color-bg); color: var(--color-fg); }
@@ -186,6 +188,10 @@
 .dpm #btl-table tbody tr { cursor: pointer; }
 .dpm #btl-table tbody tr[aria-current="true"] td { background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
 .dpm #btl-table td:first-child { font-weight: var(--cds-font-weight-medium); }
+/* fifteen columns: headings and names wrap so the table fits a desktop card instead of hiding its last columns */
+.dpm #btl-table th { white-space: normal; vertical-align: bottom; }
+.dpm #btl-table th:first-child, .dpm #btl-table td:first-child { white-space: normal; min-width: 9rem; }
+.dpm #btl-table th, .dpm #btl-table td { padding: 6px 6px; }
 
 /* invest: this home against its neighbourhood, and its rent */
 .dpm .inv-head { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); padding: var(--cds-pad-md) 0; border-block: 1px solid var(--color-border-line); }

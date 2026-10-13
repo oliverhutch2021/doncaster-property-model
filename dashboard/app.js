@@ -2,7 +2,11 @@
   // ================= helpers =================
   const $ = (s) => document.querySelector(s);
   const gbp = (v) => (v == null || !isFinite(v)) ? '—' : (v < 0 ? '−' : '') + '£' + d3.format(',.0f')(Math.abs(Math.round(v)));
-  const gbpK = (v) => (v == null || !isFinite(v)) ? '—' : (Math.abs(v) >= 1e6 ? '£' + d3.format('.2f')(v / 1e6) + 'm' : '£' + d3.format(',.0f')(Math.round(v / 1000)) + 'k');
+  const gbpK = (v) => {                                    // −£2k, like gbp, not £−2k; a value that rounds to 0 has no sign
+    if (v == null || !isFinite(v)) return '—';
+    const m = Math.abs(v) >= 1e6, r = m ? Math.round(v / 1e4) / 100 : Math.round(v / 1000);
+    return (r < 0 ? '−' : '') + '£' + (m ? d3.format('.2f')(Math.abs(r)) + 'm' : d3.format(',.0f')(Math.abs(r)) + 'k');
+  };
   // round to the shown precision before choosing the sign, so -0.04 reads "0.0", never "−0.0"
   const fix0 = (v, d) => { const r = Math.round(v * 10 ** d) / 10 ** d; return r === 0 ? 0 : r; };
   const pct = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : d3.format(`.${d}f`)(fix0(v, d)) + '%';
@@ -701,7 +705,7 @@
     });
     drawCompsMap(v, list);
   };
-  const kmTxt = (d) => (d < 1 ? Math.round(d * 1000 / 10) * 10 + ' m' : d3.format('.1f')(d) + ' km');
+  const kmTxt = (d) => (d < 1 ? Math.round(d * 1000 / 10) * 10 + ' m' : d3.format('.1f')(d) + ' km');   // the unit never wraps away from its number
   const floodText = (ex) => {
     if (!ex) return ['—', ''];
     const hm = num(ex.flood_hm), an = num(ex.flood_any);
