@@ -32,15 +32,26 @@ window.DPM_DEAL = (h) => {
   const slider = $('#b-rate-slider'), out = $('#b-rate-out');
   // a drag sends many inputs a frame; the deal is worked out once a frame, at the latest rate
   let pendingRate = null;
+  // a new rate can add or drop a line in the cards above (interest relief capped at about the break-even rate, say),
+  // which would move the slider under the pointer, and back again: the page shook while dragging. So the page scrolls
+  // by whatever the redraw moved the slider, and the slider stays where it was on screen. The browser's own scroll
+  // anchoring is off meanwhile, so the two don't both correct the same move.
+  const steady = (draw) => {
+    if (!slider || !slider.offsetParent) { draw(); return; }
+    const root = document.documentElement, before = slider.getBoundingClientRect().top;
+    root.style.overflowAnchor = 'none'; draw();
+    const moved = slider.getBoundingClientRect().top - before; if (Math.abs(moved) >= 0.5) window.scrollBy(0, moved);
+    requestAnimationFrame(() => { root.style.overflowAnchor = ''; });
+  };
   const setRate = (v) => {
     const r = Math.round(clamp(v, 0, 25) * 20) / 20; if (String(r) === $('#b-rate').value && pendingRate === null) return;
-    if (pendingRate === null) requestAnimationFrame(() => { const x = pendingRate; pendingRate = null; if (String(x) !== $('#b-rate').value) { $('#b-rate').value = String(x); renderInvest(); } });
+    if (pendingRate === null) requestAnimationFrame(() => { const x = pendingRate; pendingRate = null; if (String(x) !== $('#b-rate').value) { $('#b-rate').value = String(x); steady(renderInvest); } });
     pendingRate = r;
   };
   // the axis (and the slider's range) stays put while a drag is under way, and grows to fit a high rate once it ends;
   // growing mid-drag would move the slider under the pointer and run the rate away
   let rateDrag = false;
-  const endDrag = () => { if (!rateDrag) return; rateDrag = false; requestAnimationFrame(() => renderInvest()); };
+  const endDrag = () => { if (!rateDrag) return; rateDrag = false; requestAnimationFrame(() => steady(renderInvest)); };
   if (slider) {
     slider.addEventListener('input', () => setRate(num(slider.value)));
     slider.addEventListener('pointerdown', () => { rateDrag = true; });

@@ -98,3 +98,4 @@ version,date,model_version,headline,change
 28,2026-10-13,8,Chart labels with room to breathe,"Line labels at the right-hand end of a chart sit a full line apart, so the cheaper and middle areas' labels no longer touch."
 28,2026-10-13,8,Chart labels with room to breathe,"The neighbourhood chart leaves room for its biggest circles, so none runs into the chart's edge or its axis label."
 28,2026-10-13,8,Chart labels with room to breathe,"The past-decades returns axis shows −5% with a minus sign, as everywhere else."
+29,2026-10-13,8,A steadier rate slider,"Dragging the mortgage rate slider no longer shakes the page: when a new rate adds or drops a line in the cards above (the interest relief cap near the break-even rate, say), the page scrolls to match, so the slider stays under your finger."

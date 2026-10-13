@@ -439,7 +439,7 @@ docs/How-the-model-works.pdf plain-English explanation of the model, its uses an
   neighbourhoods from red to blue as the rate elsewhere falls, and a buy-to-let ranking that builds up when first seen.
   Nothing plays by itself when the reader's system asks for reduced motion.
 - **Light or dark**: a switch in the header (the page otherwise follows the system or app theme).
-- **Version and changelog**: the header shows the dashboard's version and date (version 28, 13 Oct 2026); it opens a
+- **Version and changelog**: the header shows the dashboard's version and date (version 29, 13 Oct 2026); it opens a
   Changelog tab listing every version. The list is the `changelog` dataset (`outputs/dash2/changelog.csv`, one row per change): add rows with the next version number for each
   release and the header follows.
 - **Market** and **Model accuracy** tabs, and a method note.
