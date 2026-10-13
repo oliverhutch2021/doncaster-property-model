@@ -1,0 +1,137 @@
+{
+ "q10": -2.2965851969228144,
+ "q90": 1.7770932950358942,
+ "levels": [
+  [
+   0.05,
+   "High"
+  ],
+  [
+   0.075,
+   "Good"
+  ],
+  [
+   0.1,
+   "Fair"
+  ],
+  [
+   9.9,
+   "Low"
+  ]
+ ],
+ "test": {
+  "new": {
+   "coverage": 0.8046705587989992,
+   "width_median": 0.33843956272914744,
+   "width_mean": 0.3585991577938351
+  },
+  "old": {
+   "coverage": 0.7943286071726439,
+   "width_median": 0.30561816566676125,
+   "width_mean": 0.34137394104817037
+  },
+  "corr_sigma_abs_error": 0.29598580183788936
+ },
+ "by_level": [
+  {
+   "level": "High",
+   "n": 444,
+   "share": 0.07406171809841534,
+   "mdape": 0.048591025521576556,
+   "within10": 0.8288288288288288,
+   "within20": 0.963963963963964,
+   "coverage_new": 0.759009009009009,
+   "coverage_old": 0.9301801801801802,
+   "typical_error_predicted": 0.04410959480771919,
+   "coverage_used": 0.759009009009009
+  },
+  {
+   "level": "Good",
+   "n": 1716,
+   "share": 0.28623853211009176,
+   "mdape": 0.06578658951476177,
+   "within10": 0.6975524475524476,
+   "within20": 0.9335664335664335,
+   "coverage_new": 0.8006993006993007,
+   "coverage_old": 0.8589743589743589,
+   "typical_error_predicted": 0.06483225049670817,
+   "coverage_used": 0.8006993006993007
+  },
+  {
+   "level": "Fair",
+   "n": 1949,
+   "share": 0.3251042535446205,
+   "mdape": 0.08259727524752733,
+   "within10": 0.5936377629553617,
+   "within20": 0.849153412006157,
+   "coverage_new": 0.8137506413545408,
+   "coverage_old": 0.7947665469471524,
+   "typical_error_predicted": 0.0861756741128096,
+   "coverage_used": 0.8137506413545408
+  },
+  {
+   "level": "Low",
+   "n": 1886,
+   "share": 0.3145954962468724,
+   "mdape": 0.11282959820565197,
+   "within10": 0.45387062566277836,
+   "within20": 0.722693531283139,
+   "coverage_new": 0.8096500530222693,
+   "coverage_old": 0.7030752916224814,
+   "typical_error_predicted": 0.12058804091457538,
+   "coverage_used": 0.8096500530222693
+  }
+ ],
+ "filter_curve": [
+  {
+   "kept": 1.0,
+   "mdape": 0.08043808119402512,
+   "within10": 0.5968306922435362
+  },
+  {
+   "kept": 0.9,
+   "mdape": 0.07658055451531545,
+   "within10": 0.622613531047266
+  },
+  {
+   "kept": 0.8,
+   "mdape": 0.0735335910975442,
+   "within10": 0.6394912427022519
+  },
+  {
+   "kept": 0.7,
+   "mdape": 0.07103580700764647,
+   "within10": 0.6596758817921831
+  },
+  {
+   "kept": 0.6,
+   "mdape": 0.06858997827033006,
+   "within10": 0.6783430636641646
+  },
+  {
+   "kept": 0.5,
+   "mdape": 0.06589507376124439,
+   "within10": 0.6980313646980314
+  }
+ ],
+ "features": [
+  "pred_log",
+  "property_type",
+  "floor_area",
+  "rooms",
+  "age_year",
+  "years_since_prev",
+  "n_sector_type",
+  "n_street_type",
+  "n_postcode",
+  "knn_dist",
+  "epc_age_y",
+  "new_build",
+  "tenure",
+  "plot_m2_per_home",
+  "imd_score",
+  "corr_abs",
+  "local_spread"
+ ],
+ "adopt_adaptive": true
+}

@@ -1,0 +1,10 @@
+step,label,mdape,within10,within20,mae
+v1_location,Location and deprivation only (v1),0.13159,0.3898,0.6727,38145
+plus_epc,"+ EPC (floor area, rooms, age, energy)",0.09678,0.5151,0.7983,26738
+plus_neighbours,+ nearest-neighbour prices,0.09557,0.5219,0.7973,26433
+plus_last_sale,+ last sale of the same home,0.08716,0.5571,0.8235,24545
+plus_last_sale_cleaned,+ training data clean-up,0.08637,0.559,0.8215,24598
+v5_core,"+ plot size, street prices, more EPC detail (v5)",0.08242,0.5795,,
+v5_tuned,+ tuned settings (full size),0.08105,0.582,,
+v7_local,+ local correction on the tuned model (3 seeds),0.08057,0.5857,,
+v7_hist,"+ certificate history (v7, final, 3 seeds)",0.08031,0.5899,,

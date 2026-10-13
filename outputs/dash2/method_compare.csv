@@ -1,0 +1,8 @@
+method,label,kind,coverage,mdape,within10,model_same_sales
+model_realtime,This model,model,1.0,0.08068,0.591,0.08068
+hedonic,"Hedonic regression, same features",simple,1.0,0.09808,0.5098,0.08068
+uk_hpi,Last sale × UK HPI,simple,0.7203,0.13034,0.4134,0.0764
+uk_hpi_type,Last sale × UK HPI by type,simple,0.7203,0.12724,0.4229,0.0764
+nearest_10,£/m² of 10 nearest sales,simple,0.9805,0.13627,0.3853,0.08003
+sector_ppsqm,£/m² in the sector,simple,0.9623,0.14944,0.3557,0.07938
+sector_median,Sector median price,simple,0.9892,0.17525,0.3083,0.08057

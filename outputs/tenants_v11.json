@@ -1,0 +1,34 @@
+{
+ "possession_rank": {
+  "standard": {
+   "quarter": "2026-Q2",
+   "doncaster": 4.587332793647122,
+   "higher_than_pct": 53.398058252427184,
+   "median": 4.278282852836793,
+   "n": 309
+  },
+  "accelerated": {
+   "quarter": "2026-Q2",
+   "doncaster": 3.4308623414671757,
+   "higher_than_pct": 36.038961038961034,
+   "median": 4.02095493845644,
+   "n": 308
+  },
+  "bailiff": {
+   "quarter": "2026-Q2",
+   "doncaster": 1.9274507536332446,
+   "higher_than_pct": 39.285714285714285,
+   "median": 2.3628991694030477,
+   "n": 308
+  }
+ },
+ "asb": {
+  "months": [
+   "2025-09",
+   "2026-08"
+  ],
+  "reports": 6418,
+  "inside": 6317,
+  "doncaster_rate": 20.5
+ }
+}

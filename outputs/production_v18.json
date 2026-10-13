@@ -1,0 +1,14 @@
+{
+ "n_iter": 2043,
+ "eligible": 46804,
+ "used_before": 43823,
+ "used_now": 46566,
+ "latest_before": "2024-12-23",
+ "latest_now": "2025-08-29",
+ "late_sales": 2757,
+ "late_removed": 14,
+ "pool_from": "2025-09",
+ "model_mb": 6.93,
+ "resid_recent_median": -0.01024592812307823,
+ "resid_recent_mad": 0.08003318358527789
+}

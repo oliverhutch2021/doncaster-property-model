@@ -1,0 +1,25 @@
+layer,label,gain_pts,gain_sd,decision
+time_hybrid,Time features inside the model as well as the index (Zillow-style),0.025,0.119,Left out: within noise
+time_only,Time inside the model instead of a price index,-0.794,0.129,Left out: trees can't run ahead of their training years
+calib,Correcting estimates by their size (calibrated on 2024),0.048,0.059,"Left out: within noise, and the price-level bias grew"
+stretch,Stretching estimates to remove the price-level bias,-0.713,0.02,Left out: removes the bias but costs 0.7 points
+plot,Plot size from Land Registry title plans,0.304,0.051,Kept
+street,Recent prices on the same street and postcode,0.282,0.088,Kept
+epc_x,"More EPC detail: walls, loft, glazing, heating, fireplaces, ceiling height",0.289,0.074,Kept
+size_nn,Prices of nearby homes of similar size,0.182,0.098,Left out: adds nothing once street prices are in
+exact,Exact address position instead of postcode centre,0.048,0.072,Left out: within noise
+voa,Neighbourhood council tax band mix (VOA),0.107,0.1,Left out: adds nothing once the rest is in
+tuned,Tuned LightGBM settings (more regularised),0.137,0.059,"Kept, full size in the browser since v7"
+epc_hist,"Certificate history: let homes, energy-score jumps, certificate age",0.026,0.004,Kept: let homes were over-valued by about 3%
+premium,The home's premium over the model at its last sale,-0.096,0.034,Left out: the last sale price already carries it
+smooth_corr,"Smoothed local correction (weighted by distance, age and type)",0.003,0.033,Left out: no better than the nearest-sales version
+buildings,Building footprints from OS outlines (to catch extensions),-0.104,0.067,Left out: no better (used only to flag possible extensions)
+monotone,Forcing more floor area to never lower the value,-0.107,0.052,"Left out: needs Huber loss, about 0.1 points worse"
+flood,Flood risk (Environment Agency),0.03,0.094,Left out: within noise
+transport,Station distance and bus stops (NaPTAN),0.041,0.097,Left out: within noise
+schools,Distance to schools and to a Good or Outstanding primary,0.048,0.094,Left out: within noise
+osm,"Supermarkets, parks, GPs, pubs and cafés, junctions, main roads (OpenStreetMap)",0.063,0.18,Left out: within noise
+rural,Urban or rural neighbourhood (ONS),0.062,0.132,Left out: within noise
+all,All six data layers together,0.072,0.165,Left out: within noise
+recent_levels,Local prices from the last 12 months and local momentum,-0.076,0.064,Left out: worse
+local_correction,Local correction from the nearest recent sales,0.079,0.044,Kept: area bias spread 2.7% to 1.7%

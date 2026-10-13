@@ -1,0 +1,37 @@
+{
+ "params": {
+  "num_leaves": 63,
+  "min_data_in_leaf": 80,
+  "feature_fraction": 0.65,
+  "lambda_l2": 20,
+  "learning_rate": 0.03,
+  "objective": "regression_l1",
+  "max_bin": 511,
+  "min_sum_hessian_in_leaf": 0.001
+ },
+ "alpha": 0.5,
+ "k": 40,
+ "test": {
+  "n": 5995,
+  "mae": 22736.948041820746,
+  "mdape": 0.08043808119402512,
+  "within10": 0.5968306922435362,
+  "within20": 0.8420350291909925
+ },
+ "test_without_correction": {
+  "n": 5995,
+  "mae": 22941.844171015506,
+  "mdape": 0.08099003482577617,
+  "within10": 0.5868223519599667,
+  "within20": 0.8390325271059216
+ },
+ "coverage": 0.7943286071726439,
+ "trees": 2043,
+ "area_bias": {
+  "sd_before": 2.3455905823605727,
+  "sd_after": 1.4581753331587892
+ },
+ "train_end": "2025-08",
+ "pool_from": "2025-09",
+ "candidates": []
+}

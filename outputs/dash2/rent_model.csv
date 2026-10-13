@@ -1,0 +1,26 @@
+key,value,label,source
+beta,0.5962,How far rents follow prices: % change in rent for each 1% of value,"Fitted across 316 council areas in England and Wales, ONS rents (Aug 2026) against UK HPI prices (Aug 2025 to Jul 2026), with region and type effects"
+beta_se,0.0305,Standard error of beta (clustered by area),Same fit
+loo_error,5.85,Median error predicting an area's rents it hadn't seen (% of the actual rent),Leave one council area out
+loo_error_base,12.07,"Same, knowing only the region's average rent for the type (%)","Leave one council area out, no prices"
+r2,0.9404,Share of variation in area rents explained,Same fit
+n_areas,316.0,Council areas in the fit,ONS PIPR and UK HPI
+slope_doncaster,0.4815,Inside Doncaster: rent against price across the four types,ONS rents (Aug 2026) and UK HPI prices for Doncaster
+rent_D,925.0,"Doncaster average rent, detached (£ a month)","ONS Price Index of Private Rents, Aug 2026"
+ref_price_D,261735.0,"Doncaster average price, detached (£)","UK HPI, geometric mean of Aug 2025 to Jul 2026"
+rent_S,749.0,"Doncaster average rent, semidetached (£ a month)","ONS Price Index of Private Rents, Aug 2026"
+ref_price_S,168320.0,"Doncaster average price, semidetached (£)","UK HPI, geometric mean of Aug 2025 to Jul 2026"
+rent_T,697.0,"Doncaster average rent, terraced (£ a month)","ONS Price Index of Private Rents, Aug 2026"
+ref_price_T,133869.0,"Doncaster average price, terraced (£)","UK HPI, geometric mean of Aug 2025 to Jul 2026"
+rent_F,551.0,"Doncaster average rent, flat maisonette (£ a month)","ONS Price Index of Private Rents, Aug 2026"
+ref_price_F,91046.0,"Doncaster average price, flat maisonette (£)","UK HPI, geometric mean of Aug 2025 to Jul 2026"
+rq_lq_1,0.8632,"Lower quartile ÷ median rent, 1 bedroom","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (320 rents)"
+rq_uq_1,1.1053,"Upper quartile ÷ median rent, 1 bedroom","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (320 rents)"
+rq_lq_2,0.9,"Lower quartile ÷ median rent, 2 bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (1190 rents)"
+rq_uq_2,1.1364,"Upper quartile ÷ median rent, 2 bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (1190 rents)"
+rq_lq_3,0.8833,"Lower quartile ÷ median rent, 3 bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (1460 rents)"
+rq_uq_3,1.1667,"Upper quartile ÷ median rent, 3 bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (1460 rents)"
+rq_lq_4,0.7064,"Lower quartile ÷ median rent, 4+ bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (150 rents)"
+rq_uq_4,1.2361,"Upper quartile ÷ median rent, 4+ bedrooms","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (150 rents)"
+rq_lq_all,0.8426,"Lower quartile ÷ median rent, all homes","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (3990 rents)"
+rq_uq_all,1.2037,"Upper quartile ÷ median rent, all homes","ONS private rental market statistics, Doncaster, Oct 2022 to Sep 2023 (3990 rents)"

@@ -1,0 +1,1261 @@
+month,series,monthly_rent
+2015-01,all,474
+2015-01,1 bed,331
+2015-01,2 bed,436
+2015-01,3 bed,512
+2015-01,4+ bed,756
+2015-01,Detached,648
+2015-01,Semi-detached,509
+2015-01,Terraced,473
+2015-01,Flat/maisonette,379
+2015-02,all,475
+2015-02,1 bed,332
+2015-02,2 bed,437
+2015-02,3 bed,513
+2015-02,4+ bed,757
+2015-02,Detached,650
+2015-02,Semi-detached,511
+2015-02,Terraced,474
+2015-02,Flat/maisonette,380
+2015-03,all,476
+2015-03,1 bed,333
+2015-03,2 bed,438
+2015-03,3 bed,514
+2015-03,4+ bed,759
+2015-03,Detached,651
+2015-03,Semi-detached,512
+2015-03,Terraced,475
+2015-03,Flat/maisonette,381
+2015-04,all,478
+2015-04,1 bed,334
+2015-04,2 bed,440
+2015-04,3 bed,516
+2015-04,4+ bed,762
+2015-04,Detached,654
+2015-04,Semi-detached,514
+2015-04,Terraced,477
+2015-04,Flat/maisonette,382
+2015-05,all,480
+2015-05,1 bed,335
+2015-05,2 bed,441
+2015-05,3 bed,518
+2015-05,4+ bed,765
+2015-05,Detached,656
+2015-05,Semi-detached,516
+2015-05,Terraced,479
+2015-05,Flat/maisonette,383
+2015-06,all,482
+2015-06,1 bed,337
+2015-06,2 bed,443
+2015-06,3 bed,520
+2015-06,4+ bed,767
+2015-06,Detached,659
+2015-06,Semi-detached,518
+2015-06,Terraced,481
+2015-06,Flat/maisonette,385
+2015-07,all,483
+2015-07,1 bed,337
+2015-07,2 bed,444
+2015-07,3 bed,521
+2015-07,4+ bed,768
+2015-07,Detached,661
+2015-07,Semi-detached,519
+2015-07,Terraced,482
+2015-07,Flat/maisonette,386
+2015-08,all,484
+2015-08,1 bed,338
+2015-08,2 bed,445
+2015-08,3 bed,522
+2015-08,4+ bed,770
+2015-08,Detached,662
+2015-08,Semi-detached,520
+2015-08,Terraced,482
+2015-08,Flat/maisonette,386
+2015-09,all,484
+2015-09,1 bed,338
+2015-09,2 bed,445
+2015-09,3 bed,522
+2015-09,4+ bed,772
+2015-09,Detached,663
+2015-09,Semi-detached,520
+2015-09,Terraced,482
+2015-09,Flat/maisonette,386
+2015-10,all,485
+2015-10,1 bed,338
+2015-10,2 bed,446
+2015-10,3 bed,524
+2015-10,4+ bed,774
+2015-10,Detached,664
+2015-10,Semi-detached,522
+2015-10,Terraced,483
+2015-10,Flat/maisonette,387
+2015-11,all,486
+2015-11,1 bed,339
+2015-11,2 bed,447
+2015-11,3 bed,525
+2015-11,4+ bed,777
+2015-11,Detached,666
+2015-11,Semi-detached,523
+2015-11,Terraced,485
+2015-11,Flat/maisonette,388
+2015-12,all,487
+2015-12,1 bed,340
+2015-12,2 bed,447
+2015-12,3 bed,526
+2015-12,4+ bed,778
+2015-12,Detached,667
+2015-12,Semi-detached,524
+2015-12,Terraced,485
+2015-12,Flat/maisonette,389
+2016-01,all,487
+2016-01,1 bed,340
+2016-01,2 bed,448
+2016-01,3 bed,527
+2016-01,4+ bed,779
+2016-01,Detached,668
+2016-01,Semi-detached,524
+2016-01,Terraced,485
+2016-01,Flat/maisonette,389
+2016-02,all,488
+2016-02,1 bed,341
+2016-02,2 bed,449
+2016-02,3 bed,528
+2016-02,4+ bed,780
+2016-02,Detached,669
+2016-02,Semi-detached,526
+2016-02,Terraced,486
+2016-02,Flat/maisonette,390
+2016-03,all,490
+2016-03,1 bed,342
+2016-03,2 bed,450
+2016-03,3 bed,530
+2016-03,4+ bed,782
+2016-03,Detached,672
+2016-03,Semi-detached,527
+2016-03,Terraced,488
+2016-03,Flat/maisonette,392
+2016-04,all,491
+2016-04,1 bed,343
+2016-04,2 bed,451
+2016-04,3 bed,531
+2016-04,4+ bed,784
+2016-04,Detached,674
+2016-04,Semi-detached,529
+2016-04,Terraced,489
+2016-04,Flat/maisonette,393
+2016-05,all,492
+2016-05,1 bed,344
+2016-05,2 bed,452
+2016-05,3 bed,532
+2016-05,4+ bed,785
+2016-05,Detached,675
+2016-05,Semi-detached,530
+2016-05,Terraced,490
+2016-05,Flat/maisonette,393
+2016-06,all,492
+2016-06,1 bed,344
+2016-06,2 bed,452
+2016-06,3 bed,532
+2016-06,4+ bed,786
+2016-06,Detached,675
+2016-06,Semi-detached,530
+2016-06,Terraced,490
+2016-06,Flat/maisonette,394
+2016-07,all,493
+2016-07,1 bed,344
+2016-07,2 bed,453
+2016-07,3 bed,533
+2016-07,4+ bed,788
+2016-07,Detached,677
+2016-07,Semi-detached,531
+2016-07,Terraced,491
+2016-07,Flat/maisonette,394
+2016-08,all,494
+2016-08,1 bed,345
+2016-08,2 bed,453
+2016-08,3 bed,535
+2016-08,4+ bed,791
+2016-08,Detached,678
+2016-08,Semi-detached,532
+2016-08,Terraced,492
+2016-08,Flat/maisonette,395
+2016-09,all,496
+2016-09,1 bed,346
+2016-09,2 bed,455
+2016-09,3 bed,537
+2016-09,4+ bed,794
+2016-09,Detached,681
+2016-09,Semi-detached,534
+2016-09,Terraced,493
+2016-09,Flat/maisonette,396
+2016-10,all,497
+2016-10,1 bed,347
+2016-10,2 bed,456
+2016-10,3 bed,538
+2016-10,4+ bed,797
+2016-10,Detached,683
+2016-10,Semi-detached,536
+2016-10,Terraced,495
+2016-10,Flat/maisonette,397
+2016-11,all,499
+2016-11,1 bed,349
+2016-11,2 bed,458
+2016-11,3 bed,541
+2016-11,4+ bed,800
+2016-11,Detached,686
+2016-11,Semi-detached,538
+2016-11,Terraced,497
+2016-11,Flat/maisonette,399
+2016-12,all,500
+2016-12,1 bed,349
+2016-12,2 bed,459
+2016-12,3 bed,542
+2016-12,4+ bed,802
+2016-12,Detached,688
+2016-12,Semi-detached,540
+2016-12,Terraced,498
+2016-12,Flat/maisonette,400
+2017-01,all,501
+2017-01,1 bed,350
+2017-01,2 bed,459
+2017-01,3 bed,543
+2017-01,4+ bed,803
+2017-01,Detached,688
+2017-01,Semi-detached,541
+2017-01,Terraced,499
+2017-01,Flat/maisonette,400
+2017-02,all,501
+2017-02,1 bed,350
+2017-02,2 bed,459
+2017-02,3 bed,543
+2017-02,4+ bed,803
+2017-02,Detached,689
+2017-02,Semi-detached,541
+2017-02,Terraced,499
+2017-02,Flat/maisonette,400
+2017-03,all,502
+2017-03,1 bed,350
+2017-03,2 bed,460
+2017-03,3 bed,544
+2017-03,4+ bed,803
+2017-03,Detached,689
+2017-03,Semi-detached,541
+2017-03,Terraced,499
+2017-03,Flat/maisonette,400
+2017-04,all,501
+2017-04,1 bed,350
+2017-04,2 bed,459
+2017-04,3 bed,543
+2017-04,4+ bed,802
+2017-04,Detached,688
+2017-04,Semi-detached,541
+2017-04,Terraced,499
+2017-04,Flat/maisonette,400
+2017-05,all,501
+2017-05,1 bed,350
+2017-05,2 bed,459
+2017-05,3 bed,542
+2017-05,4+ bed,801
+2017-05,Detached,688
+2017-05,Semi-detached,540
+2017-05,Terraced,498
+2017-05,Flat/maisonette,400
+2017-06,all,500
+2017-06,1 bed,349
+2017-06,2 bed,458
+2017-06,3 bed,542
+2017-06,4+ bed,800
+2017-06,Detached,687
+2017-06,Semi-detached,540
+2017-06,Terraced,497
+2017-06,Flat/maisonette,399
+2017-07,all,500
+2017-07,1 bed,350
+2017-07,2 bed,458
+2017-07,3 bed,542
+2017-07,4+ bed,801
+2017-07,Detached,687
+2017-07,Semi-detached,540
+2017-07,Terraced,497
+2017-07,Flat/maisonette,400
+2017-08,all,500
+2017-08,1 bed,350
+2017-08,2 bed,458
+2017-08,3 bed,542
+2017-08,4+ bed,800
+2017-08,Detached,687
+2017-08,Semi-detached,540
+2017-08,Terraced,498
+2017-08,Flat/maisonette,400
+2017-09,all,500
+2017-09,1 bed,350
+2017-09,2 bed,458
+2017-09,3 bed,542
+2017-09,4+ bed,800
+2017-09,Detached,687
+2017-09,Semi-detached,540
+2017-09,Terraced,497
+2017-09,Flat/maisonette,400
+2017-10,all,500
+2017-10,1 bed,350
+2017-10,2 bed,458
+2017-10,3 bed,542
+2017-10,4+ bed,800
+2017-10,Detached,687
+2017-10,Semi-detached,540
+2017-10,Terraced,498
+2017-10,Flat/maisonette,400
+2017-11,all,501
+2017-11,1 bed,351
+2017-11,2 bed,459
+2017-11,3 bed,543
+2017-11,4+ bed,800
+2017-11,Detached,687
+2017-11,Semi-detached,541
+2017-11,Terraced,498
+2017-11,Flat/maisonette,400
+2017-12,all,500
+2017-12,1 bed,350
+2017-12,2 bed,458
+2017-12,3 bed,542
+2017-12,4+ bed,798
+2017-12,Detached,686
+2017-12,Semi-detached,540
+2017-12,Terraced,497
+2017-12,Flat/maisonette,400
+2018-01,all,499
+2018-01,1 bed,349
+2018-01,2 bed,457
+2018-01,3 bed,540
+2018-01,4+ bed,796
+2018-01,Detached,684
+2018-01,Semi-detached,539
+2018-01,Terraced,496
+2018-01,Flat/maisonette,399
+2018-02,all,498
+2018-02,1 bed,349
+2018-02,2 bed,456
+2018-02,3 bed,540
+2018-02,4+ bed,796
+2018-02,Detached,684
+2018-02,Semi-detached,538
+2018-02,Terraced,495
+2018-02,Flat/maisonette,399
+2018-03,all,498
+2018-03,1 bed,349
+2018-03,2 bed,457
+2018-03,3 bed,540
+2018-03,4+ bed,796
+2018-03,Detached,684
+2018-03,Semi-detached,539
+2018-03,Terraced,495
+2018-03,Flat/maisonette,399
+2018-04,all,499
+2018-04,1 bed,350
+2018-04,2 bed,457
+2018-04,3 bed,541
+2018-04,4+ bed,796
+2018-04,Detached,685
+2018-04,Semi-detached,539
+2018-04,Terraced,496
+2018-04,Flat/maisonette,399
+2018-05,all,499
+2018-05,1 bed,350
+2018-05,2 bed,457
+2018-05,3 bed,541
+2018-05,4+ bed,796
+2018-05,Detached,685
+2018-05,Semi-detached,539
+2018-05,Terraced,496
+2018-05,Flat/maisonette,399
+2018-06,all,500
+2018-06,1 bed,350
+2018-06,2 bed,458
+2018-06,3 bed,542
+2018-06,4+ bed,798
+2018-06,Detached,686
+2018-06,Semi-detached,541
+2018-06,Terraced,497
+2018-06,Flat/maisonette,400
+2018-07,all,501
+2018-07,1 bed,351
+2018-07,2 bed,458
+2018-07,3 bed,543
+2018-07,4+ bed,798
+2018-07,Detached,687
+2018-07,Semi-detached,541
+2018-07,Terraced,497
+2018-07,Flat/maisonette,401
+2018-08,all,501
+2018-08,1 bed,351
+2018-08,2 bed,459
+2018-08,3 bed,543
+2018-08,4+ bed,800
+2018-08,Detached,688
+2018-08,Semi-detached,542
+2018-08,Terraced,498
+2018-08,Flat/maisonette,401
+2018-09,all,501
+2018-09,1 bed,351
+2018-09,2 bed,459
+2018-09,3 bed,544
+2018-09,4+ bed,800
+2018-09,Detached,688
+2018-09,Semi-detached,542
+2018-09,Terraced,498
+2018-09,Flat/maisonette,401
+2018-10,all,502
+2018-10,1 bed,351
+2018-10,2 bed,459
+2018-10,3 bed,544
+2018-10,4+ bed,801
+2018-10,Detached,688
+2018-10,Semi-detached,543
+2018-10,Terraced,498
+2018-10,Flat/maisonette,401
+2018-11,all,502
+2018-11,1 bed,352
+2018-11,2 bed,459
+2018-11,3 bed,544
+2018-11,4+ bed,802
+2018-11,Detached,688
+2018-11,Semi-detached,542
+2018-11,Terraced,498
+2018-11,Flat/maisonette,401
+2018-12,all,502
+2018-12,1 bed,352
+2018-12,2 bed,459
+2018-12,3 bed,544
+2018-12,4+ bed,803
+2018-12,Detached,688
+2018-12,Semi-detached,543
+2018-12,Terraced,499
+2018-12,Flat/maisonette,401
+2019-01,all,502
+2019-01,1 bed,352
+2019-01,2 bed,460
+2019-01,3 bed,545
+2019-01,4+ bed,803
+2019-01,Detached,688
+2019-01,Semi-detached,543
+2019-01,Terraced,499
+2019-01,Flat/maisonette,401
+2019-02,all,505
+2019-02,1 bed,353
+2019-02,2 bed,462
+2019-02,3 bed,547
+2019-02,4+ bed,807
+2019-02,Detached,691
+2019-02,Semi-detached,546
+2019-02,Terraced,502
+2019-02,Flat/maisonette,403
+2019-03,all,506
+2019-03,1 bed,354
+2019-03,2 bed,463
+2019-03,3 bed,549
+2019-03,4+ bed,808
+2019-03,Detached,692
+2019-03,Semi-detached,547
+2019-03,Terraced,503
+2019-03,Flat/maisonette,404
+2019-04,all,507
+2019-04,1 bed,355
+2019-04,2 bed,464
+2019-04,3 bed,550
+2019-04,4+ bed,808
+2019-04,Detached,693
+2019-04,Semi-detached,548
+2019-04,Terraced,504
+2019-04,Flat/maisonette,405
+2019-05,all,506
+2019-05,1 bed,355
+2019-05,2 bed,463
+2019-05,3 bed,549
+2019-05,4+ bed,807
+2019-05,Detached,692
+2019-05,Semi-detached,547
+2019-05,Terraced,504
+2019-05,Flat/maisonette,405
+2019-06,all,508
+2019-06,1 bed,357
+2019-06,2 bed,465
+2019-06,3 bed,551
+2019-06,4+ bed,809
+2019-06,Detached,694
+2019-06,Semi-detached,549
+2019-06,Terraced,506
+2019-06,Flat/maisonette,406
+2019-07,all,511
+2019-07,1 bed,360
+2019-07,2 bed,468
+2019-07,3 bed,554
+2019-07,4+ bed,813
+2019-07,Detached,698
+2019-07,Semi-detached,553
+2019-07,Terraced,509
+2019-07,Flat/maisonette,409
+2019-08,all,514
+2019-08,1 bed,362
+2019-08,2 bed,470
+2019-08,3 bed,557
+2019-08,4+ bed,815
+2019-08,Detached,701
+2019-08,Semi-detached,555
+2019-08,Terraced,511
+2019-08,Flat/maisonette,411
+2019-09,all,515
+2019-09,1 bed,363
+2019-09,2 bed,472
+2019-09,3 bed,558
+2019-09,4+ bed,818
+2019-09,Detached,703
+2019-09,Semi-detached,557
+2019-09,Terraced,513
+2019-09,Flat/maisonette,412
+2019-10,all,516
+2019-10,1 bed,363
+2019-10,2 bed,472
+2019-10,3 bed,559
+2019-10,4+ bed,820
+2019-10,Detached,703
+2019-10,Semi-detached,557
+2019-10,Terraced,513
+2019-10,Flat/maisonette,413
+2019-11,all,517
+2019-11,1 bed,365
+2019-11,2 bed,473
+2019-11,3 bed,561
+2019-11,4+ bed,823
+2019-11,Detached,705
+2019-11,Semi-detached,559
+2019-11,Terraced,515
+2019-11,Flat/maisonette,414
+2019-12,all,519
+2019-12,1 bed,366
+2019-12,2 bed,474
+2019-12,3 bed,562
+2019-12,4+ bed,824
+2019-12,Detached,707
+2019-12,Semi-detached,560
+2019-12,Terraced,516
+2019-12,Flat/maisonette,415
+2020-01,all,520
+2020-01,1 bed,367
+2020-01,2 bed,475
+2020-01,3 bed,563
+2020-01,4+ bed,824
+2020-01,Detached,708
+2020-01,Semi-detached,561
+2020-01,Terraced,517
+2020-01,Flat/maisonette,416
+2020-02,all,520
+2020-02,1 bed,367
+2020-02,2 bed,476
+2020-02,3 bed,563
+2020-02,4+ bed,824
+2020-02,Detached,708
+2020-02,Semi-detached,562
+2020-02,Terraced,518
+2020-02,Flat/maisonette,416
+2020-03,all,520
+2020-03,1 bed,368
+2020-03,2 bed,476
+2020-03,3 bed,564
+2020-03,4+ bed,823
+2020-03,Detached,708
+2020-03,Semi-detached,562
+2020-03,Terraced,518
+2020-03,Flat/maisonette,416
+2020-04,all,521
+2020-04,1 bed,368
+2020-04,2 bed,476
+2020-04,3 bed,564
+2020-04,4+ bed,824
+2020-04,Detached,709
+2020-04,Semi-detached,563
+2020-04,Terraced,518
+2020-04,Flat/maisonette,417
+2020-05,all,523
+2020-05,1 bed,370
+2020-05,2 bed,479
+2020-05,3 bed,566
+2020-05,4+ bed,827
+2020-05,Detached,712
+2020-05,Semi-detached,565
+2020-05,Terraced,520
+2020-05,Flat/maisonette,419
+2020-06,all,525
+2020-06,1 bed,372
+2020-06,2 bed,481
+2020-06,3 bed,569
+2020-06,4+ bed,830
+2020-06,Detached,715
+2020-06,Semi-detached,567
+2020-06,Terraced,523
+2020-06,Flat/maisonette,421
+2020-07,all,528
+2020-07,1 bed,374
+2020-07,2 bed,484
+2020-07,3 bed,573
+2020-07,4+ bed,835
+2020-07,Detached,719
+2020-07,Semi-detached,571
+2020-07,Terraced,526
+2020-07,Flat/maisonette,423
+2020-08,all,530
+2020-08,1 bed,375
+2020-08,2 bed,485
+2020-08,3 bed,574
+2020-08,4+ bed,837
+2020-08,Detached,721
+2020-08,Semi-detached,572
+2020-08,Terraced,527
+2020-08,Flat/maisonette,424
+2020-09,all,529
+2020-09,1 bed,374
+2020-09,2 bed,484
+2020-09,3 bed,573
+2020-09,4+ bed,837
+2020-09,Detached,719
+2020-09,Semi-detached,571
+2020-09,Terraced,526
+2020-09,Flat/maisonette,423
+2020-10,all,529
+2020-10,1 bed,374
+2020-10,2 bed,484
+2020-10,3 bed,573
+2020-10,4+ bed,838
+2020-10,Detached,720
+2020-10,Semi-detached,570
+2020-10,Terraced,527
+2020-10,Flat/maisonette,423
+2020-11,all,530
+2020-11,1 bed,375
+2020-11,2 bed,485
+2020-11,3 bed,574
+2020-11,4+ bed,840
+2020-11,Detached,722
+2020-11,Semi-detached,572
+2020-11,Terraced,528
+2020-11,Flat/maisonette,425
+2020-12,all,535
+2020-12,1 bed,379
+2020-12,2 bed,490
+2020-12,3 bed,580
+2020-12,4+ bed,847
+2020-12,Detached,729
+2020-12,Semi-detached,578
+2020-12,Terraced,533
+2020-12,Flat/maisonette,429
+2021-01,all,538
+2021-01,1 bed,381
+2021-01,2 bed,492
+2021-01,3 bed,583
+2021-01,4+ bed,851
+2021-01,Detached,732
+2021-01,Semi-detached,581
+2021-01,Terraced,536
+2021-01,Flat/maisonette,431
+2021-02,all,537
+2021-02,1 bed,380
+2021-02,2 bed,492
+2021-02,3 bed,582
+2021-02,4+ bed,849
+2021-02,Detached,731
+2021-02,Semi-detached,580
+2021-02,Terraced,535
+2021-02,Flat/maisonette,430
+2021-03,all,535
+2021-03,1 bed,379
+2021-03,2 bed,490
+2021-03,3 bed,580
+2021-03,4+ bed,847
+2021-03,Detached,727
+2021-03,Semi-detached,578
+2021-03,Terraced,534
+2021-03,Flat/maisonette,429
+2021-04,all,533
+2021-04,1 bed,377
+2021-04,2 bed,488
+2021-04,3 bed,578
+2021-04,4+ bed,845
+2021-04,Detached,724
+2021-04,Semi-detached,575
+2021-04,Terraced,532
+2021-04,Flat/maisonette,427
+2021-05,all,534
+2021-05,1 bed,378
+2021-05,2 bed,489
+2021-05,3 bed,580
+2021-05,4+ bed,848
+2021-05,Detached,726
+2021-05,Semi-detached,576
+2021-05,Terraced,533
+2021-05,Flat/maisonette,427
+2021-06,all,536
+2021-06,1 bed,379
+2021-06,2 bed,490
+2021-06,3 bed,581
+2021-06,4+ bed,850
+2021-06,Detached,727
+2021-06,Semi-detached,578
+2021-06,Terraced,535
+2021-06,Flat/maisonette,428
+2021-07,all,537
+2021-07,1 bed,379
+2021-07,2 bed,491
+2021-07,3 bed,583
+2021-07,4+ bed,853
+2021-07,Detached,730
+2021-07,Semi-detached,580
+2021-07,Terraced,536
+2021-07,Flat/maisonette,429
+2021-08,all,539
+2021-08,1 bed,380
+2021-08,2 bed,492
+2021-08,3 bed,585
+2021-08,4+ bed,856
+2021-08,Detached,731
+2021-08,Semi-detached,581
+2021-08,Terraced,538
+2021-08,Flat/maisonette,430
+2021-09,all,540
+2021-09,1 bed,381
+2021-09,2 bed,493
+2021-09,3 bed,586
+2021-09,4+ bed,860
+2021-09,Detached,733
+2021-09,Semi-detached,582
+2021-09,Terraced,539
+2021-09,Flat/maisonette,431
+2021-10,all,542
+2021-10,1 bed,381
+2021-10,2 bed,495
+2021-10,3 bed,588
+2021-10,4+ bed,865
+2021-10,Detached,735
+2021-10,Semi-detached,584
+2021-10,Terraced,542
+2021-10,Flat/maisonette,432
+2021-11,all,544
+2021-11,1 bed,382
+2021-11,2 bed,496
+2021-11,3 bed,590
+2021-11,4+ bed,869
+2021-11,Detached,737
+2021-11,Semi-detached,585
+2021-11,Terraced,544
+2021-11,Flat/maisonette,433
+2021-12,all,545
+2021-12,1 bed,382
+2021-12,2 bed,497
+2021-12,3 bed,592
+2021-12,4+ bed,872
+2021-12,Detached,739
+2021-12,Semi-detached,587
+2021-12,Terraced,545
+2021-12,Flat/maisonette,433
+2022-01,all,545
+2022-01,1 bed,382
+2022-01,2 bed,497
+2022-01,3 bed,593
+2022-01,4+ bed,874
+2022-01,Detached,740
+2022-01,Semi-detached,587
+2022-01,Terraced,546
+2022-01,Flat/maisonette,433
+2022-02,all,546
+2022-02,1 bed,383
+2022-02,2 bed,498
+2022-02,3 bed,594
+2022-02,4+ bed,876
+2022-02,Detached,741
+2022-02,Semi-detached,588
+2022-02,Terraced,546
+2022-02,Flat/maisonette,434
+2022-03,all,548
+2022-03,1 bed,384
+2022-03,2 bed,500
+2022-03,3 bed,596
+2022-03,4+ bed,879
+2022-03,Detached,743
+2022-03,Semi-detached,590
+2022-03,Terraced,549
+2022-03,Flat/maisonette,435
+2022-04,all,550
+2022-04,1 bed,385
+2022-04,2 bed,502
+2022-04,3 bed,598
+2022-04,4+ bed,884
+2022-04,Detached,747
+2022-04,Semi-detached,592
+2022-04,Terraced,552
+2022-04,Flat/maisonette,437
+2022-05,all,553
+2022-05,1 bed,388
+2022-05,2 bed,505
+2022-05,3 bed,602
+2022-05,4+ bed,888
+2022-05,Detached,751
+2022-05,Semi-detached,595
+2022-05,Terraced,555
+2022-05,Flat/maisonette,439
+2022-06,all,556
+2022-06,1 bed,390
+2022-06,2 bed,507
+2022-06,3 bed,605
+2022-06,4+ bed,893
+2022-06,Detached,755
+2022-06,Semi-detached,598
+2022-06,Terraced,558
+2022-06,Flat/maisonette,442
+2022-07,all,559
+2022-07,1 bed,391
+2022-07,2 bed,510
+2022-07,3 bed,607
+2022-07,4+ bed,897
+2022-07,Detached,759
+2022-07,Semi-detached,601
+2022-07,Terraced,560
+2022-07,Flat/maisonette,444
+2022-08,all,562
+2022-08,1 bed,394
+2022-08,2 bed,513
+2022-08,3 bed,611
+2022-08,4+ bed,903
+2022-08,Detached,764
+2022-08,Semi-detached,604
+2022-08,Terraced,563
+2022-08,Flat/maisonette,446
+2022-09,all,565
+2022-09,1 bed,396
+2022-09,2 bed,515
+2022-09,3 bed,614
+2022-09,4+ bed,908
+2022-09,Detached,767
+2022-09,Semi-detached,607
+2022-09,Terraced,566
+2022-09,Flat/maisonette,448
+2022-10,all,568
+2022-10,1 bed,398
+2022-10,2 bed,518
+2022-10,3 bed,617
+2022-10,4+ bed,913
+2022-10,Detached,772
+2022-10,Semi-detached,611
+2022-10,Terraced,570
+2022-10,Flat/maisonette,451
+2022-11,all,571
+2022-11,1 bed,400
+2022-11,2 bed,520
+2022-11,3 bed,620
+2022-11,4+ bed,917
+2022-11,Detached,775
+2022-11,Semi-detached,613
+2022-11,Terraced,573
+2022-11,Flat/maisonette,453
+2022-12,all,575
+2022-12,1 bed,402
+2022-12,2 bed,523
+2022-12,3 bed,624
+2022-12,4+ bed,923
+2022-12,Detached,780
+2022-12,Semi-detached,618
+2022-12,Terraced,576
+2022-12,Flat/maisonette,456
+2023-01,all,576
+2023-01,1 bed,403
+2023-01,2 bed,525
+2023-01,3 bed,626
+2023-01,4+ bed,926
+2023-01,Detached,783
+2023-01,Semi-detached,620
+2023-01,Terraced,578
+2023-01,Flat/maisonette,457
+2023-02,all,578
+2023-02,1 bed,404
+2023-02,2 bed,526
+2023-02,3 bed,628
+2023-02,4+ bed,927
+2023-02,Detached,785
+2023-02,Semi-detached,622
+2023-02,Terraced,579
+2023-02,Flat/maisonette,458
+2023-03,all,577
+2023-03,1 bed,404
+2023-03,2 bed,525
+2023-03,3 bed,627
+2023-03,4+ bed,926
+2023-03,Detached,784
+2023-03,Semi-detached,621
+2023-03,Terraced,579
+2023-03,Flat/maisonette,458
+2023-04,all,579
+2023-04,1 bed,405
+2023-04,2 bed,526
+2023-04,3 bed,628
+2023-04,4+ bed,927
+2023-04,Detached,786
+2023-04,Semi-detached,623
+2023-04,Terraced,580
+2023-04,Flat/maisonette,459
+2023-05,all,581
+2023-05,1 bed,406
+2023-05,2 bed,528
+2023-05,3 bed,630
+2023-05,4+ bed,929
+2023-05,Detached,788
+2023-05,Semi-detached,625
+2023-05,Terraced,582
+2023-05,Flat/maisonette,460
+2023-06,all,582
+2023-06,1 bed,407
+2023-06,2 bed,530
+2023-06,3 bed,632
+2023-06,4+ bed,931
+2023-06,Detached,791
+2023-06,Semi-detached,628
+2023-06,Terraced,583
+2023-06,Flat/maisonette,462
+2023-07,all,585
+2023-07,1 bed,410
+2023-07,2 bed,532
+2023-07,3 bed,636
+2023-07,4+ bed,937
+2023-07,Detached,795
+2023-07,Semi-detached,631
+2023-07,Terraced,586
+2023-07,Flat/maisonette,464
+2023-08,all,589
+2023-08,1 bed,412
+2023-08,2 bed,535
+2023-08,3 bed,639
+2023-08,4+ bed,942
+2023-08,Detached,799
+2023-08,Semi-detached,635
+2023-08,Terraced,589
+2023-08,Flat/maisonette,467
+2023-09,all,593
+2023-09,1 bed,415
+2023-09,2 bed,539
+2023-09,3 bed,644
+2023-09,4+ bed,949
+2023-09,Detached,805
+2023-09,Semi-detached,640
+2023-09,Terraced,593
+2023-09,Flat/maisonette,470
+2023-10,all,595
+2023-10,1 bed,417
+2023-10,2 bed,541
+2023-10,3 bed,646
+2023-10,4+ bed,952
+2023-10,Detached,808
+2023-10,Semi-detached,642
+2023-10,Terraced,595
+2023-10,Flat/maisonette,472
+2023-11,all,598
+2023-11,1 bed,419
+2023-11,2 bed,543
+2023-11,3 bed,648
+2023-11,4+ bed,956
+2023-11,Detached,812
+2023-11,Semi-detached,645
+2023-11,Terraced,598
+2023-11,Flat/maisonette,475
+2023-12,all,601
+2023-12,1 bed,421
+2023-12,2 bed,546
+2023-12,3 bed,651
+2023-12,4+ bed,960
+2023-12,Detached,816
+2023-12,Semi-detached,648
+2023-12,Terraced,601
+2023-12,Flat/maisonette,477
+2024-01,all,604
+2024-01,1 bed,423
+2024-01,2 bed,549
+2024-01,3 bed,655
+2024-01,4+ bed,964
+2024-01,Detached,820
+2024-01,Semi-detached,651
+2024-01,Terraced,604
+2024-01,Flat/maisonette,480
+2024-02,all,606
+2024-02,1 bed,425
+2024-02,2 bed,551
+2024-02,3 bed,658
+2024-02,4+ bed,966
+2024-02,Detached,823
+2024-02,Semi-detached,654
+2024-02,Terraced,606
+2024-02,Flat/maisonette,482
+2024-03,all,607
+2024-03,1 bed,426
+2024-03,2 bed,552
+2024-03,3 bed,659
+2024-03,4+ bed,967
+2024-03,Detached,824
+2024-03,Semi-detached,655
+2024-03,Terraced,608
+2024-03,Flat/maisonette,483
+2024-04,all,610
+2024-04,1 bed,428
+2024-04,2 bed,555
+2024-04,3 bed,662
+2024-04,4+ bed,969
+2024-04,Detached,827
+2024-04,Semi-detached,658
+2024-04,Terraced,610
+2024-04,Flat/maisonette,484
+2024-05,all,612
+2024-05,1 bed,430
+2024-05,2 bed,557
+2024-05,3 bed,665
+2024-05,4+ bed,973
+2024-05,Detached,830
+2024-05,Semi-detached,661
+2024-05,Terraced,612
+2024-05,Flat/maisonette,487
+2024-06,all,615
+2024-06,1 bed,432
+2024-06,2 bed,560
+2024-06,3 bed,667
+2024-06,4+ bed,976
+2024-06,Detached,834
+2024-06,Semi-detached,664
+2024-06,Terraced,615
+2024-06,Flat/maisonette,489
+2024-07,all,617
+2024-07,1 bed,434
+2024-07,2 bed,562
+2024-07,3 bed,669
+2024-07,4+ bed,977
+2024-07,Detached,836
+2024-07,Semi-detached,666
+2024-07,Terraced,617
+2024-07,Flat/maisonette,491
+2024-08,all,622
+2024-08,1 bed,438
+2024-08,2 bed,566
+2024-08,3 bed,674
+2024-08,4+ bed,982
+2024-08,Detached,841
+2024-08,Semi-detached,671
+2024-08,Terraced,621
+2024-08,Flat/maisonette,494
+2024-09,all,626
+2024-09,1 bed,441
+2024-09,2 bed,570
+2024-09,3 bed,679
+2024-09,4+ bed,987
+2024-09,Detached,847
+2024-09,Semi-detached,677
+2024-09,Terraced,626
+2024-09,Flat/maisonette,498
+2024-10,all,632
+2024-10,1 bed,445
+2024-10,2 bed,575
+2024-10,3 bed,685
+2024-10,4+ bed,994
+2024-10,Detached,853
+2024-10,Semi-detached,682
+2024-10,Terraced,632
+2024-10,Flat/maisonette,502
+2024-11,all,635
+2024-11,1 bed,447
+2024-11,2 bed,578
+2024-11,3 bed,689
+2024-11,4+ bed,998
+2024-11,Detached,858
+2024-11,Semi-detached,686
+2024-11,Terraced,635
+2024-11,Flat/maisonette,504
+2024-12,all,638
+2024-12,1 bed,450
+2024-12,2 bed,581
+2024-12,3 bed,692
+2024-12,4+ bed,1003
+2024-12,Detached,861
+2024-12,Semi-detached,689
+2024-12,Terraced,638
+2024-12,Flat/maisonette,507
+2025-01,all,640
+2025-01,1 bed,452
+2025-01,2 bed,583
+2025-01,3 bed,695
+2025-01,4+ bed,1007
+2025-01,Detached,865
+2025-01,Semi-detached,692
+2025-01,Terraced,641
+2025-01,Flat/maisonette,509
+2025-02,all,643
+2025-02,1 bed,454
+2025-02,2 bed,587
+2025-02,3 bed,699
+2025-02,4+ bed,1011
+2025-02,Detached,868
+2025-02,Semi-detached,695
+2025-02,Terraced,644
+2025-02,Flat/maisonette,511
+2025-03,all,647
+2025-03,1 bed,457
+2025-03,2 bed,590
+2025-03,3 bed,703
+2025-03,4+ bed,1016
+2025-03,Detached,872
+2025-03,Semi-detached,699
+2025-03,Terraced,648
+2025-03,Flat/maisonette,515
+2025-04,all,650
+2025-04,1 bed,460
+2025-04,2 bed,594
+2025-04,3 bed,707
+2025-04,4+ bed,1020
+2025-04,Detached,876
+2025-04,Semi-detached,703
+2025-04,Terraced,651
+2025-04,Flat/maisonette,518
+2025-05,all,652
+2025-05,1 bed,461
+2025-05,2 bed,595
+2025-05,3 bed,708
+2025-05,4+ bed,1020
+2025-05,Detached,876
+2025-05,Semi-detached,704
+2025-05,Terraced,652
+2025-05,Flat/maisonette,519
+2025-06,all,653
+2025-06,1 bed,463
+2025-06,2 bed,596
+2025-06,3 bed,709
+2025-06,4+ bed,1021
+2025-06,Detached,877
+2025-06,Semi-detached,704
+2025-06,Terraced,654
+2025-06,Flat/maisonette,520
+2025-07,all,654
+2025-07,1 bed,464
+2025-07,2 bed,598
+2025-07,3 bed,710
+2025-07,4+ bed,1021
+2025-07,Detached,877
+2025-07,Semi-detached,705
+2025-07,Terraced,655
+2025-07,Flat/maisonette,521
+2025-08,all,659
+2025-08,1 bed,468
+2025-08,2 bed,602
+2025-08,3 bed,715
+2025-08,4+ bed,1027
+2025-08,Detached,883
+2025-08,Semi-detached,710
+2025-08,Terraced,660
+2025-08,Flat/maisonette,526
+2025-09,all,664
+2025-09,1 bed,472
+2025-09,2 bed,607
+2025-09,3 bed,721
+2025-09,4+ bed,1035
+2025-09,Detached,889
+2025-09,Semi-detached,716
+2025-09,Terraced,666
+2025-09,Flat/maisonette,530
+2025-10,all,670
+2025-10,1 bed,475
+2025-10,2 bed,612
+2025-10,3 bed,727
+2025-10,4+ bed,1044
+2025-10,Detached,896
+2025-10,Semi-detached,722
+2025-10,Terraced,672
+2025-10,Flat/maisonette,534
+2025-11,all,672
+2025-11,1 bed,477
+2025-11,2 bed,615
+2025-11,3 bed,731
+2025-11,4+ bed,1048
+2025-11,Detached,899
+2025-11,Semi-detached,725
+2025-11,Terraced,674
+2025-11,Flat/maisonette,535
+2025-12,all,675
+2025-12,1 bed,479
+2025-12,2 bed,617
+2025-12,3 bed,734
+2025-12,4+ bed,1052
+2025-12,Detached,903
+2025-12,Semi-detached,728
+2025-12,Terraced,677
+2025-12,Flat/maisonette,537
+2026-01,all,677
+2026-01,1 bed,481
+2026-01,2 bed,620
+2026-01,3 bed,737
+2026-01,4+ bed,1056
+2026-01,Detached,905
+2026-01,Semi-detached,730
+2026-01,Terraced,680
+2026-01,Flat/maisonette,539
+2026-02,all,681
+2026-02,1 bed,483
+2026-02,2 bed,624
+2026-02,3 bed,741
+2026-02,4+ bed,1061
+2026-02,Detached,910
+2026-02,Semi-detached,734
+2026-02,Terraced,684
+2026-02,Flat/maisonette,542
+2026-03,all,684
+2026-03,1 bed,486
+2026-03,2 bed,627
+2026-03,3 bed,745
+2026-03,4+ bed,1065
+2026-03,Detached,913
+2026-03,Semi-detached,738
+2026-03,Terraced,687
+2026-03,Flat/maisonette,544
+2026-04,all,687
+2026-04,1 bed,488
+2026-04,2 bed,630
+2026-04,3 bed,749
+2026-04,4+ bed,1068
+2026-04,Detached,917
+2026-04,Semi-detached,741
+2026-04,Terraced,690
+2026-04,Flat/maisonette,546
+2026-05,all,689
+2026-05,1 bed,489
+2026-05,2 bed,632
+2026-05,3 bed,751
+2026-05,4+ bed,1070
+2026-05,Detached,919
+2026-05,Semi-detached,743
+2026-05,Terraced,692
+2026-05,Flat/maisonette,548
+2026-06,all,690
+2026-06,1 bed,490
+2026-06,2 bed,633
+2026-06,3 bed,752
+2026-06,4+ bed,1071
+2026-06,Detached,920
+2026-06,Semi-detached,745
+2026-06,Terraced,693
+2026-06,Flat/maisonette,548
+2026-07,all,691
+2026-07,1 bed,491
+2026-07,2 bed,634
+2026-07,3 bed,754
+2026-07,4+ bed,1072
+2026-07,Detached,922
+2026-07,Semi-detached,746
+2026-07,Terraced,695
+2026-07,Flat/maisonette,550
+2026-08,all,694
+2026-08,1 bed,493
+2026-08,2 bed,636
+2026-08,3 bed,757
+2026-08,4+ bed,1076
+2026-08,Detached,925
+2026-08,Semi-detached,749
+2026-08,Terraced,697
+2026-08,Flat/maisonette,551

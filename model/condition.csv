@@ -1,0 +1,6 @@
+condition,label,adjustment_pct,range_low_pct,range_high_pct,basis,adjustment_prev_pct,range_low_prev_pct,range_high_prev_pct,basis_prev
+needs_full_renovation,Needs full renovation,-8.9,-20.9,2.5,"Median residual at purchase for 3-18 month resales (n=1007), less the same for resales after 5+ years; folds grouped by home",-4.7,-15.5,3.2,"Full model: purchases that had an earlier sale (n=546), valued knowing it, less the same for long-hold resales"
+dated,Dated,-4.5,,,Half of the needs-renovation discount (interpolated),-2.3,,,Half (interpolated)
+average,Average,0.0,,,Model baseline,0.0,,,Model baseline
+good,Good,3.1,,,Half of the refurbished premium (interpolated),0.3,,,Half (interpolated)
+recently_refurbished,Recently refurbished,6.2,-3.1,14.9,"Median residual at resale for 3-18 month resales (n=1007), less the same for resales after 5+ years; folds grouped by home",0.6,-6.9,8.5,"Full model: the resale, valued knowing the purchase 3-18 months before"

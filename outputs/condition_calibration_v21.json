@@ -1,0 +1,74 @@
+{
+ "published_kfold_noprev": {
+  "n_flips": 1007,
+  "n_control": 2633,
+  "flips_purchase": -8.25,
+  "flips_resale": 7.74,
+  "control_purchase": 1.0,
+  "control_resale": 1.51,
+  "needs_full_renovation": -9.16,
+  "recently_refurbished": 6.14,
+  "needs_q": [
+   -20.46,
+   1.98
+  ],
+  "refurb_q": [
+   -2.76,
+   15.74
+  ]
+ },
+ "grouped_noprev": {
+  "n_flips": 1007,
+  "n_control": 2633,
+  "flips_purchase": -7.63,
+  "flips_resale": 7.74,
+  "control_purchase": 1.4,
+  "control_resale": 1.43,
+  "needs_full_renovation": -8.9,
+  "recently_refurbished": 6.23,
+  "needs_q": [
+   -20.95,
+   2.55
+  ],
+  "refurb_q": [
+   -3.1,
+   14.89
+  ]
+ },
+ "grouped_full": {
+  "n_flips": 1007,
+  "n_control": 2633,
+  "flips_purchase": -6.16,
+  "flips_resale": 0.64,
+  "control_purchase": 0.77,
+  "control_resale": 0.01,
+  "needs_full_renovation": -6.87,
+  "recently_refurbished": 0.63,
+  "needs_q": [
+   -18.15,
+   2.22
+  ],
+  "refurb_q": [
+   -6.88,
+   8.49
+  ]
+ },
+ "grouped_full_purchase_had_prev": {
+  "n_flips": 546,
+  "n_control": 1696,
+  "flips_purchase": -4.26,
+  "flips_resale": -0.3,
+  "control_purchase": 0.44,
+  "control_resale": -0.35,
+  "needs_full_renovation": -4.68,
+  "recently_refurbished": 0.06,
+  "needs_q": [
+   -15.53,
+   3.23
+  ],
+  "refurb_q": [
+   -6.57,
+   7.16
+  ]
+ }
+}

@@ -1,0 +1,37 @@
+sector,wards,n,bias_before_pct,bias_after_pct
+DN12 4,Conisbrough,42,4.8,3.1
+DN11 9,Tickhill & Wadsworth,175,-4.8,-3.9
+DN4 8,Tickhill & Wadsworth; Balby South,179,-4.4,-2.5
+DN10 6,Rossington & Bawtry,95,-4.4,-1.7
+DN12 3,Conisbrough,120,3.9,1.8
+DN7 4,Hatfield,155,-3.7,-1.9
+S64 9,Mexborough,118,3.4,3.0
+DN12 2,Conisbrough,112,3.2,0.7
+DN1 2,Town,77,-3.1,1.4
+DN6 8,Adwick le Street & Carcroft; Norton & Askern,136,-3.1,-2.4
+DN4 9,Balby South; Edlington & Warmsworth,204,-2.8,-1.3
+DN7 6,Hatfield,212,-2.5,-1.1
+DN4 5,Town; Bessacarr,203,-2.5,-2.0
+DN3 2,Armthorpe; Edenthorpe & Kirk Sandall,284,-2.4,-1.5
+DN4 7,Bessacarr; Finningley,210,-2.1,-1.5
+DN6 7,Adwick le Street & Carcroft; Sprotbrough,159,-2.1,-0.9
+DN7 5,Stainforth & Barnby Dun; Norton & Askern,113,-1.8,-0.4
+DN4 6,Finningley; Bessacarr,222,-1.8,-0.5
+S64 0,Mexborough; Sprotbrough,162,1.6,0.8
+DN9 3,Finningley,198,-1.4,-0.9
+DN12 1,Edlington & Warmsworth,119,1.4,1.2
+DN5 0,Bentley; Adwick le Street & Carcroft,143,1.4,0.3
+DN3 1,Edenthorpe & Kirk Sandall; Stainforth & Barnby Dun,212,-1.3,-0.7
+DN5 7,Sprotbrough; Roman Ridge,246,1.2,0.4
+DN4 0,Hexthorpe & Balby North; Balby South,148,-1.2,-0.5
+DN8 4,Thorne & Moorends,180,1.1,0.0
+DN3 3,Armthorpe; Finningley,241,-1.1,-0.2
+DN11 0,Rossington & Bawtry,279,-1.0,-0.7
+DN8 5,Thorne & Moorends; Hatfield,151,-1.0,-1.4
+DN2 4,Wheatley Hills & Intake; Town,131,-0.9,-0.1
+DN2 6,Wheatley Hills & Intake; Town,76,0.6,-0.1
+DN6 9,Norton & Askern,101,-0.6,-2.2
+DN6 0,Norton & Askern,122,-0.6,-0.4
+DN5 8,Roman Ridge; Sprotbrough,222,-0.6,-0.6
+DN2 5,Wheatley Hills & Intake; Town,163,-0.5,-0.4
+DN5 9,Bentley; Roman Ridge,217,-0.0,0.1

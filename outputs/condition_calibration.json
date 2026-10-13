@@ -1,0 +1,49 @@
+{
+ "flip_purchase_resid": {
+  "median": -0.12445551477469508,
+  "p25": -0.3079325441487333,
+  "p75": 0.026901413464874402,
+  "n": 1007
+ },
+ "flip_resale_resid": {
+  "median": 0.054271225882081,
+  "p25": -0.0474559670500696,
+  "p75": 0.15911781852238072,
+  "n": 1007
+ },
+ "control_first_resid": {
+  "median": 0.004362493265920975,
+  "p25": -0.11794416869982172,
+  "p75": 0.11563515806261293,
+  "n": 2633
+ },
+ "control_second_resid": {
+  "median": 0.04006115042789027,
+  "p25": -0.07549100020899324,
+  "p75": 0.1546575241663053,
+  "n": 2633
+ },
+ "flip_excess_uplift": {
+  "median": 0.14500816550419948,
+  "p25": 0.005490265655566873,
+  "p75": 0.3365681175341617,
+  "n": 1007
+ },
+ "condition_adjustments_pct": {
+  "needs_full_renovation": -11.7,
+  "dated": -6.0,
+  "average": 0.0,
+  "good": 2.8,
+  "recently_refurbished": 5.6
+ },
+ "condition_ranges_pct": {
+  "needs_full_renovation": [
+   -26.5,
+   2.7
+  ],
+  "recently_refurbished": [
+   -4.6,
+   17.2
+  ]
+ }
+}

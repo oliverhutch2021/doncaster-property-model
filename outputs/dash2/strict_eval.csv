@@ -1,0 +1,6 @@
+split,variant,label,n,seeds,mdape,mdape_min,mdape_max,within10,diff_vs_published,diff_min,diff_max,n_later_cert,mdape_later_cert
+test_2025_26,current,"2025-26 test, published rules",5995,3,0.07992,0.07965,0.08044,0.5933,0.0,0.0,0.0,35,0.09546
+test_2025_26,strict,"2025-26 test, only certificates lodged by the sale date",5995,3,0.07957,0.0789,0.08022,0.5935,-0.00035,-0.00076,-6e-05,35,0.15529
+test_2025_26,strict_no_later_area_data,"2025-26 test, strict and without deprivation or plot size (sensitivity test)",5995,3,0.08231,0.08213,0.08258,0.5798,0.00239,0.0017,0.00292,35,0.15412
+year_2020,current,"2020, published rules",3925,3,0.07972,0.07954,0.07986,0.5936,0.0,0.0,0.0,135,0.10898
+year_2020,strict,"2020, only certificates lodged by the sale date",3925,3,0.08011,0.07987,0.08034,0.5923,0.00039,0.0,0.0008,135,0.1181

@@ -1,0 +1,90 @@
+version,date,model_version,headline,change
+21,2026-10-10,8,Fixes from a fourth review,"Pasting a listing starts clean: no bungalow, council tax band, size, price or rent carries over from the last paste."
+21,2026-10-10,8,Fixes from a fourth review,"Listings: the type is read correctly past 'flat roof', 'roof terrace' and 'detached garage'; bedrooms can be words; the agent's postcode is ignored; street chips are whole postcodes; a listing with no location no longer values the last postcode."
+21,2026-10-10,8,Fixes from a fourth review,"Investing: a price, rent or EPC cost you type stays when you edit the same home's details, and resets for a different home."
+21,2026-10-10,8,Fixes from a fourth review,"The flip calculator uses your purchase price, finances part of it as a bridging loan, and gives the highest price that breaks even or makes a 15% margin."
+21,2026-10-10,8,Fixes from a fourth review,"The 10-year IRR is after tax on the gain (capital gains tax, or corporation tax for a company), and corporation tax has marginal relief."
+21,2026-10-10,8,Fixes from a fourth review,The 'matches the gilt' rent allows for the risk allowance; a £0 rent scores as the lowest yield; the projection uses the scorecard's growth figure.
+21,2026-10-10,8,Fixes from a fourth review,Decorating a home that needs a full renovation no longer counts as making it 'good'.
+21,2026-10-10,8,Fixes from a fourth review,Postcodes outside Doncaster are refused; DN11 and DN12 searches find those districts; no more '−0.0' figures; typing redraws once you pause.
+21,2026-10-10,8,Fixes from a fourth review,"Condition setting recalibrated (folds grouped by home, long-hold resale uplift removed): −8.9% for needs full renovation, +6.2% for recently refurbished."
+21,2026-10-10,8,Fixes from a fourth review,"Accuracy tab: a fair hedonic baseline on the same features (9.8%), accuracy by sale year and for new builds, and the registration lag explained."
+21,2026-10-10,8,Fixes from a fourth review,The public copy no longer shows house names; the 10-year gilt is updated to 5.48%.
+20,2026-10-10,8,Fixes from a third review,"An impossible price, rent or running cost now clears the investment scorecard until it is fixed. A £500 price used to show a 1,536% return."
+20,2026-10-10,8,Fixes from a third review,"A cleared figure can no longer be written back by a count-up still running, and the 'Use this rent' button goes when there is no estimate."
+20,2026-10-10,8,Fixes from a third review,"The IRR finds repeated and very close rates. When the cash flows change sign more than once, it warns that the IRR can mislead and gives the NPV."
+20,2026-10-10,8,Fixes from a third review,"Each panel checks only the inputs it uses: an impossible deposit clears the mortgage results but not the cash scorecard, and the flip appraisal refuses impossible months, finance rates and bathrooms."
+20,2026-10-10,8,Fixes from a third review,"New tests change inputs during animations and while typing, not only on settled screens."
+19,2026-10-10,8,Fixes from a second review,"A pasted listing no longer loses details that match the selected certificate: each field now records whether a certificate, a listing or you filled it."
+19,2026-10-10,8,Fixes from a second review,"An impossible input clears everything from the last estimate: asking-price advice, explanation, comparables, what-if, and the Investing scorecard and rent."
+19,2026-10-10,8,Fixes from a second review,The IRR finds every rate that fits; when there are two or more it says the IRR is ambiguous and gives the NPV at the 10-year gilt.
+19,2026-10-10,8,Fixes from a second review,"The strict timing check runs three seeds, and its wording is plainer: little aggregate change, and a sensitivity test rather than a bound."
+19,2026-10-10,8,Fixes from a second review,Unit and browser regression tests ship with the project.
+18,2026-10-10,8,Fixes from an independent review,The model on this page is refitted on every kept sale to August 2025; sales from January to August 2025 had been left out by mistake.
+18,2026-10-10,8,Fixes from an independent review,"Landlord tax: the Section 24 credit is capped at the property profit, and unused interest and losses carry forward through the projection."
+18,2026-10-10,8,Fixes from an independent review,"Choosing another address, or clearing it, no longer keeps the previous home's size and rooms."
+18,2026-10-10,8,Fixes from an independent review,"Impossible inputs, such as a negative floor area or a 150% deposit, are refused and the old results cleared."
+18,2026-10-10,8,Fixes from an independent review,The IRR handles returns above 150% and says when no rate fits or more than one may.
+18,2026-10-10,8,Fixes from an independent review,"Flood allowance corrected: a typical let falls outside Flood Re, so the scenario is £445 a year, to check with a quote."
+18,2026-10-10,8,Fixes from an independent review,A strict timing check and accuracy for homes typed in by hand on the Model accuracy tab; the rent model's error is now a share of the actual rent.
+17,2026-10-10,8,Version number and changelog,The header shows the version and its date; click it to open this tab.
+17,2026-10-10,8,Version number and changelog,"A Changelog tab lists every version, newest first."
+16,2026-10-10,8,Easier period picking on the price time-lapse,"A two-handle period slider and quick buttons (since 1995, since 2000, 20, 10 or 5 years, 2007 to 2013) that work on a phone."
+16,2026-10-10,8,Easier period picking on the price time-lapse,"Doncaster's line stays whole, with the chosen period shaded; dragging across it still works with a mouse."
+15,2026-10-10,8,"Growth over a chosen period, and the risk allowance on","Prices since 1995: the map shows each neighbourhood's growth over a chosen period against Doncaster's, with each year's change one click away."
+15,2026-10-10,8,"Growth over a chosen period, and the risk allowance on",The risk allowance starts switched on.
+15,2026-10-10,8,"Growth over a chosen period, and the risk allowance on","Flood insurance allowance cut from £600 to £110 a year, from Flood Re's figures; buy-to-let owned by individuals qualifies for Flood Re."
+15,2026-10-10,8,"Growth over a chosen period, and the risk allowance on",Tenancies ending in court moved to the bottom of the Market tab.
+14,2026-10-10,8,Refurbishment costs that scale sensibly,A kitchen and a rewire grow with the square root of floor area; bathrooms and the boiler are fixed amounts.
+14,2026-10-10,8,Refurbishment costs that scale sensibly,"The guides' 3-bed prices apply at Doncaster's typical 3-bed semi (84 m²), which lowers the per-m² trades by about 14%."
+14,2026-10-10,8,Refurbishment costs that scale sensibly,Kitchen and bathroom finish follows the home's value unless one is chosen.
+14,2026-10-10,8,Refurbishment costs that scale sensibly,The contingency is an input on the page.
+13,2026-10-10,8,Sourced refurbishment costs,"Unsourced per-m² guesses, which ran 3 to 6 times too high, replaced with Yorkshire guide prices item by item and a 10% contingency."
+13,2026-10-10,8,Sourced refurbishment costs,Kitchens and bathrooms priced per room rather than per m² of the whole home.
+13,2026-10-10,8,Sourced refurbishment costs,"Buy, refurbish and sell buys at the condition the works put right; VAT and your own quote can be added."
+12,2026-10-10,8,Risk allowance,"A switch takes allowances for tenant risk, flood insurance, energy rules and a future downturn off area and property returns."
+11,2026-10-10,8,Tenant risk,"Landlord court claims (Ministry of Justice) on the Market tab, and anti-social behaviour (police.uk) by neighbourhood."
+11,2026-10-10,8,Tenant risk,Comparisons with the neighbourhood in percentages instead of standard deviations.
+11,2026-10-10,8,Tenant risk,A minimum price filter for the best buy-to-let list.
+11,2026-10-10,8,Tenant risk,The time-lapse no longer plays by itself.
+11,2026-10-10,8,Tenant risk,The Invest tab renamed Investing.
+10,2026-10-10,8,Investing tab,"A home against recent sales in its neighbourhood: price against value, price per m² and yield."
+10,2026-10-10,8,Investing tab,"A rent estimate linked to value, with its likely range."
+10,2026-10-10,8,Investing tab,The opportunity-cost buttons show each rate and its source on hover.
+10,2026-10-10,8,Investing tab,Sales history fixed for streets that share a name in different places.
+10,2026-10-10,8,Investing tab,"""Habitable rooms"" renamed ""bedrooms and living rooms""."
+9,2026-10-09,8,"Neighbourhoods, motion and dark mode","39 named neighbourhoods with repeat-sales growth since 1995, yields, total return and return above an opportunity cost."
+9,2026-10-09,8,"Neighbourhoods, motion and dark mode","A best buy-to-let ranking, a neighbourhood search, and map colours red for worse and blue for better."
+9,2026-10-09,8,"Neighbourhoods, motion and dark mode",The Prices since 1995 time-lapse and other motion.
+9,2026-10-09,8,"Neighbourhoods, motion and dark mode",A light and dark switch.
+8,2026-10-09,8,Testing and confidence,A year-by-year backtest since 2020.
+8,2026-10-09,8,Testing and confidence,"Confidence levels, with 80% ranges that follow them."
+8,2026-10-09,8,Testing and confidence,The assessors' ratio study and a Model accuracy tab.
+7,2026-10-09,7,Full-size model in the browser,"All 2,043 trees run in the page."
+7,2026-10-09,7,Full-size model in the browser,Energy-certificate history added: median error 8.03%.
+7,2026-10-09,7,Full-size model in the browser,A comparison with simple valuation methods.
+6,2026-10-09,6,What-ifs and sales history,"What would works add: extensions, lofts and energy upgrades against sourced costs."
+6,2026-10-09,6,What-ifs and sales history,Sales history since 1995 for a picked address.
+6,2026-10-09,6,What-ifs and sales history,A prompt for homes that may have been extended.
+5,2026-10-09,5,More about the home,"Plot size from title plans, street and postcode prices, and more certificate detail; tuned settings."
+5,2026-10-09,5,More about the home,"A SHAP breakdown of each estimate, a council tax band check and a Saved list."
+4,2026-10-09,4,Local correction,"Each estimate shifted by half the median miss on the 40 nearest recent sales, cutting the spread of area bias from 2.3% to 1.5%."
+3,2026-10-09,3,"More data, tested first","Flood risk, transport, schools and amenities tested in the model, and shown for each home instead."
+3,2026-10-09,3,"More data, tested first",A neighbourhood map on 2021 small areas.
+2,2026-10-09,2,Energy certificates and last sale,Certificates matched to sales by address; nearest-sale and last-sale inputs took the median error from 13.2% to 8.6%.
+2,2026-10-09,2,Energy certificates and last sale,"Paste a listing, look up an address, and buy-to-let tax by owner type."
+1,2026-10-09,1,First model and dashboard,"LightGBM against a ridge baseline on a time-based split, with a quality-adjusted price index."
+1,2026-10-09,1,First model and dashboard,"Checked 80% ranges, a condition setting calibrated on quick resales, and buy-to-let numbers."
+22,2026-10-10,8,Fixes from a fifth review,"Capital gains tax for a basic-rate owner: 18% only on the part of the gain that fits in the unused basic-rate band, after your other income (£20,000 unless you enter it) and that year's rental profit; 24% on the rest."
+22,2026-10-10,8,Fixes from a fifth review,Only improvements come off the gain. Repairs and decorating (the rest of the works and EPC upgrade) are deducted from the first year's rental profit instead.
+22,2026-10-10,8,Fixes from a fifth review,A listing that names only a district (Doncaster DN4) no longer keeps the last home's postcode; a dashed chip offers to keep it.
+22,2026-10-10,8,Fixes from a fifth review,"The flip calculator no longer swaps your figures: an invalid price clears it, a blank price uses the model value, and a £0 works quote stays £0."
+22,2026-10-10,8,Fixes from a fifth review,"Condition setting by what the model knows: with a last sale on record, needs full renovation is −4.7% and a resale within 18 months of it +0.6%, against −8.9% and +6.2% without one."
+22,2026-10-10,8,Fixes from a fifth review,Build: the page source lives in dashboard/ and every assumption in config/assumptions.csv; a test rebuilds the public copy from the zip byte for byte.
+22,2026-10-10,8,Fixes from a fifth review,The Market and Accuracy tabs are drawn by a script of their own (one page file can't exceed 256 KB).
+23,2026-10-10,8,Three new views of a deal,"Mortgage rate chart: the first year's monthly cash flow, before and after tax, at every rate, with the break-even rate and where the lender's stress test fails. Drag the slider or across the chart and the whole deal follows."
+23,2026-10-10,8,Three new views of a deal,"What matters most: a tornado of the 10-year IRR after tax, or the first year's cash flow, with each input lowered and raised by a set amount (price paid, rent, rate, growth, voids, maintenance, deposit). The bars move as you edit the deal."
+23,2026-10-10,8,Three new views of a deal,"If prices follow a past decade: the deal's equity over 10 years if the price had followed the neighbourhood's prices after each purchase year since 1995, with each year's after-tax IRR against the 10-year gilt."
+23,2026-10-10,8,Three new views of a deal,"The deal's 10-year projection is worked out in one place, so the tiles, the projection and the three new charts always agree."
+24,2026-10-13,8,Current mortgage rate,"The default mortgage rate is 5.66%, Moneyfacts' average 5-year fixed buy-to-let rate at 75% loan to value (1 August 2026), up from June 2025's 5.29%. Rates have risen since, so enter a current quote."
+25,2026-10-13,8,Ready to publish,"Licence and attribution notes for every data source, in the footer and the README; d3's licence ships with the page; the shared copy keeps comparable sales to street and postcode."

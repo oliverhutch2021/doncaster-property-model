@@ -1,0 +1,10 @@
+kind,group,n,median_ratio,cod,prd,prb
+overall,This model,5995.0,1.0072230430289215,12.719613301200736,1.030853098309401,-0.058771755382884726
+overall,Last sale x UK HPI,4318.0,1.040317930631951,19.189855997773176,1.0302100434290897,0.00720723108182058
+band,Under £75k,219.0,1.3444714099662847,,,
+band,£75k-100k,419.0,1.1124614302383147,,,
+band,£100k-150k,1397.0,1.023622891533707,,,
+band,£150k-200k,1611.0,0.9999986929653508,,,
+band,£200k-300k,1511.0,0.9886335151400008,,,
+band,£300k+,838.0,0.9800272091143646,,,
+note,"Grouping by sale price exaggerates this: a home that sold unusually cheaply lands in a low band and looks over-valued, and any estimate shows some of it. Simple methods show less (indexing the last sale: PRB +0.007), so part of it is the model pulling estimates towards the middle. Stretching the estimates to remove it cost 0.7 points of median error in testing, so they are left as they are.",,,,,

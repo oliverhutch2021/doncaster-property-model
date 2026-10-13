@@ -1,0 +1,996 @@
+<style>
+#dash-root { --dash-gutter: var(--cds-pad-lg); }
+.dpm [hidden] { display: none !important; }
+.dpm .card > p:empty, .dpm .result > p:empty { display: none; }
+.dpm { font-family: var(--font-anthropic-sans); display: grid; gap: var(--cds-gap-lg); max-width: 1180px; margin-inline: auto; }
+.dpm h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: calc(var(--cds-font-size-title) * 1.15); line-height: 1.15; margin: 0; text-wrap: balance; }
+.dpm h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.dpm h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.dpm .masthead { display: grid; gap: var(--cds-gap-xs); }
+.dpm .lede { color: var(--color-fg); margin: 0; max-width: 68ch; line-height: 1.5; }
+.dpm .meta-line { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0; }
+.dpm .muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0; }
+.dpm .note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0; max-width: 75ch; line-height: 1.45; }
+.dpm .num { font-variant-numeric: tabular-nums; }
+.dpm a { color: inherit; }
+
+/* tabs: one row that scrolls sideways on a phone */
+.dpm .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--color-border-line); overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 3; background: var(--color-bg); }
+.dpm .tabs::-webkit-scrollbar { display: none; }
+.dpm .tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; padding: var(--cds-pad-sm) var(--cds-pad-md); font: inherit; color: var(--color-fg-muted); cursor: pointer; white-space: nowrap; flex: none; }
+.dpm .tab:hover { color: var(--color-fg); }
+.dpm .tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.dpm .tab:focus-visible, .dpm button:focus-visible, .dpm input:focus-visible, .dpm select:focus-visible, .dpm summary:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+
+/* layout */
+.dpm .grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.dpm .grid.two { gap: var(--cds-gap-lg); }
+.dpm .grid-wide { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); }
+.dpm .split { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (max-width: 899px) { .dpm .split .result { order: -1; } }
+@media (min-width: 900px) { .dpm .split { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); } .dpm .split .result { position: sticky; top: 52px; } }
+.dpm .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); align-content: start; min-width: 0; }
+.dpm .card > header { display: grid; gap: 3px; }
+.dpm .tiles { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+.dpm .tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: grid; gap: 4px; min-width: 0; align-content: start; }
+.dpm .tile .big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.dpm .label { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+
+/* the result panel */
+.dpm .result { gap: var(--cds-gap-xs); }
+.dpm .hero-num { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: calc(var(--cds-font-size-title) * 1.6); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.dpm .rangebar { position: relative; height: 34px; margin-top: var(--cds-gap-xs); }
+.dpm .rangebar svg { display: block; overflow: visible; }
+.dpm .conf { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 0; font-size: var(--cds-font-size-caption); color: var(--color-fg); }
+.dpm .conf .dot { width: .55rem; height: .55rem; border-radius: 50%; display: inline-block; }
+.dpm .cond-row { display: grid; gap: 2px; padding-top: var(--cds-pad-sm); border-top: 1px solid var(--color-border-line); margin-top: var(--cds-gap-xs); }
+.dpm .mid { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: calc(var(--cds-font-size-title) * 0.8); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.dpm .mini { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); padding-top: var(--cds-pad-sm); border-top: 1px solid var(--color-border-line); margin-top: var(--cds-gap-xs); }
+.dpm .mini > div { display: grid; gap: 2px; align-content: start; min-width: 0; }
+.dpm .save { padding-top: var(--cds-pad-sm); border-top: 1px solid var(--color-border-line); margin-top: var(--cds-gap-xs); display: grid; gap: 4px; }
+.dpm .save input { flex: 1; min-width: 8rem; width: auto; }
+
+/* forms */
+.dpm .form { display: grid; gap: var(--cds-gap-sm); grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); align-items: end; }
+.dpm .form .span2 { grid-column: span 2; }
+@media (max-width: 520px) { .dpm .form .span2 { grid-column: auto; } }
+.dpm .form.narrow2 { max-width: 30rem; } .dpm .form.narrow3 { max-width: 36rem; }
+.dpm label.fld { display: grid; gap: 4px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); min-width: 0; }
+.dpm input, .dpm select, .dpm textarea { font: inherit; color: var(--color-fg); background: var(--color-bg); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 7px 9px; min-width: 0; width: 100%; box-sizing: border-box; }
+.dpm textarea { min-height: 5.5rem; resize: vertical; }
+.dpm input[type="checkbox"] { width: auto; }
+.dpm .chk { display: flex; gap: 6px; align-items: center; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding-block: 8px; }
+.dpm .fieldsets { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.dpm fieldset { border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); margin: 0; min-width: 0; }
+.dpm legend { font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); color: var(--color-fg); padding: 0 4px; }
+.dpm .btn { font: inherit; cursor: pointer; padding: 6px 14px; border-radius: var(--cds-radius); border: 1px solid var(--color-fg); background: var(--color-fg); color: var(--color-bg); }
+.dpm .btn.quiet { background: var(--color-bg); color: var(--color-fg); border-color: var(--color-border-line); }
+.dpm .btn:disabled { opacity: .5; cursor: default; }
+.dpm .btn-row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); align-items: center; }
+.dpm .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.dpm .chips button { all: unset; cursor: pointer; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--color-border-line); font-size: var(--cds-font-size-caption); }
+.dpm .chips button.keep { border-style: dashed; color: var(--color-fg-muted); }
+.dpm details > summary { cursor: pointer; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.dpm details > summary:hover { color: var(--color-fg); }
+.dpm details.listing { border: 1px dashed var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-sm) var(--cds-pad-md); }
+.dpm details.listing[open] > summary { margin-bottom: var(--cds-gap-sm); }
+.dpm .sub { display: grid; gap: var(--cds-gap-sm); }
+.dpm .err { color: var(--color-bad); font-size: var(--cds-font-size-caption); min-height: 0; margin: 0; }
+.dpm .err:empty { display: none; }
+.dpm .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--color-border-line); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .good { color: var(--color-ok); } .dpm .warnc { color: var(--color-warn); } .dpm .badc { color: var(--color-bad); }
+.dpm .verdict { font-size: var(--cds-font-size-caption); }
+
+/* tables */
+.dpm .tbl-wrap { overflow: auto; max-height: 26rem; }
+.dpm table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.dpm th, .dpm td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.dpm td.r, .dpm th.r { text-align: right; }
+.dpm th { position: sticky; top: 0; background: var(--color-panel); color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.dpm th button { all: unset; cursor: pointer; }
+.dpm tbody tr:hover td { background: color-mix(in srgb, var(--color-fg) 4%, transparent); }
+.dpm .show-narrow { display: none; }
+@media (max-width: 640px) { .dpm .hide-narrow { display: none; } .dpm .show-narrow { display: block; font-size: 0.92em; } }
+/* wide tables get the full row on desktop rather than scrolling inside a half-width card */
+.dpm .grid > .card.wide { grid-column: 1 / -1; }
+.dpm table.wrap-last td:last-child, .dpm table.wrap-last th:last-child { white-space: normal; min-width: 14rem; }
+/* on a phone the first column (an address, a check, a change) wraps instead of pushing the figures off the card */
+@media (max-width: 640px) { .dpm table.wrap-first td:first-child, .dpm table.wrap-first th:first-child { white-space: normal; min-width: 8.5rem; } .dpm th, .dpm td { padding: 6px 5px; } }
+
+/* charts */
+.dpm .chart { position: relative; min-height: 240px; }
+.dpm .chart.short { min-height: 0; }
+.dpm .fan-h { margin-top: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.dpm .rate-try { display: grid; grid-template-columns: auto minmax(0, 1fr) 4.5em; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .rate-try output { color: var(--color-fg); font-variant-numeric: tabular-nums; text-align: right; font-size: var(--cds-font-size-body); }
+.dpm .rate-try input[type=range] { width: 100%; margin: 0; accent-color: var(--color-fg); cursor: pointer; }
+.dpm .chart svg { display: block; }
+.dpm .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+.dpm .tip .t { color: var(--cds-text-secondary); }
+.dpm .legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dpm .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.dpm .kv { display: grid; grid-template-columns: 1fr auto; gap: 5px var(--cds-gap-md); font-size: var(--cds-font-size-caption); margin: 0; }
+.dpm .kv dt { color: var(--color-fg-muted); } .dpm .kv dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.dpm .kv .sep { grid-column: 1 / -1; border-top: 1px solid var(--color-border-line); }
+.dpm .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+.dpm .seg button { all: unset; cursor: pointer; padding: 4px 10px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .seg button[aria-pressed="true"] { background: var(--color-bg); color: var(--color-fg); }
+.dpm .row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: flex-start; justify-content: space-between; }
+
+/* landlord rules and method */
+.dpm .rules-grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.dpm .rules article { display: grid; gap: 3px; border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-sm); align-content: start; }
+.dpm .rules article p { margin: 0; line-height: 1.5; font-size: var(--cds-font-size-body); }
+.dpm .method p, .dpm .method li { line-height: 1.55; }
+.dpm .method ul { padding-left: 1.1em; margin: 0; display: grid; gap: 6px; font-size: var(--cds-font-size-body); }
+.dpm .flow { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: var(--cds-gap-sm); grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+.dpm .flow li { counter-increment: step; display: grid; gap: 4px; align-content: start; padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); position: relative; }
+.dpm .flow li::before { content: counter(step); font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); color: var(--color-fg-muted); }
+.dpm .flow li span { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
+.dpm .foot { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.5; border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-md); max-width: 110ch; }
+/* masthead and the light/dark switch */
+.dpm .mast-top { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: flex-start; justify-content: space-between; }
+.dpm .theme-toggle { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 5px 8px 5px 10px; border: 1px solid var(--color-border-line); border-radius: 999px; font-size: var(--cds-font-size-caption); color: var(--color-fg); background: var(--color-panel); flex: none; margin-top: 4px; }
+.dpm .theme-toggle:hover { border-color: var(--color-fg-muted); }
+.dpm .theme-toggle svg { width: 15px; height: 15px; }
+.dpm .tt-track { width: 28px; height: 16px; border-radius: 999px; background: var(--cds-chart-muted); position: relative; transition: background var(--cds-dur-slow); }
+.dpm .tt-knob { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-bg); transition: transform var(--cds-dur-slow); }
+.dpm .theme-toggle[aria-pressed="true"] .tt-track { background: var(--color-fg); }
+.dpm .theme-toggle[aria-pressed="true"] .tt-knob { transform: translateX(12px); }
+
+/* neighbourhood search and controls */
+.dpm .nb-find { gap: var(--cds-gap-sm); }
+.dpm .nb-search-label { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.dpm .nb-search { position: relative; max-width: 40rem; }
+.dpm .nb-search input { padding: 9px 12px 9px 36px; font-size: var(--cds-font-size-body); }
+.dpm .nb-search-icon { position: absolute; left: 11px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); color: var(--color-fg-muted); pointer-events: none; }
+.dpm .nb-results { position: absolute; z-index: 6; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); max-height: 20rem; overflow: auto; }
+.dpm .nb-results li { display: grid; gap: 1px; padding: 6px 9px; border-radius: 6px; cursor: pointer; }
+.dpm .nb-results li[aria-selected="true"], .dpm .nb-results li[id]:hover { background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
+.dpm .nb-results .r1 { font-size: var(--cds-font-size-body); color: var(--color-fg); }
+.dpm .nb-results .r2 { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .nb-results li.none { cursor: default; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.dpm .nb-ctl { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md) var(--cds-gap-lg); align-items: flex-start; padding-top: var(--cds-pad-md); border-top: 1px solid var(--color-border-line); margin-top: var(--cds-gap-xs); }
+.dpm .nb-ctl-item { display: grid; gap: 5px; min-width: 0; }
+.dpm .nb-custom { display: grid; gap: 4px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 9rem; }
+
+/* one neighbourhood */
+.dpm .nb-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); line-height: 1.15; }
+.dpm .nb-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; max-width: 30rem; justify-content: flex-end; }
+.dpm .pill.strong { color: var(--color-fg); border-color: var(--color-fg-muted); }
+.dpm button.pill { all: unset; cursor: pointer; display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--color-fg-muted); font-size: var(--cds-font-size-caption); color: var(--color-fg); }
+.dpm .nb-tiles { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); padding: var(--cds-pad-md) 0; border-block: 1px solid var(--color-border-line); }
+.dpm .nb-tiles > div { display: grid; gap: 2px; align-content: start; min-width: 0; }
+.dpm .nb-detail { align-items: start; }
+.dpm .nb-facts-wrap { max-height: 32rem; }
+.dpm #nb-facts th[scope="rowgroup"] { position: static; background: none; padding-top: 14px; color: var(--color-fg); }
+.dpm #nb-facts td:first-child { color: var(--color-fg-muted); white-space: normal; }
+
+/* map */
+.dpm .map-pick { min-width: 15rem; }
+.dpm .map-legend i { width: 14px; border: 1px solid var(--color-border-line); }
+
+/* best buy-to-let */
+.dpm .btl-form { max-width: 34rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+.dpm .btl-top { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--cds-gap-sm); grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); }
+.dpm .btl-top > li { display: grid; }
+.dpm .btl-top button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 3px; align-content: start; padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
+.dpm .btl-top button:hover { border-color: var(--color-fg-muted); }
+.dpm .btl-top button[aria-current="true"] { border-color: var(--color-fg); box-shadow: inset 0 0 0 1px var(--color-fg); }
+.dpm .btl-top .rk { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dpm .btl-top .nm { font-weight: var(--cds-font-weight-medium); }
+.dpm .btl-top .bigv { font-family: var(--font-anthropic-serif); font-size: calc(var(--cds-font-size-title) * .85); line-height: 1.15; font-variant-numeric: tabular-nums; margin-top: 4px; }
+.dpm .btl-top .ln { font-size: var(--cds-font-size-caption); margin-top: 4px; }
+.dpm .btl-top .pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.dpm #btl-table tbody tr { cursor: pointer; }
+.dpm #btl-table tbody tr[aria-current="true"] td { background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
+.dpm #btl-table td:first-child { font-weight: var(--cds-font-weight-medium); }
+
+/* invest: this home against its neighbourhood, and its rent */
+.dpm .inv-head { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); padding: var(--cds-pad-md) 0; border-block: 1px solid var(--color-border-line); }
+@media (min-width: 900px) { .dpm .inv-head { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); align-items: center; } }
+.dpm .inv-verdict { display: grid; gap: 2px; align-content: start; }
+.dpm .inv-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: calc(var(--cds-font-size-title) * 1.6); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.dpm .inv-verdict-t { font-size: var(--cds-font-size-body); line-height: 1.4; max-width: 34ch; }
+.dpm .inv-kpis { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
+.dpm .inv-kpis > div { display: grid; gap: 2px; align-content: start; min-width: 0; }
+.dpm .inv-rows { display: grid; gap: 0; }
+.dpm .inv-row { display: grid; gap: var(--cds-gap-sm) var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); padding: var(--cds-pad-md) 0; border-bottom: 1px solid var(--color-border-line); align-items: center; }
+@media (min-width: 760px) { .dpm .inv-row { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 6.5rem; } }
+.dpm .inv-row-t { display: grid; gap: 2px; min-width: 0; }
+.dpm .inv-row-t .h { font-weight: var(--cds-font-weight-medium); }
+.dpm .inv-row-t .v { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+.dpm .inv-strip { min-width: 0; }
+.dpm .inv-strip svg { display: block; overflow: visible; }
+.dpm .inv-row-z { display: grid; gap: 1px; justify-items: start; }
+@media (min-width: 760px) { .dpm .inv-row-z { justify-items: end; text-align: right; } }
+.dpm .inv-row-z .zv { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+.dpm .fld-hint { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.35; }
+.dpm .hist-addr { margin: 0; font-weight: var(--cds-font-weight-medium); }
+.dpm .hist-addr:empty { display: none; }
+.dpm .inv-risks { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); padding: var(--cds-pad-md) 0; border-bottom: 1px solid var(--color-border-line); }
+.dpm .inv-risks:empty { display: none; }
+.dpm .inv-risks > div { display: grid; gap: 2px; min-width: 0; }
+.dpm .inv-risks .h { font-weight: var(--cds-font-weight-medium); }
+.dpm .risk-toggle { margin-top: 0; }
+.dpm .btl-risk { display: flex; align-items: center; }
+.dpm .inv-risk-l { margin-top: 6px; }
+.dpm details.risk-set { border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-sm); }
+.dpm details.risk-set[open] > summary { margin-bottom: var(--cds-gap-sm); }
+.dpm .risk-how { margin: var(--cds-gap-sm) 0 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.45; max-width: 90ch; }
+.dpm td.muted-cell { color: var(--color-fg-muted); }
+.dpm .inv-hint { padding: var(--cds-pad-sm) 0; }
+.dpm .rent-top { display: grid; gap: var(--cds-gap-lg); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .dpm .rent-top { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); } }
+.dpm .rent-hero { display: grid; gap: 2px; align-content: start; }
+.dpm .rent-build dd { white-space: normal; }
+
+/* motion: play buttons, the time-lapse and entrances */
+.dpm .play-btn { display: inline-flex; align-items: center; gap: 7px; }
+.dpm .play-btn svg { width: 13px; height: 13px; flex: none; }
+.dpm .play-btn .i-pause { display: none; }
+.dpm .play-btn[aria-pressed="true"] .i-pause { display: block; } .dpm .play-btn[aria-pressed="true"] .i-play { display: none; }
+.dpm .lapse-ctl { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: center; }
+.dpm .lapse-scrub { display: inline-flex; align-items: center; gap: 8px; }
+.dpm .lapse-scrub input { width: min(16rem, 52vw); padding: 0; border: 0; background: none; accent-color: var(--color-fg); }
+.dpm .lapse-grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .dpm .lapse-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+.dpm .lapse-side { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.dpm .lapse-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: calc(var(--cds-font-size-title) * 2.1); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.dpm .lapse-don { margin: 4px 0 0; font-size: var(--cds-font-size-body); line-height: 1.45; }
+.dpm .lapse-h { margin-top: var(--cds-gap-sm); }
+.dpm #lapse-map path { transition: fill .35s ease; }
+.dpm #lapse-line { cursor: pointer; }
+.dpm .lapse-win { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); align-items: center; }
+.dpm .lapse-period { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; flex: 1 1 320px; min-width: 0; max-width: 460px; }
+.dpm .lapse-period-t { font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); min-width: 7.5em; }
+.dpm .period { position: relative; height: 32px; flex: 1 1 200px; min-width: 180px; touch-action: none; }
+.dpm .period .track, .dpm .period .fill { position: absolute; top: 14px; height: 4px; border-radius: 2px; pointer-events: none; }
+.dpm .period .track { left: 11px; right: 11px; background: var(--color-border-line); }
+.dpm .period .fill { background: var(--color-fg); }
+.dpm .period input[type=range] { position: absolute; left: 0; top: 0; width: 100%; height: 32px; margin: 0; padding: 0; border: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+.dpm .period input[type=range]::-webkit-slider-runnable-track { background: none; border: 0; }
+.dpm .period input[type=range]::-moz-range-track { background: none; border: 0; }
+.dpm .period input[type=range]::-webkit-slider-thumb { pointer-events: auto; -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--color-panel); border: 2px solid var(--color-fg); cursor: grab; box-sizing: border-box; }
+.dpm .period input[type=range]::-moz-range-thumb { pointer-events: auto; width: 22px; height: 22px; border-radius: 50%; background: var(--color-panel); border: 2px solid var(--color-fg); cursor: grab; box-sizing: border-box; }
+.dpm .period input[type=range]:focus-visible { outline: none; }
+.dpm .period input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.dpm .period input[type=range]:focus-visible::-moz-range-thumb { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.dpm .lapse-brush .selection { fill: var(--color-fg); fill-opacity: 0.07; stroke: var(--color-fg-muted); stroke-dasharray: 3 3; }
+.dpm .lapse-brush .overlay { cursor: crosshair; }
+.dpm .map-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: flex-end; }
+.dpm .map-badge { position: absolute; left: 0; top: 0; z-index: 1; max-width: 70%; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: color-mix(in srgb, var(--color-panel) 88%, transparent); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; pointer-events: none; }
+.dpm .map-badge b { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-heading); }
+@keyframes dpm-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes dpm-fade { from { opacity: 0; } to { opacity: 1; } }
+.dpm .enter { animation: dpm-rise .55s cubic-bezier(.2, .7, .2, 1) both; }
+.dpm .enter-fade { animation: dpm-fade .45s ease both; }
+@media (prefers-reduced-motion: reduce) { .dpm .enter, .dpm .enter-fade { animation: none; } .dpm #lapse-map path, .dpm .tt-track, .dpm .tt-knob { transition: none; } }
+
+/* keyboard focus on the unstyled buttons */
+.dpm .seg button:focus-visible, .dpm .chips button:focus-visible, .dpm th button:focus-visible, .dpm .theme-toggle:focus-visible, .dpm .btl-top button:focus-visible, .dpm button.pill:focus-visible, .dpm #btl-table tbody tr:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
+.dpm .theme-toggle:focus-visible, .dpm .btl-top button:focus-visible { outline-offset: 2px; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+[data-dash-source-state=empty] { color: transparent; }
+/* version and changelog */
+.dpm .ver-pill { font-variant-numeric: tabular-nums; margin-right: 4px; }
+.dpm .changelog { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--cds-gap-md); }
+.dpm .changelog > li { display: grid; grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr); gap: 4px var(--cds-gap-md); padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
+.dpm .changelog > li:first-child { border-top: 0; padding-top: 0; }
+.dpm .changelog .cl-v { font-family: var(--font-anthropic-serif); font-size: calc(var(--cds-font-size-title) * 0.9); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dpm .changelog .cl-d { display: block; font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: 4px; }
+.dpm .changelog h3 { margin: 0 0 4px; }
+.dpm .changelog ul { list-style: disc; margin: 0; padding-left: 1.1em; display: grid; gap: 2px; }
+.dpm .changelog .cl-now { margin-left: 6px; vertical-align: middle; font-family: var(--font-anthropic-sans); }
+@media (max-width: 560px) { .dpm .changelog > li { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<div class="dpm">
+  <header class="masthead">
+    <div class="mast-top">
+      <h1 id="top">Doncaster Property Model</h1>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Switch between light and dark">
+        <svg class="tt-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.5 6.5 0 0 1 7.4 4.5a6.5 6.5 0 1 0 8.1 8.1Z" fill="currentColor"/></svg>
+        <span class="tt-label">Dark mode</span><span class="tt-track" aria-hidden="true"><span class="tt-knob"></span></span>
+      </button>
+    </div>
+    <p class="lede" id="lede" data-source="accuracy model_meta">—</p>
+    <p class="meta-line"><button class="pill ver-pill" id="head-version" type="button" data-source="changelog" title="See what changed in each version">Version —</button> <span id="head-meta" data-source="model_meta"></span></p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-value" aria-controls="value" aria-selected="true">Value a property</button>
+    <button class="tab" role="tab" id="tab-invest" aria-controls="invest" aria-selected="false">Investing</button>
+    <button class="tab" role="tab" id="tab-areas" aria-controls="areas" aria-selected="false">Areas and rents</button>
+    <button class="tab" role="tab" id="tab-market" aria-controls="market" aria-selected="false">Market</button>
+    <button class="tab" role="tab" id="tab-accuracy" aria-controls="accuracy" aria-selected="false">Model accuracy</button>
+    <button class="tab" role="tab" id="tab-method" aria-controls="method" aria-selected="false">Method</button>
+    <button class="tab" role="tab" id="tab-saved" aria-controls="saved" aria-selected="false">Saved</button>
+    <button class="tab" role="tab" id="tab-changes" aria-controls="changes" aria-selected="false">Changelog</button>
+  </nav>
+
+  <!-- ============ VALUE ============ -->
+  <section id="value" role="tabpanel" aria-labelledby="tab-value" class="grid-wide">
+    <div class="split">
+      <div class="card" id="value-inputs">
+        <header><h2>The property</h2><p class="note">Pick an address to fill in size, age and energy rating from its certificate, or type the details. Blank fields are fine; the estimate is just less precise.</p></header>
+        <details class="listing" id="listing-card" data-source="streets">
+          <summary>Paste a Rightmove, Zoopla or agent listing instead</summary>
+          <div class="sub">
+            <textarea id="listing-text" aria-label="Listing text" placeholder="e.g. 3 bedroom semi-detached house for sale, Thorne Road, Doncaster DN2 5AB. Guide price £185,000. Freehold. 92 sq m. EPC rating D."></textarea>
+            <div class="btn-row"><button class="btn" id="listing-read">Read listing</button><button class="btn quiet" id="listing-clear">Clear</button><span class="muted" id="listing-found"></span></div>
+            <div class="chips" id="listing-pcs"></div>
+          </div>
+        </details>
+        <div class="form">
+          <label class="fld">Postcode <input id="in-postcode" list="pc-list" autocomplete="off" spellcheck="false" placeholder="e.g. DN4 7HA"></label>
+          <datalist id="pc-list"></datalist>
+          <label class="fld span2">Address (from the certificate register) <select id="in-address"><option value="">Choose an address, or enter details yourself</option></select></label>
+          <label class="fld">Property type
+            <select id="in-type"><option value="D">Detached</option><option value="S" selected>Semi-detached</option><option value="T">Terraced</option><option value="F">Flat / maisonette</option></select></label>
+          <label class="fld">Tenure <select id="in-tenure"><option value="F" selected>Freehold</option><option value="L">Leasehold</option></select></label>
+          <label class="fld">Floor area (m²) <input id="in-area" type="number" min="15" max="1000" step="1"></label>
+          <label class="fld" title="The energy certificate's &quot;habitable rooms&quot;: bedrooms, living rooms, dining rooms and studies. Kitchens, bathrooms, toilets, utility rooms and halls don't count; a kitchen-diner with room for a table does.">Bedrooms + living rooms <span class="fld-hint">Include dining rooms and studies, not the kitchen or bathroom</span><input id="in-rooms" type="number" min="1" max="20" step="1"></label>
+          <label class="fld">Bedrooms (for rent) <select id="in-beds"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4+</option></select></label>
+          <label class="fld">Condition (from a viewing) <select id="in-condition"></select></label>
+        </div>
+        <details class="more" id="more-fields"><summary>More details: built form, age, energy rating, plot, council tax band, last sale, asking price</summary>
+          <div class="form" style="margin-top: var(--cds-gap-sm)">
+            <label class="fld">Built form <select id="in-form"><option value="">Not known</option><option value="0">Detached</option><option value="1">Semi-detached</option><option value="2">End-terrace</option><option value="3">Mid-terrace</option><option value="4">Enclosed end-terrace</option><option value="5">Enclosed mid-terrace</option></select></label>
+            <label class="fld">Built <select id="in-age"><option value="">Not known</option><option value="1890">Before 1900</option><option value="1914.5">1900-1929</option><option value="1939.5">1930-1949</option><option value="1958">1950-1966</option><option value="1971">1967-1975</option><option value="1979">1976-1982</option><option value="1986.5">1983-1990</option><option value="1993">1991-1995</option><option value="1999">1996-2002</option><option value="2004.5">2003-2006</option><option value="2009">2007-2011</option><option value="2018">2012 or later</option></select></label>
+            <label class="fld">Energy rating <select id="in-rating"><option value="">Not known</option><option value="95">A</option><option value="86">B</option><option value="74.5">C</option><option value="61.5">D</option><option value="46.5">E</option><option value="29.5">F</option><option value="10">G</option></select></label>
+            <label class="fld">Last sold for (£) <input id="in-prev-price" type="number" min="1000" step="1000" placeholder="optional"></label>
+            <label class="fld">Last sold (month) <input id="in-prev-month" type="month" min="1995-01" max="2026-12"></label>
+            <label class="fld">Asking price (£) <input id="in-asking" type="number" min="0" step="1000" placeholder="optional"></label>
+            <label class="fld">Plot size (m²) <input id="in-plot" type="number" min="10" step="10" placeholder="from title plan"></label>
+            <label class="fld">Council tax band <select id="in-ctband"><option value="">Not known</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></label>
+            <label class="chk"><input type="checkbox" id="in-bungalow"> Bungalow</label>
+            <label class="chk"><input type="checkbox" id="in-new"> New build</label>
+          </div>
+        </details>
+        <p class="muted" id="epc-note"></p>
+        <p class="note warnc" id="ext-note" role="status"></p>
+        <p class="err" id="pc-err" role="status"></p>
+      </div>
+
+      <aside class="card result" id="value-tiles" data-source="model_trees model_meta postcodes levels comps condition price_index" aria-live="polite">
+        <span class="label">Estimated value today</span>
+        <span class="hero-num" id="v-base">—</span>
+        <div class="rangebar" id="v-bar" aria-hidden="true"></div>
+        <p class="muted" id="v-range">—</p>
+        <p class="conf" id="v-conf" data-source="conf_trees model_meta"></p>
+        <p class="note" id="v-tested" data-source="confidence accuracy"></p>
+        <p class="muted" id="v-local"></p>
+        <div class="cond-row" id="cond-row" hidden><span class="label" id="v-cond-label">If in this condition</span><span class="mid" id="v-cond">—</span><span class="muted" id="v-cond-note"></span></div>
+        <div class="mini">
+          <div id="ask-tile"><span class="label">Asking price check</span><span class="mid" id="v-ask">—</span><span class="muted" id="v-ask-note">Add an asking price or paste a listing</span></div>
+          <div><span class="label">Neighbourhood</span><span class="mid" id="v-imd">—</span><span class="muted" id="v-imd-note">—</span></div>
+        </div>
+        <div class="save" id="save-card">
+          <div class="btn-row"><input id="save-notes" placeholder="Notes (optional)" aria-label="Notes"><button class="btn" id="save-btn" type="button">Save to my list</button></div>
+          <p class="muted" id="save-status" role="status"></p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="why-card">
+        <header><h2>Why this estimate</h2><p class="note">How far each kind of information moved the value from a typical Doncaster sale, worked out from the model's own trees (SHAP). Hover a bar for the detail.</p></header>
+        <p class="muted" id="why-start"></p>
+        <div class="chart" id="why-chart" data-source="model_trees model_meta postcodes levels comps street_levels" style="min-height: 200px"></div>
+      </div>
+      <div class="card" id="whatif-card">
+        <header><h2>What would works add?</h2><p class="note">Re-runs the model with the changes and compares the value gained with a 2026 guide cost (sources in Method).</p></header>
+        <div class="form">
+          <label class="fld">Add space <select id="wi-kind"><option value="single">Single-storey extension</option><option value="double">Two-storey extension</option><option value="loft">Loft conversion</option></select></label>
+          <label class="fld">Floor area added (m²) <input id="wi-area" type="number" min="0" max="200" step="1" value="0"></label>
+          <label class="fld" title="The energy certificate's &quot;habitable rooms&quot;: bedrooms, living rooms, dining rooms and studies. Kitchens, bathrooms, toilets, utility rooms and halls don't count; a kitchen-diner with room for a table does.">Bedrooms or living rooms added <input id="wi-rooms" type="number" min="0" max="5" step="1" value="0"></label>
+          <label class="fld">Energy rating after <select id="wi-epc"><option value="">No change</option><option value="74.5">C</option><option value="86">B</option></select></label>
+          <label class="fld">Refurbishment <select id="wi-refurb"><option value="">None</option><option value="cosmetic">Decorating and flooring</option><option value="kb">Kitchen and bathroom</option><option value="kbc">Kitchen, bathroom, decorating and flooring</option><option value="full">Full renovation</option></select></label>
+          <label class="fld" title="Cheaper homes get cheaper kitchens and bathrooms: the bottom of the budget range at Doncaster's 10th-percentile price, the budget average at the median and mid-range at the 90th percentile.">Finish <select id="wi-finish"><option value="match">Matched to value</option><option value="budget">Budget</option><option value="mid">Mid-range</option></select></label>
+          <label class="fld" title="Energy certificates don't record bathrooms, so set how many you'd refit. A kitchen and each bathroom cost the same whatever the size of the home.">Bathrooms to refit <input id="wi-baths" type="number" min="0" max="5" step="1" value="1"></label>
+        </div>
+        <dl class="kv" id="wi-kv" data-source="model_trees model_meta assumptions condition"></dl>
+        <p class="note" id="wi-note"></p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="comps-card">
+        <header><h2>Comparable sales</h2><p class="note">Nearest sales of the same type in the last 3 years, moved to today's prices.</p></header>
+        <div class="tbl-wrap"><table id="comps-table" class="wrap-first" data-source="comps price_index">
+          <thead><tr><th>Address</th><th class="hide-narrow">Sold</th><th class="r hide-narrow">Price</th><th class="r">Today</th><th class="r hide-narrow">£/m²</th><th class="r">Away</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card" id="comps-map-card">
+        <header><h2>Where the comparables are</h2><p class="note">Darker dots sold for more in today's money; the ring is this property.</p></header>
+        <div class="chart" id="comps-map" data-source="comps postcodes price_index"></div>
+      </div>
+    </div>
+
+    <div class="card" id="around-card">
+      <header><h2>Around this home</h2><p class="note">Straight-line distances. Flood risk is the Environment Agency's rivers-and-sea rating for the postcode; check the address on the <a href="https://check-long-term-flood-risk.service.gov.uk/postcode" target="_blank" rel="noopener">long-term flood risk service</a>. None of these improved the estimate when tested, as nearby prices already reflect them, so they're here for your judgement.</p></header>
+      <div class="grid two">
+        <dl class="kv" id="around-risk" data-source="pc_extras places"></dl>
+        <dl class="kv" id="around-amen" data-source="places pc_extras"></dl>
+      </div>
+      <p class="muted">Schools: DfE and Ofsted (31 March 2026). Stations: NaPTAN. Shops, parks, GPs and roads © OpenStreetMap contributors.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="hist-card">
+        <header><h2>This home's sales history</h2><p class="hist-addr" id="hist-addr"></p><p class="note">Land Registry sales of the address you picked, moved to today's prices. The last one is filled in for the model.</p></header>
+        <div class="tbl-wrap"><table id="hist-table" data-source="price_index"><thead><tr><th>Sold</th><th class="r">Price</th><th class="r">In today's money</th><th>Note</th></tr></thead><tbody></tbody></table></div>
+        <p class="muted" id="hist-note"></p>
+      </div>
+      <div class="card" id="ct-card">
+        <header><h2>Council tax band check</h2><p class="note">A rough cross-check: where the band sits among similar homes in the neighbourhood, against where the estimate sits among recent sales. Bands date from 1991 values.</p></header>
+        <dl class="kv" id="ct-kv" data-source="ct_mix comps"></dl>
+        <p class="note" id="ct-verdict"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUY-TO-LET ============ -->
+  <section id="invest" role="tabpanel" aria-labelledby="tab-invest" class="grid-wide" hidden>
+    <div class="card inv-card" id="inv-card" data-source="rent_model nb_dist neighbourhoods assumptions">
+      <div class="row">
+        <header><p class="label">This home as an investment</p><h2 class="nb-title" id="inv-title">—</h2><p class="note" id="inv-sub">—</p></header>
+        <div class="nb-ctl-item"><span class="label">Opportunity cost</span>
+          <div class="seg" id="inv-opp" role="group" aria-label="Opportunity cost"><button data-o="gilt" aria-pressed="true">10-year gilt <span class="num" data-source="assumptions" data-field="value" data-where="key=opp_gilt_10y">—</span>%</button><button data-o="bank" aria-pressed="false">Bank Rate <span class="num" data-source="assumptions" data-field="value" data-where="key=opp_bank_rate">—</span>%</button><button data-o="custom" aria-pressed="false">Your rate</button></div>
+          <label class="nb-custom" id="inv-custom-wrap" hidden>Your rate (%) <input id="inv-opp-custom" type="number" step="0.25" min="0" max="30" inputmode="decimal"></label>
+          <span class="label inv-risk-l">Allow for risk</span><button class="theme-toggle risk-toggle" type="button" aria-pressed="true" title="Take off an allowance for tenant risk (anti-social behaviour, deprivation and Doncaster's court claims), flood insurance, EPC upgrades and a future downturn"><span class="tt-label">Risk allowance</span><span class="tt-track" aria-hidden="true"><span class="tt-knob"></span></span></button></div>
+      </div>
+      <p class="note warnc" id="inv-risk-err" hidden></p>
+      <div class="inv-head">
+        <div class="inv-verdict"><span class="label">Share of recent sales here it beats</span><span class="inv-big" id="inv-z">—</span><span class="inv-verdict-t" id="inv-verdict">—</span></div>
+        <div class="inv-kpis">
+          <div><span class="label">Total return a year</span><span class="mid" id="inv-total">—</span><span class="muted" id="inv-total-n">—</span></div>
+          <div><span class="label" id="inv-above-l">Above the opportunity cost</span><span class="mid" id="inv-above">—</span><span class="muted" id="inv-above-n">—</span></div>
+          <div><span class="label">Against a typical home here</span><span class="mid" id="inv-vs">—</span><span class="muted" id="inv-vs-n">—</span></div>
+        </div>
+      </div>
+      <div class="inv-rows" id="inv-rows"></div>
+      <div class="inv-risks" id="inv-risks" data-source="neighbourhoods possession"></div>
+      <p class="note" id="inv-note">—</p>
+    </div>
+
+    <div class="card" id="rent-card" data-source="rent_model rents lha assumptions">
+      <div class="row">
+        <header><h2>Rent estimate</h2><p class="note">No open data gives the rent of one home, so this links rent to value: pricier homes and areas rent for more, but by less than their prices.</p></header>
+        <button class="btn quiet" id="rent-use" type="button" hidden>Use this rent in the deal</button>
+      </div>
+      <div class="rent-top">
+        <div class="rent-hero"><span class="label">Estimated rent</span><span class="hero-num" id="rent-est">—</span><span class="muted" id="rent-range">—</span></div>
+        <dl class="kv rent-build" id="rent-build"></dl>
+      </div>
+      <div class="chart" id="rent-chart" style="min-height:120px"></div>
+      <p class="note" id="rent-note">—</p>
+    </div>
+
+    <div class="card" id="deal-card" data-source="assumptions rents lha rent_model">
+      <header><h2>Deal analyser</h2><p class="note">Starts from the property on the first tab: the condition-adjusted estimate (or the asking price, if given) and the rent estimate above (or the rent from a pasted listing). Every input can be changed, and the figures above follow.</p></header>
+      <div class="fieldsets">
+        <fieldset><legend>Price and mortgage</legend><div class="form">
+          <label class="fld">Purchase price (£) <input id="b-price" type="number" min="1000" max="20000000" step="1000"></label>
+          <label class="fld">Deposit (%) <input id="b-deposit" type="number" min="0" max="100" step="1"></label>
+          <label class="fld">Mortgage rate (%) <input id="b-rate" type="number" min="0" step="0.05"></label>
+          <label class="fld">Mortgage type <select id="b-mtype"><option value="io">Interest-only</option><option value="rep">Repayment</option></select></label>
+          <label class="fld">Term (years) <input id="b-term" type="number" min="5" max="40" step="1"></label>
+          <label class="fld">Arrangement fee (£) <input id="b-fee" type="number" min="0" step="100"></label>
+        </div></fieldset>
+        <fieldset><legend>Rent and running costs</legend><div class="form">
+          <label class="fld">Monthly rent (£) <input id="b-rent" type="number" min="0" step="10"></label>
+          <label class="fld">Letting fee (% of rent) <input id="b-letting" type="number" min="0" step="0.5"></label>
+          <label class="fld">Maintenance (% of rent) <input id="b-maint" type="number" min="0" step="0.5"></label>
+          <label class="fld">Void weeks a year <input id="b-voids" type="number" min="0" max="52" step="1"></label>
+          <label class="fld">Insurance (£/yr) <input id="b-ins" type="number" min="0" step="10"></label>
+          <label class="fld">Safety checks, licences (£/yr) <input id="b-comp" type="number" min="0" step="10"></label>
+        </div></fieldset>
+        <fieldset><legend>Tax and one-off costs</legend><div class="form">
+          <label class="fld">Ownership <select id="b-owner"><option value="basic">Personal, basic-rate taxpayer</option><option value="higher">Personal, higher-rate taxpayer</option><option value="company">Limited company</option></select></label>
+          <label class="fld">Tax rates <select id="b-taxyear"><option value="2026">2026-27</option><option value="2027">From April 2027</option></select></label>
+          <label class="fld">Legal and survey (£) <input id="b-legal" type="number" min="0" step="100"></label>
+          <label class="fld">Works before letting (£) <input id="b-works" type="number" min="0" step="500"></label>
+          <label class="fld">EPC upgrade to C (£) <input id="b-epc" type="number" min="0" step="100"></label>
+          <label class="fld" title="Only improvements come off the gain when you sell: something the home didn't have, such as an extension or a loft conversion. Repairs, decorating and like-for-like replacements don't (gov.uk); the projection sets them against the first year's rental profit instead.">Of these, improvements (£) <input id="b-improve" type="number" min="0" step="500" value="0"></label>
+          <label class="fld" id="b-income-wrap" title="Your taxable income in the year you sell, after the personal allowance, not counting this home's rent (the projection adds that). Gains that fit in what's left of the £37,700 basic-rate band pay 18%, the rest 24% (gov.uk; HMRC's own example uses £20,000).">Other taxable income when you sell (£) <input id="b-income" type="number" min="0" step="1000"></label>
+        </div></fieldset>
+      </div>
+      <p class="note" id="b-notes"></p>
+    </div>
+
+    <div class="tiles" id="deal-tiles">
+      <div class="tile"><span class="label">Gross yield</span><span class="big" id="r-gross">—</span><span class="muted" id="r-gross-note">Rent ÷ price</span></div>
+      <div class="tile"><span class="label">Monthly cash flow after tax</span><span class="big" id="r-cash">—</span><span class="muted" id="r-cash-note">—</span></div>
+      <div class="tile"><span class="label">Cash-on-cash return</span><span class="big" id="r-coc">—</span><span class="muted">After tax, year 1</span></div>
+      <div class="tile"><span class="label">10-year return (IRR), after tax</span><span class="big" id="r-irr">—</span><span class="muted" id="r-irr-note">—</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="pl-card">
+        <header><h2>Year 1 income and costs</h2><p class="note" id="pl-note">Before capital gains tax.</p></header>
+        <dl class="kv" id="r-detail"></dl>
+        <p class="note" id="r-stress"></p>
+      </div>
+      <div class="card" id="stress-card">
+        <header><h2>Stress tests</h2><p class="note">Monthly cash flow after tax if things go wrong, one at a time and all together.</p></header>
+        <div class="tbl-wrap"><table id="stress-table" class="wrap-first"><thead><tr><th>Scenario</th><th class="r">Monthly cash flow</th><th class="r">Change</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="rate-card" data-source="assumptions">
+        <header><h2>What the mortgage rate does</h2><p class="note">Monthly cash flow in year 1 at every rate from 0% to <span id="rate-top">—</span>. Drag the slider, or across the chart, to try a rate: the whole deal follows.</p></header>
+        <div class="rate-try"><label for="b-rate-slider">Mortgage rate</label><input id="b-rate-slider" type="range" min="0" max="12" step="0.05" aria-describedby="rate-note"><output id="b-rate-out" for="b-rate-slider">—</output></div>
+        <div class="legend" id="rate-legend"></div>
+        <div class="chart" id="rate-chart"></div>
+        <p class="note" id="rate-note"></p>
+      </div>
+      <div class="card" id="tor-card" data-source="assumptions">
+        <header><h2>What matters most</h2><p class="note">The 10-year IRR after tax, or the first year's monthly cash flow after tax, with each input lowered and raised by a set amount, one at a time, everything else as entered. The longest bars are the figures most worth checking.</p></header>
+        <div class="seg" id="tor-metric" role="group" aria-label="Result"><button data-m="irr" aria-pressed="true">10-year IRR</button><button data-m="cash" aria-pressed="false">Monthly cash flow</button></div>
+        <div class="legend" id="tor-legend"></div>
+        <div class="chart" id="tor-chart"></div>
+        <p class="note" id="tor-note"></p>
+      </div>
+    </div>
+
+    <div class="card" id="proj-card" data-source="assumptions">
+      <div class="row">
+        <header><h2>10-year projection</h2><p class="note">Defaults are Doncaster's own last-10-year growth: rents from ONS, prices from this model's index. Sold at year 10 after selling costs, before capital gains tax.</p></header>
+        <div class="form narrow3">
+          <label class="fld">Rent growth (%/yr) <input id="p-rent" type="number" step="0.1"></label>
+          <label class="fld">Price growth (%/yr) <input id="p-price" type="number" step="0.1"></label>
+          <label class="fld">Cost inflation (%/yr) <input id="p-cost" type="number" step="0.1"></label>
+        </div>
+      </div>
+      <div class="chart" id="proj-chart"></div>
+      <details class="more"><summary>Year-by-year table</summary>
+        <div class="tbl-wrap"><table id="proj-table"><thead><tr><th>Year</th><th class="r">Rent</th><th class="r">Cash flow after tax</th><th class="r">Property value</th><th class="r">Loan</th><th class="r">Equity</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </div>
+
+    <div class="card" id="fan-card" data-source="assumptions nbhd_index neighbourhoods">
+      <header><h2>If prices follow a past decade</h2><p class="note" id="fan-sub">—</p></header>
+      <div class="legend" id="fan-legend"></div>
+      <div class="chart" id="fan-chart"></div>
+      <h3 class="fan-h">10-year IRR after tax, one dot per purchase year (blue beats the 10-year gilt)</h3>
+      <div class="chart short" id="fan-irr"></div>
+      <p class="note" id="fan-note"></p>
+    </div>
+
+    <div class="card" id="flip-card" data-source="assumptions condition">
+      <header><h2>Buy, refurbish and sell</h2><p class="note">Buys at your purchase price from the deal below, or, if you haven't given one, at the model's value for the condition the works put right; sells at the value after them, both from the repeat-sales calibration. Works are Yorkshire guide prices plus a contingency (sources in Method). A kitchen and a rewire grow only with the square root of floor area, each bathroom and the boiler are fixed amounts, and decorating, flooring, plastering and radiators go by floor area; kitchens and bathrooms are cheaper in cheaper homes unless you pick a finish. Finance is a bridging loan on part of the price: interest on the loan and an arrangement fee; the rest of the price, the works and the buying costs are your cash. Set the loan to 0% for a cash purchase.</p></header>
+      <div class="form">
+        <label class="fld">Floor area (m²) <input id="f-area" type="number" min="10" step="1"></label>
+        <label class="fld">Scope of works <select id="f-scope"><option value="cosmetic">Decorating and flooring</option><option value="kb">Kitchen and bathroom</option><option value="kbc" selected>Kitchen, bathroom, decorating and flooring</option><option value="full">Full renovation</option></select></label>
+        <label class="fld" title="Cheaper homes get cheaper kitchens and bathrooms: the bottom of the budget range at Doncaster's 10th-percentile price, the budget average at the median and mid-range at the 90th percentile.">Finish <select id="f-finish"><option value="match">Matched to value</option><option value="budget">Budget</option><option value="mid">Mid-range</option></select></label>
+        <label class="fld" title="Energy certificates don't record bathrooms, so set how many you'd refit.">Bathrooms to refit <input id="f-baths" type="number" min="0" max="5" step="1" value="1"></label>
+        <label class="fld" title="The guide prices don't say whether VAT is in. Sole traders under the £90,000 threshold don't charge it; a home empty for two years or more can qualify for 5% (HMRC VAT Notice 708, section 8).">VAT on works <select id="f-vat"><option value="0">None added</option><option value="20">20%</option><option value="5">5% (empty 2+ years)</option></select></label>
+        <label class="fld" title="Federation of Master Builders: 10% of the project cost, 15% or more for older homes.">Contingency (%) <input id="f-cont" type="number" min="0" max="50" step="1"></label>
+        <label class="fld">Your quote (£, optional) <input id="f-quote" type="number" min="0" step="500"></label>
+        <label class="fld">Months held <input id="f-months" type="number" min="1" max="60" step="1" value="6"></label>
+        <label class="fld" title="Bridging lenders usually lend up to 70-75% of the price (Capitalise, 2026).">Loan (% of the price) <input id="f-ltv" type="number" step="5" value="70"></label>
+        <label class="fld" title="Bridging in 2026 is mostly 0.95% to 1.25% a month, about 11% to 15% a year, plus a 1-2% arrangement fee (Capitalise).">Loan rate (% a year) <input id="f-fin" type="number" step="0.5" value="12"></label>
+      </div>
+      <dl class="kv" id="f-detail"></dl>
+      <p class="note" id="f-works-note"></p>
+    </div>
+
+    <div class="card rules" id="rules-card" data-source="rules">
+      <header><h2>Rules that affect Doncaster landlords</h2><p class="note">As of October 2026. Check the source before relying on any of these.</p></header>
+      <div id="rules-list" class="rules-grid"></div>
+    </div>
+  </section>
+
+  <!-- ============ AREAS AND RENTS ============ -->
+  <section id="areas" role="tabpanel" aria-labelledby="tab-areas" class="grid-wide" hidden>
+    <div class="card nb-find" id="nb-find" data-source="neighbourhoods postcodes">
+      <label class="nb-search-label" for="nb-q">Find a neighbourhood</label>
+      <div class="nb-search">
+        <svg class="nb-search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.6 12.6 17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input id="nb-q" type="search" autocomplete="off" spellcheck="false" placeholder="Neighbourhood, town, ward or postcode" role="combobox" aria-expanded="false" aria-controls="nb-results" aria-autocomplete="list">
+        <ul id="nb-results" class="nb-results" role="listbox" aria-label="Matching neighbourhoods" hidden></ul>
+      </div>
+      <p class="muted" id="nb-q-note">Doncaster's 39 neighbourhoods (ONS middle-layer areas, named by the House of Commons Library). Try "Bessacarr", "Thorne", "DN4 5" or a full postcode.</p>
+      <div class="nb-ctl" id="nb-controls" data-source="assumptions">
+        <div class="nb-ctl-item"><span class="label">Property type</span>
+          <div class="seg" id="nb-type" role="group" aria-label="Property type"><button data-t="A" aria-pressed="true">All</button><button data-t="D" aria-pressed="false">Detached</button><button data-t="S" aria-pressed="false">Semi</button><button data-t="T" aria-pressed="false">Terraced</button><button data-t="F" aria-pressed="false">Flat</button></div></div>
+        <div class="nb-ctl-item"><span class="label">Price growth over</span>
+          <div class="seg" id="nb-basis" role="group" aria-label="Price growth period"><button data-b="10" aria-pressed="true">10 years</button><button data-b="5" aria-pressed="false">5 years</button></div></div>
+        <div class="nb-ctl-item"><span class="label">Opportunity cost</span>
+          <div class="seg" id="nb-opp" role="group" aria-label="Opportunity cost"><button data-o="gilt" aria-pressed="true">10-year gilt <span class="num" data-source="assumptions" data-field="value" data-where="key=opp_gilt_10y">—</span>%</button><button data-o="bank" aria-pressed="false">Bank Rate <span class="num" data-source="assumptions" data-field="value" data-where="key=opp_bank_rate">—</span>%</button><button data-o="custom" aria-pressed="false">Your rate</button></div>
+          <label class="nb-custom" id="nb-custom-wrap" hidden>Your rate (%) <input id="nb-opp-custom" type="number" step="0.25" min="0" max="30" inputmode="decimal"></label></div>
+        <div class="nb-ctl-item"><span class="label">Allow for risk</span><button class="theme-toggle risk-toggle" type="button" aria-pressed="true" title="Take off an allowance for tenant risk (anti-social behaviour, deprivation and Doncaster's court claims), flood insurance, EPC upgrades and a future downturn"><span class="tt-label">Risk allowance</span><span class="tt-track" aria-hidden="true"><span class="tt-knob"></span></span></button></div>
+      </div>
+      <p class="note" id="nb-ctl-note">—</p>
+      <p class="note warnc" id="risk-err" hidden></p>
+      <details class="risk-set" id="risk-set" data-source="assumptions possession neighbourhoods">
+        <summary>How the risk allowance works, and its settings</summary>
+        <div class="form narrow3">
+          <label class="fld">Arrears, voids and damage, typical area (% of rent) <input id="rk-tenant" type="number" min="0" max="30" step="0.25"></label>
+          <label class="fld">Extra insurance at flood risk (£ a year) <input id="rk-flood" type="number" min="0" step="50"></label>
+          <label class="fld">One downturn every (years) <input id="rk-years" type="number" min="5" max="200" step="1"></label>
+        </div>
+        <ul class="risk-how" id="risk-how"></ul>
+      </details>
+    </div>
+
+    <div class="card nb-card" id="nb-card" data-source="neighbourhoods nbhd_index assumptions">
+      <div class="row">
+        <header><p class="label" id="nb-kicker">Neighbourhood</p><h2 class="nb-title" id="nb-name">—</h2><p class="note" id="nb-sub">—</p></header>
+        <div class="nb-badges" id="nb-badges"></div>
+      </div>
+      <div class="nb-tiles" id="nb-tiles">
+        <div><span class="label" id="nb-t-price-l">Typical price</span><span class="mid" id="nb-t-price">—</span><span class="muted" id="nb-t-price-n">—</span></div>
+        <div><span class="label">Gross yield</span><span class="mid" id="nb-t-gross">—</span><span class="muted">Borough rent ÷ local price</span></div>
+        <div><span class="label">Net yield</span><span class="mid" id="nb-t-net">—</span><span class="muted">After running and buying costs</span></div>
+        <div><span class="label" id="nb-t-growth-l">Price growth a year</span><span class="mid" id="nb-t-growth">—</span><span class="muted" id="nb-t-growth-r">—</span></div>
+        <div><span class="label">Total return a year</span><span class="mid" id="nb-t-total">—</span><span class="muted">Net yield + price growth</span></div>
+        <div><span class="label" id="nb-t-above-l">Above the opportunity cost</span><span class="mid" id="nb-t-above">—</span><span class="muted" id="nb-t-above-n">—</span></div>
+      </div>
+      <div class="grid two nb-detail">
+        <div class="sub">
+          <h3 id="nb-hist-title">Value of a typical home here, 1995 to 2026</h3>
+          <div class="legend" id="nb-hist-legend"></div>
+          <div class="chart" id="nb-hist" data-source="neighbourhoods nbhd_index"></div>
+          <p class="note" id="nb-hist-note">—</p>
+        </div>
+        <div class="sub">
+          <h3>Compared with Doncaster</h3>
+          <div class="tbl-wrap nb-facts-wrap"><table id="nb-facts" data-source="neighbourhoods"><thead><tr><th scope="col">Measure</th><th class="r" scope="col" id="nb-facts-here">Here</th><th class="r" scope="col">Doncaster</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="lapse-card">
+      <div class="row">
+        <header><h2>Prices since 1995</h2><p class="note">Pick a period with the slider or a quick button (or drag across Doncaster's line at the bottom). The map shows each neighbourhood's growth over it, from its repeat-sales index: blue grew more than Doncaster, red less. Switch to each year's change to see the years prices rose and fell. The bars race the neighbourhoods on growth over the period. Click a neighbourhood to see its figures.</p></header>
+        <div class="lapse-ctl">
+          <button class="btn play-btn" id="lapse-play" type="button"><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor"/></svg><span id="lapse-play-t">Play 1995 to 2026</span></button>
+          <label class="lapse-scrub" for="lapse-y"><span class="label">Year</span><input id="lapse-y" type="range" min="1996" max="2026" step="1" value="2026"></label>
+        </div>
+      </div>
+      <div class="lapse-win">
+        <div class="lapse-period"><span class="label">Period</span><span class="lapse-period-t" id="lapse-period-t">1995 to 2026</span>
+          <div class="period" id="lapse-period"><div class="track"></div><div class="fill" id="lapse-fill"></div><input id="lapse-from" type="range" min="1995" max="2026" step="1" value="1995" aria-label="Period starts"><input id="lapse-to" type="range" min="1995" max="2026" step="1" value="2026" aria-label="Period ends"></div>
+        </div>
+        <div class="seg" id="lapse-presets" role="group" aria-label="Quick periods"></div>
+        <div class="seg" id="lapse-mode" role="group" aria-label="The map shows"><button data-m="growth" aria-pressed="true">Growth over the period</button><button data-m="year" aria-pressed="false">Each year's change</button></div>
+      </div>
+      <div class="legend" id="lapse-legend"></div>
+      <div class="lapse-grid">
+        <div class="chart" id="lapse-map" data-source="neighbourhoods nbhd_index lsoa_map" style="min-height:280px"></div>
+        <div class="lapse-side" data-source="neighbourhoods nbhd_index">
+          <div class="lapse-big" id="lapse-big" aria-live="off">—</div>
+          <p class="lapse-don" id="lapse-don">—</p>
+          <p class="muted" id="lapse-count">—</p>
+          <h3 class="lapse-h" id="lapse-race-h">Growth since 1995, top 10</h3>
+          <div class="chart" id="lapse-race" style="min-height:200px"></div>
+        </div>
+      </div>
+      <div class="chart" id="lapse-line" data-source="neighbourhoods nbhd_index" style="min-height:120px"></div>
+      <p class="note" id="lapse-note">—</p>
+    </div>
+
+    <div class="tiles" id="rent-tiles" data-source="rents neighbourhoods assumptions">
+      <div class="tile"><span class="label">Average rent, Doncaster</span><span class="big" id="t-rent">—</span><span class="muted" id="t-rent-note">—</span></div>
+      <div class="tile"><span class="label">Rent change, last 12 months</span><span class="big" id="t-rent-yoy">—</span><span class="muted">ONS</span></div>
+      <div class="tile"><span class="label">Rent growth a year, 10 years</span><span class="big" id="t-rent-10">—</span><span class="muted" id="t-rent-5">—</span></div>
+      <div class="tile"><span class="label">House prices a year, 10 years</span><span class="big" id="t-price-10">—</span><span class="muted" id="t-price-10-n">Repeat-sales index</span></div>
+    </div>
+
+    <div class="card" id="map-card">
+      <div class="row">
+        <header><h2>Neighbourhood map</h2><p class="note" id="map-sub">Blue is better for a landlord, red is worse, grey is about the Doncaster average. Click a neighbourhood to see its figures. The ring is the property on the first tab; squares are railway stations.</p></header>
+        <div class="map-tools">
+        <button class="btn quiet play-btn" id="map-sweep" type="button" title="Lowers the rate you could earn elsewhere until it reaches the opportunity cost: each neighbourhood turns from red to blue once its total return beats it"><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><span>Play hurdle rate</span></button>
+        <label class="fld map-pick">Colour by
+          <select id="map-metric">
+            <optgroup label="Returns (neighbourhoods)">
+              <option value="above">Return above the opportunity cost</option>
+              <option value="total" selected>Total return a year</option>
+              <option value="net">Net yield</option>
+              <option value="gross">Gross yield</option>
+              <option value="growth">Price growth a year</option>
+              <option value="growth_1y">Price change, last 12 months</option>
+              <option value="risk">Risk allowance</option>
+              <option value="peak_fall_pct">Fall after the 2008 peak</option>
+            </optgroup>
+            <optgroup label="Market (neighbourhoods)">
+              <option value="turnover_pct">Homes sold a year</option>
+              <option value="private_rented_pct">Private renters (Census 2021)</option>
+            </optgroup>
+            <optgroup label="Detail (smaller areas)">
+              <option value="price_per_m2">Price per m²</option>
+              <option value="median_price">Median price</option>
+              <option value="flood_pct">Flood risk</option>
+              <option value="imd_score">Deprivation</option>
+              <option value="epc_below_c_pct">EPC below C</option>
+              <option value="asb_rate">Anti-social behaviour</option>
+            </optgroup>
+          </select>
+        </label>
+        </div>
+      </div>
+      <div class="legend map-legend" id="map-legend"></div>
+      <div class="chart" id="lsoa-map" data-source="neighbourhoods lsoa_map places assumptions" style="min-height:320px"><div class="map-badge" id="map-badge" hidden></div></div>
+      <p class="note" id="map-note"></p>
+      <p class="muted">Boundaries: ONS LSOA 2021 (super generalised), joined into neighbourhoods (MSOA 2021); contains OS data © Crown copyright and database right 2026. Neighbourhood names: House of Commons Library, Open Parliament Licence.</p>
+    </div>
+
+    <div class="card" id="btl-card">
+      <div class="row">
+        <header><h2>Best buy-to-let neighbourhoods</h2><p class="note" id="btl-sub">—</p></header>
+        <div class="form btl-form">
+          <label class="fld">Minimum typical price (£) <input id="btl-min" type="number" min="0" step="10000" placeholder="any"></label>
+          <label class="fld">Maximum typical price (£) <input id="btl-max" type="number" min="0" step="10000" placeholder="any"></label>
+          <label class="chk"><input id="btl-flood" type="checkbox"> Skip areas with 25%+ of homes at flood risk</label>
+          <div class="btl-risk"><button class="theme-toggle risk-toggle" type="button" aria-pressed="true" title="Take off an allowance for tenant risk (anti-social behaviour, deprivation and Doncaster's court claims), flood insurance, EPC upgrades and a future downturn"><span class="tt-label">Risk allowance</span><span class="tt-track" aria-hidden="true"><span class="tt-knob"></span></span></button></div>
+        </div>
+      </div>
+      <ol class="btl-top" id="btl-top" data-source="neighbourhoods assumptions"></ol>
+      <div class="sub">
+        <h3>Income against growth</h3>
+        <p class="note" id="btl-chart-note">—</p>
+        <div class="legend" id="btl-legend"></div>
+        <div class="chart" id="btl-chart" data-source="neighbourhoods assumptions" style="min-height:340px"></div>
+      </div>
+      <div class="tbl-wrap"><table id="btl-table" class="wrap-first" data-source="neighbourhoods" data-row-key="msoa21">
+        <thead><tr>
+          <th data-field="name"><button data-k="name">Neighbourhood</button></th>
+          <th class="r" id="btl-th-price" data-field="median_price"><button data-k="price">Typical price</button></th>
+          <th class="r"><button data-k="gross">Gross yield</button></th>
+          <th class="r"><button data-k="net">Net yield</button></th>
+          <th class="r" id="btl-th-growth" data-field="growth_10y"><button data-k="growth">Growth a year</button></th>
+          <th class="r"><button data-k="total">Total return</button></th>
+          <th class="r"><button data-k="above" id="btl-th-above">vs gilt</button></th>
+          <th class="r"><button data-k="risk" title="Points a year for tenant risk, flood insurance, EPC upgrades and a downturn; taken off the return when the risk allowance is on">Risk allowance</button></th>
+          <th class="r" data-field="peak_fall_pct"><button data-k="peak_fall_pct">2008 fall</button></th>
+          <th class="r" data-field="sales_per_year"><button data-k="sales_per_year">Sales a year</button></th>
+          <th class="r" data-field="private_rented_pct"><button data-k="private_rented_pct">Private renters</button></th>
+          <th class="r" data-field="epc_below_c_pct"><button data-k="epc_below_c_pct">EPC below C</button></th>
+          <th class="r" data-field="flood_pct"><button data-k="flood_pct">Flood risk</button></th>
+          <th class="r" data-field="imd_score"><button data-k="imd_score">Deprivation</button></th>
+          <th class="r" data-field="asb_rate"><button data-k="asb_rate" title="Anti-social behaviour reported to the police in the last 12 months, per 1,000 residents">Anti-social behaviour</button></th>
+        </tr></thead><tbody></tbody></table></div>
+      <p class="note" id="btl-foot">—</p>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="rentbeds-card">
+        <header><h2>Rent by bedrooms</h2><p class="note">ONS average monthly rent in Doncaster.</p></header>
+        <div class="legend" id="rentbeds-legend"></div>
+        <div class="chart" id="rentbeds-chart" data-source="rents"></div>
+      </div>
+      <div class="card" id="lha-card">
+        <header><h2>Average rent vs housing benefit cap</h2><p class="note">ONS average rent against the Local Housing Allowance cap for Doncaster, 2026-27. Tenants on benefits get help up to the cap.</p></header>
+        <div class="tbl-wrap"><table id="lha-table" data-source="rents lha"><thead><tr><th>Bedrooms</th><th class="r">Average rent</th><th class="r">LHA cap</th><th class="r">Gap</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARKET ============ -->
+  <section id="market" role="tabpanel" aria-labelledby="tab-market" class="grid-wide" hidden>
+    <div class="tiles" id="market-tiles">
+      <div class="tile"><span class="label">Price index, latest month</span><span class="big" id="m-index" data-source="price_index">—</span><span class="muted" id="m-index-note">—</span></div>
+      <div class="tile"><span class="label">Change, last 12 months</span><span class="big" id="m-yoy" data-source="price_index">—</span><span class="muted">Quality-adjusted</span></div>
+      <div class="tile"><span class="label">Sales in the model</span><span class="big" id="m-n" data-source="model_meta" data-field="value" data-where="key=n_sales_model">—</span><span class="muted">Standard sales, 2015 onward</span></div>
+    </div>
+    <div class="card" id="index-card">
+      <header><h2>Doncaster house price index</h2><p class="note">Quality-adjusted (the same mix of types and neighbourhoods each month), January 2015 = 100.</p></header>
+      <div class="chart" id="index-chart" data-source="price_index"></div>
+    </div>
+    <div class="card" id="tier-card">
+      <header><h2>Prices by area tier</h2><p class="note" id="tier-note">Postcode sectors split into thirds by their 2015-2019 median price, January 2015 = 100.</p></header>
+      <div class="legend" id="tier-legend" data-source="tier_index"></div>
+      <div class="chart" id="tier-chart" data-source="tier_index"></div>
+    </div>
+    <div class="grid">
+      <div class="card" id="type-card">
+        <header><h2>Median price by type</h2><p class="note">3-month rolling median of sale prices.</p></header>
+        <div class="legend" id="type-legend" data-source="market_monthly"></div>
+        <div class="chart" id="type-chart" data-source="market_monthly"></div>
+      </div>
+      <div class="card" id="volume-card">
+        <header><h2>Sales per month</h2><p class="note">Standard-price sales registered with HM Land Registry; the latest month is still filling in.</p></header>
+        <div class="chart" id="volume-chart" data-source="market_monthly"></div>
+      </div>
+    </div>
+    <div class="card" id="poss-card" data-source="possession">
+      <div class="row">
+        <header><h2>Tenancies ending in court</h2><p class="note" id="poss-sub">Possession claims a landlord takes to court, per 1,000 privately rented homes, over the previous 12 months. Standard claims include rent-arrears cases; accelerated claims were the paper route for no-fault Section 21 notices, which ended on 1 May 2026.</p></header>
+        <div class="seg" id="poss-metric" role="group" aria-label="Measure"><button data-m="standard" aria-pressed="true">Standard claims</button><button data-m="accelerated" aria-pressed="false">No-fault (accelerated)</button><button data-m="bailiff" aria-pressed="false">Bailiff evictions</button></div>
+      </div>
+      <div class="mini" id="poss-tiles">
+        <div><span class="label">Doncaster</span><span class="mid" id="poss-d">—</span><span class="muted" id="poss-d-n">—</span></div>
+        <div><span class="label">Yorkshire and The Humber</span><span class="mid" id="poss-y">—</span><span class="muted">per 1,000 rented homes</span></div>
+        <div><span class="label">England</span><span class="mid" id="poss-e">—</span><span class="muted">per 1,000 rented homes</span></div>
+        <div><span class="label">Against other council areas</span><span class="mid" id="poss-rank">—</span><span class="muted" id="poss-rank-n">—</span></div>
+      </div>
+      <div class="legend" id="poss-legend"></div>
+      <div class="chart" id="poss-chart"></div>
+      <p class="note">Ministry of Justice mortgage and landlord possession statistics (county court claims, by the tenant's address), with Census 2021 privately rented households. Claims cover private landlords; accelerated claims and bailiff evictions can include a few social landlord cases. These figures exist for the whole borough only, not for neighbourhoods.</p>
+    </div>
+  </section>
+
+  <!-- ============ ACCURACY ============ -->
+  <section id="accuracy" role="tabpanel" aria-labelledby="tab-accuracy" class="grid-wide" hidden>
+    <p class="note">Tested on 5,995 sales from January 2025 to August 2026 that the model never saw; trained on 2015-2023 and tuned on 2024.</p>
+    <div class="tiles">
+      <div class="tile"><span class="label">Median error</span><span class="big" id="a-mdape" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=mdape">—</span><span class="muted">Half of sales are within this</span></div>
+      <div class="tile"><span class="label">Within 10% of the sale price</span><span class="big" id="a-w10" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=within10">—</span><span class="muted">Share of test sales</span></div>
+      <div class="tile"><span class="label">Within 20%</span><span class="big" id="a-w20" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=within20">—</span><span class="muted">Share of test sales</span></div>
+      <div class="tile"><span class="label">80% range contains the price</span><span class="big" id="a-cov" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=coverage_80">—</span><span class="muted">Target 80%</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="compare-card">
+        <header><h2>Against the usual quick methods</h2><p class="note">Median error on the same 2025-26 sales, each method using only sales at least two months old (by then most sales are published, though new builds and some others take months longer). Index methods need a previous sale, so they cover 72% of homes. The hedonic regression is the fair baseline: a linear model on this model's own features, with a fixed effect for each postcode sector, trained and tested the same way.</p></header>
+        <div class="chart" id="compare-chart" data-source="method_compare" style="min-height: 180px"></div>
+        <p class="muted" id="compare-note"></p>
+      </div>
+      <div class="card" id="backtest-card">
+        <header><h2>Year by year</h2><p class="note">Each year valued by a model trained on sales up to two years before, with a price index rebuilt as it would have been known at the time.</p></header>
+        <div class="chart" id="backtest-chart" data-source="backtest" style="min-height: 200px"></div>
+        <p class="muted" id="backtest-note"></p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card wide" id="strict-card" data-source="strict_eval">
+        <header><h2>A strict timing check</h2><p class="note">The published test lets a sale take its size, rooms and build details from a certificate lodged up to 90 days after it, or from the home's first certificate if none came before. Here only certificates lodged by the sale date count. The 2025 deprivation scores and plot sizes from today's title plans have no dated versions, so the third row drops them altogether. That is a sensitivity test, not a measure of their timing: it also loses what they legitimately add. Each row is the average of three runs with different random seeds; the change is paired with the published rules seed by seed.</p></header>
+        <div class="tbl-wrap"><table id="strict-table" class="wrap-first"><thead><tr><th>Check</th><th class="r">Sales</th><th class="r">Median error</th><th class="r">Change, range over seeds</th><th class="r">Within 10%</th></tr></thead><tbody></tbody></table></div>
+        <p class="muted" id="strict-note"></p>
+      </div>
+      <div class="card wide" id="typed-card" data-source="confidence accuracy">
+        <header><h2>Accuracy for what you enter</h2><p class="note">The headline is for homes whose address, certificate and last sale are known. Typed in by hand with fewer details, estimates are looser; the estimate panel shows the typical error for each home.</p></header>
+        <div class="tbl-wrap"><table id="typed-table" class="wrap-first"><thead><tr><th>What is entered</th><th class="r">Median error</th><th class="r">Price inside the 80% range</th></tr></thead><tbody></tbody></table></div>
+        <p class="muted">2025-26 test sales with their other details blanked out; calibrated on 2024 (src/model_v8_typed.py).</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="confidence-card">
+        <header><h2>How sure is each estimate?</h2><p class="note">A second small model predicts how far off each estimate is likely to be, from things like how many sales there are nearby and whether the last sale is known. Trained on 2020-23 errors, scaled on 2024, checked here on 2025-26. Homes typed in by hand are scaled separately.</p></header>
+        <div class="chart" id="confidence-chart" data-source="confidence" style="min-height: 160px"></div>
+        <p class="muted" id="confidence-note"></p>
+      </div>
+      <div class="card" id="ratio-card">
+        <header><h2>Fair across price levels</h2><p class="note">The checks property-tax assessors use (IAAO ratio studies), on the ratio of estimate to sale price.</p></header>
+        <dl class="kv" id="ratio-kv" data-source="ratio_study"></dl>
+        <div class="chart" id="ratio-chart" data-source="ratio_study" style="min-height: 150px"></div>
+        <p class="note" id="ratio-note"></p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="ablation-card">
+        <header><h2>What each data layer added</h2><p class="note">Median error on the same test sales as each layer is added.</p></header>
+        <div class="chart" id="ablation-chart" data-source="ablation"></div>
+      </div>
+      <div class="card" id="scatter-card">
+        <header><h2>Predicted vs actual price</h2><p class="note">1,500 random test sales; on the diagonal is a perfect estimate.</p></header>
+        <div class="legend" id="scatter-legend"></div>
+        <div class="chart" id="scatter" data-source="test_sample"></div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card" id="breakdown-card">
+        <header><h2>Where it is more and less accurate</h2><p class="note">Test sales, by group. Land Registry registers some sales months late, new builds most of all: they are 4% of the 2025 test sales and none from February 2026, and August 2026 has 82 sales against a usual 300 to 400. New builds are the easiest homes to value, so the lag doesn't flatter the 2026 part of the test: January to August 2026 scores much the same as the same months of 2025. It will be scored again once Land Registry catches up.</p></header>
+        <div class="tbl-wrap"><table id="breakdown-table" data-source="accuracy_breakdown accuracy"><thead><tr><th>Group</th><th class="r">Sales</th><th class="r">Median error</th><th class="r">Within 10%</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card" id="importance-card">
+        <header><h2>What drives the estimate</h2><p class="note">Share of the model's total gain, top 12 features.</p></header>
+        <div class="chart" id="importance" data-source="feature_importance"></div>
+      </div>
+    </div>
+    <div class="card" id="tested-card">
+      <header><h2>Other changes tested</h2><p class="note">Each change fitted 3 times with different random seeds; a change smaller than its seed-to-seed spread is noise. Negative means a lower (better) median error.</p></header>
+      <div class="tbl-wrap"><table id="tested-table" class="wrap-first" data-source="layer_tests">
+        <thead><tr><th>Change</th><th class="r">Median error</th><th class="r">Seed spread</th><th>Decision</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="grid">
+      <div class="card wide" id="areabias-card">
+        <header><h2>Areas the model over- or under-values</h2><p class="note">Median gap between sale price and estimate on 2025-26 test sales, sectors with 40+ sales. Positive means homes sold for more than the estimate. The local correction shifts each estimate by half the model's median miss on the 40 nearest recent sales.</p></header>
+        <div class="tbl-wrap"><table id="areabias-table" data-source="area_bias">
+          <thead><tr><th>Sector</th><th class="hide-narrow">Wards</th><th class="r">Sales</th><th class="r">Before</th><th class="r">After correction</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card wide" id="condition-card">
+        <header><h2>How the condition setting was calibrated</h2><p class="note">Homes resold within 3 to 18 months are mostly bought, refurbished and resold. Against a model without last-sale information, they bought 7.6% below the estimate and sold 7.7% above it. Homes resold after 5 years or more also sold about 1.4% above it, at both ends, for reasons that aren't a quick refurbishment, so that is taken off. Each home's sales are kept in the same fold, so the model never learns a home's price from its own other sale. With a last sale entered the full model already knows part of it: a purchase in need of renovation then sits 4.7% below (on the 546 purchases that had an earlier sale, a median 10 years before), and a quick resale only 0.6% above, so those figures apply when the last sale is known (for "good" and "recently refurbished" only when it was within 18 months; works since an older sale aren't visible to the model, and keep the first column).</p></header>
+        <div class="tbl-wrap"><table id="condition-table" class="wrap-first wrap-last" data-source="condition" data-row-key="condition"><thead><tr>
+          <th data-field="label">Condition</th><th class="r" data-field="adjustment_pct">Adjustment</th><th class="r" data-field="range_low_pct">Middle half, low</th><th class="r" data-field="range_high_pct">Middle half, high</th><th class="r" data-field="adjustment_prev_pct">With a last sale</th><th class="hide-narrow" data-field="basis">Basis</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHOD ============ -->
+  <section id="method" role="tabpanel" aria-labelledby="tab-method" class="grid-wide method" hidden>
+    <div class="card">
+      <header><h2>How a value is made</h2><p class="note">Every step only uses information that existed before the sale being valued.</p></header>
+      <ol class="flow">
+        <li><b>Sales and certificates</b><span>50,042 Land Registry sales since 2015, 94% matched to their energy certificate (size, rooms, age, energy, walls, heating, certificate history).</span></li>
+        <li><b>Location and prices nearby</b><span>Recent prices on the street, in the postcode, sector and neighbourhood; the 10 nearest sales; plot size from title plans; deprivation.</span></li>
+        <li><b>The home's last sale</b><span>When known, its previous price moved to today with the index. It's one of the strongest inputs.</span></li>
+        <li><b>The model</b><span>LightGBM, 2,043 trees, predicting price relative to a monthly quality-adjusted Doncaster index. It runs here in the page.</span></li>
+        <li><b>Local correction</b><span>Half of the model's median miss on the 40 nearest sales of the last 12 months, for areas moving faster or slower than Doncaster.</span></li>
+        <li><b>Range and confidence</b><span>An 80% range and a typical error for this home, from the model's errors on years it hadn't seen.</span></li>
+      </ol>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>Data</h2>
+        <ul>
+          <li><b>Sales:</b> HM Land Registry Price Paid Data for Doncaster, standard sales, 1995 to August 2026.</li>
+          <li><b>Energy certificates:</b> 130,780 Doncaster certificates (2012 to September 2026), matched on postcode plus the exact house and flat numbers. The energy rating only comes from a certificate lodged before the sale, so later work can't leak in. Size, rooms and build details can come from a certificate lodged after the sale when there is no earlier one; the strict check in Model accuracy finds little change overall across three seeds, though the few homes affected are valued less well without them. Neighbour price per m² still uses each neighbour's best-known floor area.</li>
+          <li><b>Location:</b> postcodes.io coordinates and 2021 neighbourhoods; English Indices of Deprivation 2025.</li>
+          <li><b>Plot:</b> HM Land Registry title plans with OS Open UPRN address points.</li>
+          <li><b>Rents:</b> ONS Price Index of Private Rents and DWP Local Housing Allowance 2026-27.</li>
+          <li><b>Around this home:</b> Environment Agency flood risk, NaPTAN, DfE and Ofsted, OpenStreetMap, ONS urban/rural class.</li>
+          <li><b>Works costs:</b> extensions £1,350-£2,200/m² single-storey and £1,200-£2,000/m² two-storey in Yorkshire before VAT and fees (less.co.uk, 2026); rear-dormer lofts £2,200-£2,800/m² (planwatch.co.uk, 2026). Refurbishment at less.co.uk's Yorkshire prices (April 2026), with their 3-bed prices taken at Doncaster's typical 3-bed semi (84 m², from the certificates): a kitchen £5,900 budget or £10,000 mid-range, growing with the square root of floor area (the London Plan's kitchen standards grow at 0.42-0.58 of floor area); a bathroom £3,200 or £5,800 each; a rewire £5,940, also by the square root (from the circuits a 3-bed and 5-bed need); a £1,950 boiler plus £26/m² of radiators; decorating £37/m², flooring £32/m² and re-skimming £30/m². Unless a finish is picked, kitchens and bathrooms run from the bottom of the budget range (£4,550, £2,300) at Doncaster's 10th-percentile price (£100,000) through budget at the median (£180,000) to mid-range at the 90th percentile (£340,000), an assumption. Plus the Federation of Master Builders' 10% contingency.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Testing</h2>
+        <ul>
+          <li><b>Split by time:</b> trained 2015-2023, tuned on 2024, tested on January 2025 to August 2026. The year-by-year backtest repeats this for every year since 2020.</li>
+          <li><b>No look-ahead:</b> the index for each test month only uses sales at least two months older. Limiting the local features the same way moves the result by 0.03 points.</li>
+          <li><b>Fair comparisons:</b> every change was fitted with 3 random seeds; smaller than the seed spread counts as noise.</li>
+          <li><b>Ranges:</b> scaled on 2024 errors and checked on 2025-26.</li>
+          <li><b>Clean-up:</b> 224 training sales (0.5%) more than 2.2 times from the estimate were removed as likely non-market sales; for sales from January 2025 the same threshold is applied against the test model's estimate (14 of 2,757 removed).</li>
+          <li><b>The model on this page:</b> after testing, refitted on 46,566 kept sales from January 2015 to August 2025; the last 12 months drive the local correction.</li>
+          <li><b>Explanations:</b> the page's SHAP values match LightGBM's to 9 decimal places, and its estimates match to within 0.00000004 on the log scale.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>Tried and left out</h2>
+        <ul>
+          <li>Flood risk, transport, schools and Ofsted, OpenStreetMap places, urban/rural class: none beat seed-to-seed noise, as nearby prices already reflect them.</li>
+          <li>Exact address positions, similar-size neighbours, the council tax band mix, building outlines: nothing on top of what's in.</li>
+          <li>The home's "premium" at its last sale: 0.1 points worse, as the last price already carries it.</li>
+          <li>Learning time inside the model instead of using a price index, as Zillow does: 0.8 points worse, because trees can't run ahead of the years they were trained on. Time features alongside the index: no better.</li>
+          <li>Correcting or stretching estimates by their size to remove the price-level bias: no better, or 0.7 points worse.</li>
+          <li>A smoothed local correction, weighting every recent sale by distance, age and type: no better than the 40 nearest.</li>
+          <li>Forcing more floor area to never lower the value: needs a different loss, about 0.1 points worse.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Limitations</h2>
+        <ul>
+          <li>The model can't see condition, layout, views or parking; the condition setting covers the first.</li>
+          <li>Rents are Doncaster-wide averages, so area yields are indicative.</li>
+          <li>Investment defaults (fees, maintenance, works, mortgage rate) are estimates to replace with quotes; tax is simplified.</li>
+          <li>The council tax check compares ranks, not prices, and isn't an input to the estimate.</li>
+          <li>Flood, transport, places and Ofsted grades are 2025-26 snapshots; the OpenStreetMap extract stops at the South Yorkshire border.</li>
+          <li>Addresses carry Royal Mail and Ordnance Survey rights; keep this dashboard for personal use.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SAVED ============ -->
+  <section id="saved" role="tabpanel" aria-labelledby="tab-saved" class="grid-wide" hidden>
+    <div class="card" id="saved-card">
+      <header><h2>Saved properties</h2><p class="note">Private to you. "Estimate now" re-runs today's model on the saved details. Open one to load it back into the value and buy-to-let tabs.</p></header>
+      <p class="muted" id="saved-status" role="status"></p>
+      <div class="tbl-wrap"><table id="saved-table" data-source="model_trees model_meta postcodes levels comps street_levels">
+        <thead><tr><th>Property</th><th>Saved</th><th class="r">Asking</th><th class="r">Estimate then</th><th class="r">Estimate now</th><th class="r">Asking vs now</th><th class="r">Rent</th><th class="r">Gross yield</th><th class="r">Cash flow a month</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ============ CHANGELOG ============ -->
+  <section id="changes" role="tabpanel" aria-labelledby="tab-changes" class="grid-wide" hidden>
+    <div class="card" id="changes-card" data-source="changelog">
+      <header><h2>Changelog</h2><p class="note" id="changes-sub">Every version of the dashboard, newest first.</p></header>
+      <ol class="changelog" id="changelog" aria-label="Versions, newest first"></ol>
+    </div>
+  </section>
+
+  <footer class="foot">A statistical estimate from public data, not a survey, mortgage valuation, or financial or tax advice. Contains HM Land Registry, ONS, OS, DfT, DfE, VOA and Environment Agency data © Crown copyright and database right 2026 (Open Government Licence v3.0); Price Paid Data includes address data from Ordnance Survey and Royal Mail; energy certificate data from MHCLG (Open Government Licence v3.0); places © OpenStreetMap contributors (ODbL). Charts use d3 (ISC licence).</footer>
+</div>
+<script src="market_accuracy.js"></script>
+<script src="deal_charts.js"></script>
+<script src="app.js"></script>

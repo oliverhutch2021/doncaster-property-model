@@ -1,0 +1,90 @@
+key,label,value,unit,source
+sdlt_band_1,Stamp duty: 0% up to,125000.0,GBP,gov.uk SDLT residential rates (checked 9 Oct 2026)
+sdlt_band_2,Stamp duty: 2% up to,250000.0,GBP,gov.uk
+sdlt_band_3,Stamp duty: 5% up to,925000.0,GBP,gov.uk
+sdlt_band_4,Stamp duty: 10% up to,1500000.0,GBP,gov.uk
+sdlt_rate_1,Rate band 1,0.0,pct,gov.uk
+sdlt_rate_2,Rate band 2,2.0,pct,gov.uk
+sdlt_rate_3,Rate band 3,5.0,pct,gov.uk
+sdlt_rate_4,Rate band 4,10.0,pct,gov.uk
+sdlt_rate_5,Rate above band 4,12.0,pct,gov.uk
+sdlt_surcharge,Additional-property surcharge,5.0,pct,gov.uk higher rates for additional dwellings
+mortgage_rate,Buy-to-let mortgage rate,5.66,pct,"Moneyfacts average 5-year fixed buy-to-let rate at 75% loan to value, 1 August 2026 (moneyfactscompare.co.uk); rates rose in September and October, so enter a current quote"
+mortgage_term,Mortgage term,25.0,years,Typical (assumption - edit)
+product_fee,Mortgage arrangement fee,1999.0,GBP,Typical (assumption - edit)
+deposit,Deposit,25.0,pct,Typical buy-to-let minimum (assumption - edit)
+stress_rate,Lender stress-test rate,5.5,pct,Typical lender stress rate (assumption - edit)
+icr_basic,"Interest cover ratio, basic-rate or company",125.0,pct,Typical lender ICR (assumption - edit)
+icr_higher,"Interest cover ratio, higher-rate",145.0,pct,Typical lender ICR (assumption - edit)
+letting_fee,Letting and management fee,12.0,pct of rent,Estimate incl. VAT (assumption - edit)
+maintenance,Maintenance,8.0,pct of rent,Estimate (assumption - edit)
+voids,Void weeks per year,2.0,weeks,Estimate (assumption - edit)
+insurance,Landlord insurance,300.0,GBP per year,Estimate (assumption - edit)
+compliance,"Gas safety, electrical checks, licences",250.0,GBP per year,Estimate (assumption - edit)
+buying_costs,Legal and survey costs,1500.0,GBP,Estimate (assumption - edit)
+selling_costs,Selling agent and legal costs,1.8,pct of sale price,Estimate incl. VAT (assumption - edit)
+rf_ref_area,Refurbishment: floor area the guides' 3-bed prices apply to,84.0,m2,Median floor area of Doncaster semis whose energy certificates show 4 or 5 bedrooms and living rooms (a typical 3-bed semi; less.co.uk cost guides (Apr 2026) assume 65-80 m2)
+rf_kitchen_low,"Refurbishment: new kitchen, bottom of budget range",4550.0,GBP,"less.co.uk cost guides (Apr 2026): budget kitchen from £5,000, Yorkshire 9% below average"
+rf_kitchen_budget,"Refurbishment: new kitchen, budget",5900.0,GBP,"less.co.uk cost guides (Apr 2026): budget kitchen £5,000-£8,000 supplied and fitted (units, worktops, sink, connections); Yorkshire 9% below average"
+rf_kitchen_mid,"Refurbishment: new kitchen, mid-range",10000.0,GBP,"less.co.uk cost guides (Apr 2026): Yorkshire mid-range kitchen, 10-12 units, £10,000"
+rf_kitchen_pow,Refurbishment: kitchen cost grows with floor area to the power,0.5,power,London Plan Housing Design Standards (2023): kitchen fitments grow at 0.58 of floor area and living-kitchen-dining space at 0.42 (NDSS sizes); 0.5 between
+rf_bath_low,"Refurbishment: new bathroom, bottom of budget range",2300.0,GBP,"less.co.uk cost guides (Apr 2026): budget bathroom from £2,500, Yorkshire 8% below average"
+rf_bath_budget,"Refurbishment: new bathroom, budget (each)",3200.0,GBP,"less.co.uk cost guides (Apr 2026): budget bathroom £2,500-£4,500 (average £3,500), strip-out, suite, tiling, plumbing; Yorkshire 8% below average"
+rf_bath_mid,"Refurbishment: new bathroom, mid-range (each)",5800.0,GBP,"less.co.uk cost guides (Apr 2026): Yorkshire mid-range bathroom £5,800"
+rf_finish_p10,Refurbishment finish: price at which the bottom of the budget range applies,100000.0,GBP,"Doncaster 10th-percentile sale price, 12 months to Aug 2026 (assumption: finish follows value)"
+rf_finish_p50,Refurbishment finish: price at which the budget average applies,180000.0,GBP,"Doncaster median sale price, 12 months to Aug 2026 (assumption)"
+rf_finish_p90,Refurbishment finish: price at which the mid-range average applies,340000.0,GBP,"Doncaster 90th-percentile sale price, 12 months to Aug 2026 (assumption)"
+rf_decor,Refurbishment: decorating,37.0,GBP per m2 of floor,"less.co.uk cost guides (Apr 2026): 3-bed semi interior £3,500 (£2,500-£4,500), Yorkshire 12% below average, spread over 84 m2, the median Doncaster semi with 4-5 bedrooms and living rooms (EPC)"
+rf_floor,"Refurbishment: flooring, fitted",32.0,GBP per m2 of floor,"less.co.uk cost guides (Apr 2026): Yorkshire mid-range fitted flooring £32/m2 (carpet £20-£45, laminate £15-£40, vinyl £20-£50 nationally)"
+rf_rewire,"Full renovation: rewire, typical 3-bed semi",5940.0,GBP,"less.co.uk cost guides (Apr 2026): 3-bed rewire £4,500-£8,000 (midpoint £6,250), Yorkshire electricians 5% below average"
+rf_rewire_pow,Full renovation: rewire cost grows with floor area to the power,0.5,power,"less.co.uk cost guides (Apr 2026): 8-10 circuits in a 3-bed semi, 15-20 in a 5-bed detached, £150-£300 per extra circuit; 5-bed detached 139 m2 in Doncaster (EPC, 7 bedrooms and living rooms)"
+rf_boiler,Full renovation: new combi boiler (fixed part of the heating),1950.0,GBP,"less.co.uk cost guides (Apr 2026): Yorkshire boiler replacement £1,950"
+rf_heating,Full renovation: radiators and pipes,26.0,GBP per m2 of floor,"less.co.uk cost guides (Apr 2026): Yorkshire full system, new boiler and 10 radiators, 3-bed, £4,100, less the boiler, spread over 84 m2, the median Doncaster semi with 4-5 bedrooms and living rooms (EPC)"
+rf_plaster,Full renovation: re-skim walls and ceilings,30.0,GBP per m2 of floor,"less.co.uk cost guides (Apr 2026): 3-bed semi skim incl. ceilings, hall and stairs £2,800 average (£2,000-£4,000), Yorkshire 11% below, spread over 84 m2, the median Doncaster semi with 4-5 bedrooms and living rooms (EPC)"
+rf_contingency,Refurbishment: contingency,10.0,pct of works,Federation of Master Builders (Feb 2026): set aside 10% of the project cost; 15% or more for older homes
+rent_growth,"Rent growth per year (Doncaster, last 10 years)",3.46,pct,"ONS Price Index of Private Rents, Doncaster, Aug 2016 to Aug 2026"
+rent_growth_5y,"Rent growth per year (Doncaster, last 5 years)",5.19,pct,"ONS Price Index of Private Rents, Doncaster, Aug 2021 to Aug 2026"
+price_growth,"House price growth per year (Doncaster, last 10 years)",3.77,pct,"This model's quality-adjusted Doncaster index, Aug 2016 to Aug 2026"
+cost_inflation,Cost inflation per year,3.0,pct,Assumption - edit
+tax_basic,"Income tax on property income, basic rate (2026-27)",20.0,pct,HMRC; rises to 22% from April 2027 (Autumn Budget 2025)
+tax_higher,"Income tax on property income, higher rate (2026-27)",40.0,pct,HMRC; rises to 42% from April 2027 (Autumn Budget 2025)
+tax_basic_2027,Property income basic rate from April 2027,22.0,pct,Autumn Budget 2025
+tax_higher_2027,Property income higher rate from April 2027,42.0,pct,Autumn Budget 2025
+finance_credit,Mortgage interest tax credit (Section 24),20.0,pct,HMRC; proposed 22% from April 2027 (Autumn Budget 2025)
+finance_credit_2027,Mortgage interest tax credit from April 2027,22.0,pct,Autumn Budget 2025 (proposed)
+corp_tax_small,"Corporation tax, profits up to £50k",19.0,pct,HMRC small profits rate
+epc_upgrade_avg,Average cost to reach EPC C,5400.0,GBP,"Government impact assessment, PRS energy efficiency response (21 Jan 2026)"
+epc_cost_cap,Landlord spending cap to reach EPC C,10000.0,GBP,"Government response, 21 Jan 2026 (10% of value if under £100k)"
+floor_area,Floor area if unknown,85.0,m2,Placeholder (assumption - edit)
+ext_single_m2,Single-storey extension build cost,1775.0,GBP per m2,"less.co.uk (2026): Yorkshire & Humber £1,350-£2,200/m², mid-range spec; excludes VAT, fees and fit-out"
+ext_double_m2,Two-storey extension build cost,1600.0,GBP per m2,"less.co.uk (2026): £1,200-£2,000/m² nationally; excludes VAT, fees and fit-out"
+loft_m2,Loft conversion (rear dormer) cost,2500.0,GBP per m2,"planwatch.co.uk (2026): rear dormer £2,200-£2,800/m² outside London, as quoted (check whether VAT is included)"
+vat_works,VAT on extension building work,20.0,pct,Standard rate
+ext_fees,"Design, structural, planning and building control fees",5000.0,GBP,"less.co.uk (2026): typically £3,000-£10,000 (assumption - edit)"
+opp_gilt_10y,Opportunity cost: 10-year gilt yield,5.48,pct,"UK 10-year government bond yield at the close on 8 Oct 2026 (YCharts); it touched 5.53% that day, its highest since 2007 (Reuters, via Vantage Markets)"
+opp_bank_rate,Opportunity cost: Bank Rate (cash),3.75,pct,"Bank of England Bank Rate, held at 3.75% on 17 Sep 2026; next decision 5 Nov 2026"
+hold_years,Holding period (spreads buying and selling costs in area returns),10.0,years,Assumption - edit
+risk_tenant_pct,"Risk allowance: rent arrears, voids and damage in a typical area",3.75,pct of rent,"Rent guarantee insurance typically costs 2.5% to 5% of annual rent (August, March 2026): the midpoint. Scaled by Doncaster's landlord court claims against England's and by each area's anti-social behaviour and deprivation (assumption - edit)"
+risk_flood_extra,Risk allowance: extra landlord insurance for a home at flood risk,445.0,GBP per year,"Scenario, not a price: get a landlord insurance quote. A typical let falls outside Flood Re, whose criteria need the policyholder or their family to live in the home some of the time or it to be empty (eligibility criterion 2), so its cover is priced on the open market. Before Flood Re (2016), homes in high flood-risk areas with no claims were quoted 148% above the market average (£524 against £211, Flood Re), applied here to the £300 landlord insurance; previously flooded homes cost far more, medium-risk homes usually less (assumption - edit)"
+risk_downturn_years,Risk allowance: one house-price downturn every,30.0,years,Doncaster's prices fell once in the 31 years of Land Registry data since 1995 (2008 to 2013); each area loses its own 2008 fall once in this many years (assumption - edit)
+corp_tax_main,"Corporation tax, profits over £250k",25.0,pct,"HMRC main rate, financial years 2025 and 2026"
+corp_tax_lower,Corporation tax: small profits limit,50000,GBP,HMRC marginal relief lower limit
+corp_tax_upper,Corporation tax: main rate limit,250000,GBP,HMRC marginal relief upper limit
+corp_tax_fraction,Corporation tax: marginal relief fraction,0.015,ratio,HMRC standard fraction 3/200
+cgt_basic,"Capital gains tax on homes, basic-rate taxpayer",18,pct,"gov.uk Capital Gains Tax rates and allowances, 2026/27"
+cgt_higher,"Capital gains tax on homes, higher-rate taxpayer",24,pct,"gov.uk Capital Gains Tax rates and allowances, 2026/27"
+cgt_aea,Capital gains tax annual exempt amount (individuals),3000,GBP,"gov.uk, 2026/27; companies get none"
+flip_fee,Bridging loan arrangement fee,2,pct,"Capitalise, bridging loan rates 2026: 1-2% of the loan"
+flip_margin,Developer margin for the highest offer,15,pct,Planning Practice Guidance on viability: 15-20% of the sale value (gross development value) as a reasonable developer return
+basic_rate_band,Basic-rate band (taxable income above the personal allowance),37700,GBP,"gov.uk 2026/27; frozen to April 2031 (Autumn Budget 2025), assumed unchanged after"
+cgt_other_income,Other taxable income in the year of sale (default),20000,GBP,"Assumption - edit on the page: gov.uk's capital gains tax worked example uses £20,000"
+sens_price_pct,Sensitivity: purchase price moved by,10,pct,"Round swing for the sensitivity chart, the same for every deal so inputs compare (assumption - edit)"
+sens_rent_pct,Sensitivity: rent moved by,10,pct,Round swing for the sensitivity chart; the stress tests also use rent 10% lower (assumption - edit)
+sens_rate_pts,Sensitivity: mortgage rate moved by,1,pct points,Round swing for the sensitivity chart (assumption - edit)
+sens_price_growth_pts,Sensitivity: price growth moved by,1,pct points a year,Round swing for the sensitivity chart (assumption - edit)
+sens_rent_growth_pts,Sensitivity: rent growth moved by,1,pct points a year,Round swing for the sensitivity chart (assumption - edit)
+sens_cost_growth_pts,Sensitivity: cost inflation moved by,1,pct points a year,Round swing for the sensitivity chart (assumption - edit)
+sens_voids_weeks,Sensitivity: void weeks moved by,2,weeks a year,Round swing for the sensitivity chart (assumption - edit)
+sens_maint_pct,Sensitivity: maintenance moved by,50,pct of itself,Round swing for the sensitivity chart; the stress tests double it (assumption - edit)
+sens_deposit_pts,Sensitivity: deposit moved by,10,pct points,Round swing for the sensitivity chart (assumption - edit)
+btl_min_deposit,Usual minimum buy-to-let deposit,25,pct,Most buy-to-let mortgages lend up to 75% of the value; the sensitivity chart lowers the deposit no further (assumption - edit)

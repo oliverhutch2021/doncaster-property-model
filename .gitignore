@@ -1,0 +1,11 @@
+data/raw/
+data/processed/
+outputs/*.txt
+__pycache__/
+*.pyc
+.DS_Store
+# address lookups: EPC addresses are under Royal Mail terms and treated as personal data, so they stay on your machine
+outputs/dash2/epc_*.csv
+model/epc_*.csv
+tests/.private/
+outputs/standalone/

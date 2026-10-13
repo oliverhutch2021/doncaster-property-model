@@ -1,0 +1,247 @@
+area,quarter,metric,rate,count,households
+Doncaster,2019-Q4,standard,4.472,116,25941
+Doncaster,2020-Q1,standard,4.472,116,25941
+Doncaster,2020-Q2,standard,3.855,100,25941
+Doncaster,2020-Q3,standard,2.968,77,25941
+Doncaster,2020-Q4,standard,2.274,59,25941
+Doncaster,2021-Q1,standard,1.388,36,25941
+Doncaster,2021-Q2,standard,1.503,39,25941
+Doncaster,2021-Q3,standard,1.966,51,25941
+Doncaster,2021-Q4,standard,2.506,65,25941
+Doncaster,2022-Q1,standard,2.621,68,25941
+Doncaster,2022-Q2,standard,2.968,77,25941
+Doncaster,2022-Q3,standard,3.122,81,25941
+Doncaster,2022-Q4,standard,3.238,84,25941
+Doncaster,2023-Q1,standard,3.701,96,25941
+Doncaster,2023-Q2,standard,4.086,106,25941
+Doncaster,2023-Q3,standard,4.279,111,25941
+Doncaster,2023-Q4,standard,4.125,107,25941
+Doncaster,2024-Q1,standard,4.202,109,25941
+Doncaster,2024-Q2,standard,4.048,105,25941
+Doncaster,2024-Q3,standard,3.855,100,25941
+Doncaster,2024-Q4,standard,4.009,104,25941
+Doncaster,2025-Q1,standard,4.202,109,25941
+Doncaster,2025-Q2,standard,4.163,108,25941
+Doncaster,2025-Q3,standard,4.279,111,25941
+Doncaster,2025-Q4,standard,4.317,112,25941
+Doncaster,2026-Q1,standard,4.433,115,25941
+Doncaster,2026-Q2,standard,4.587,119,25941
+Yorkshire and The Humber,2019-Q4,standard,3.86,1747,452554
+Yorkshire and The Humber,2020-Q1,standard,3.818,1728,452554
+Yorkshire and The Humber,2020-Q2,standard,3.014,1364,452554
+Yorkshire and The Humber,2020-Q3,standard,2.252,1019,452554
+Yorkshire and The Humber,2020-Q4,standard,1.808,818,452554
+Yorkshire and The Humber,2021-Q1,standard,1.233,558,452554
+Yorkshire and The Humber,2021-Q2,standard,1.564,708,452554
+Yorkshire and The Humber,2021-Q3,standard,2.068,936,452554
+Yorkshire and The Humber,2021-Q4,standard,2.665,1206,452554
+Yorkshire and The Humber,2022-Q1,standard,3.246,1469,452554
+Yorkshire and The Humber,2022-Q2,standard,3.783,1712,452554
+Yorkshire and The Humber,2022-Q3,standard,4.077,1845,452554
+Yorkshire and The Humber,2022-Q4,standard,4.066,1840,452554
+Yorkshire and The Humber,2023-Q1,standard,4.137,1872,452554
+Yorkshire and The Humber,2023-Q2,standard,4.125,1867,452554
+Yorkshire and The Humber,2023-Q3,standard,4.123,1866,452554
+Yorkshire and The Humber,2023-Q4,standard,3.907,1768,452554
+Yorkshire and The Humber,2024-Q1,standard,3.838,1737,452554
+Yorkshire and The Humber,2024-Q2,standard,3.737,1691,452554
+Yorkshire and The Humber,2024-Q3,standard,3.558,1610,452554
+Yorkshire and The Humber,2024-Q4,standard,3.6,1629,452554
+Yorkshire and The Humber,2025-Q1,standard,3.511,1589,452554
+Yorkshire and The Humber,2025-Q2,standard,3.454,1563,452554
+Yorkshire and The Humber,2025-Q3,standard,3.458,1565,452554
+Yorkshire and The Humber,2025-Q4,standard,3.328,1506,452554
+Yorkshire and The Humber,2026-Q1,standard,3.303,1495,452554
+Yorkshire and The Humber,2026-Q2,standard,3.33,1507,452554
+England,2019-Q4,standard,4.737,22712,4794876
+England,2020-Q1,standard,4.664,22361,4794876
+England,2020-Q2,standard,3.726,17868,4794876
+England,2020-Q3,standard,2.875,13784,4794876
+England,2020-Q4,standard,2.468,11835,4794876
+England,2021-Q1,standard,1.879,9008,4794876
+England,2021-Q2,standard,2.217,10628,4794876
+England,2021-Q3,standard,2.751,13189,4794876
+England,2021-Q4,standard,3.236,15514,4794876
+England,2022-Q1,standard,3.974,19053,4794876
+England,2022-Q2,standard,4.645,22270,4794876
+England,2022-Q3,standard,5.129,24592,4794876
+England,2022-Q4,standard,5.168,24782,4794876
+England,2023-Q1,standard,5.316,25490,4794876
+England,2023-Q2,standard,5.493,26340,4794876
+England,2023-Q3,standard,5.594,26823,4794876
+England,2023-Q4,standard,5.777,27698,4794876
+England,2024-Q1,standard,5.858,28086,4794876
+England,2024-Q2,standard,5.929,28428,4794876
+England,2024-Q3,standard,6.022,28873,4794876
+England,2024-Q4,standard,6.004,28790,4794876
+England,2025-Q1,standard,5.923,28400,4794876
+England,2025-Q2,standard,5.84,28002,4794876
+England,2025-Q3,standard,5.735,27500,4794876
+England,2025-Q4,standard,5.674,27205,4794876
+England,2026-Q1,standard,5.716,27407,4794876
+England,2026-Q2,standard,5.778,27706,4794876
+Doncaster,2019-Q4,accelerated,2.043,53,25941
+Doncaster,2020-Q1,accelerated,2.043,53,25941
+Doncaster,2020-Q2,accelerated,1.812,47,25941
+Doncaster,2020-Q3,accelerated,0.964,25,25941
+Doncaster,2020-Q4,accelerated,0.771,20,25941
+Doncaster,2021-Q1,accelerated,0.347,9,25941
+Doncaster,2021-Q2,accelerated,0.501,13,25941
+Doncaster,2021-Q3,accelerated,0.732,19,25941
+Doncaster,2021-Q4,accelerated,0.848,22,25941
+Doncaster,2022-Q1,accelerated,1.542,40,25941
+Doncaster,2022-Q2,accelerated,2.043,53,25941
+Doncaster,2022-Q3,accelerated,2.583,67,25941
+Doncaster,2022-Q4,accelerated,2.968,77,25941
+Doncaster,2023-Q1,accelerated,3.045,79,25941
+Doncaster,2023-Q2,accelerated,3.277,85,25941
+Doncaster,2023-Q3,accelerated,3.161,82,25941
+Doncaster,2023-Q4,accelerated,2.891,75,25941
+Doncaster,2024-Q1,accelerated,2.968,77,25941
+Doncaster,2024-Q2,accelerated,2.93,76,25941
+Doncaster,2024-Q3,accelerated,2.853,74,25941
+Doncaster,2024-Q4,accelerated,2.968,77,25941
+Doncaster,2025-Q1,accelerated,2.737,71,25941
+Doncaster,2025-Q2,accelerated,2.429,63,25941
+Doncaster,2025-Q3,accelerated,2.429,63,25941
+Doncaster,2025-Q4,accelerated,2.814,73,25941
+Doncaster,2026-Q1,accelerated,2.891,75,25941
+Doncaster,2026-Q2,accelerated,3.431,89,25941
+Yorkshire and The Humber,2019-Q4,accelerated,2.044,925,452554
+Yorkshire and The Humber,2020-Q1,accelerated,1.905,862,452554
+Yorkshire and The Humber,2020-Q2,accelerated,1.494,676,452554
+Yorkshire and The Humber,2020-Q3,accelerated,1.129,511,452554
+Yorkshire and The Humber,2020-Q4,accelerated,0.902,408,452554
+Yorkshire and The Humber,2021-Q1,accelerated,0.566,256,452554
+Yorkshire and The Humber,2021-Q2,accelerated,0.639,289,452554
+Yorkshire and The Humber,2021-Q3,accelerated,0.745,337,452554
+Yorkshire and The Humber,2021-Q4,accelerated,1.019,461,452554
+Yorkshire and The Humber,2022-Q1,accelerated,1.737,786,452554
+Yorkshire and The Humber,2022-Q2,accelerated,2.269,1027,452554
+Yorkshire and The Humber,2022-Q3,accelerated,2.744,1242,452554
+Yorkshire and The Humber,2022-Q4,accelerated,3.067,1388,452554
+Yorkshire and The Humber,2023-Q1,accelerated,3.144,1423,452554
+Yorkshire and The Humber,2023-Q2,accelerated,3.217,1456,452554
+Yorkshire and The Humber,2023-Q3,accelerated,3.328,1506,452554
+Yorkshire and The Humber,2023-Q4,accelerated,3.217,1456,452554
+Yorkshire and The Humber,2024-Q1,accelerated,3.085,1396,452554
+Yorkshire and The Humber,2024-Q2,accelerated,3.215,1455,452554
+Yorkshire and The Humber,2024-Q3,accelerated,3.286,1487,452554
+Yorkshire and The Humber,2024-Q4,accelerated,3.341,1512,452554
+Yorkshire and The Humber,2025-Q1,accelerated,3.39,1534,452554
+Yorkshire and The Humber,2025-Q2,accelerated,3.242,1467,452554
+Yorkshire and The Humber,2025-Q3,accelerated,3.109,1407,452554
+Yorkshire and The Humber,2025-Q4,accelerated,2.992,1354,452554
+Yorkshire and The Humber,2026-Q1,accelerated,2.767,1252,452554
+Yorkshire and The Humber,2026-Q2,accelerated,2.773,1255,452554
+England,2019-Q4,accelerated,3.731,17889,4794532
+England,2020-Q1,accelerated,3.618,17349,4794532
+England,2020-Q2,accelerated,2.805,13447,4794532
+England,2020-Q3,accelerated,2.136,10242,4794532
+England,2020-Q4,accelerated,1.764,8457,4794532
+England,2021-Q1,accelerated,1.111,5329,4794532
+England,2021-Q2,accelerated,1.235,5920,4794532
+England,2021-Q3,accelerated,1.383,6631,4794532
+England,2021-Q4,accelerated,1.649,7906,4794532
+England,2022-Q1,accelerated,2.672,12811,4794532
+England,2022-Q2,accelerated,3.516,16859,4794532
+England,2022-Q3,accelerated,4.363,20918,4794532
+England,2022-Q4,accelerated,4.868,23342,4794532
+England,2023-Q1,accelerated,5.056,24240,4794532
+England,2023-Q2,accelerated,5.436,26065,4794532
+England,2023-Q3,accelerated,5.893,28253,4794532
+England,2023-Q4,accelerated,6.18,29629,4794532
+England,2024-Q1,accelerated,6.376,30570,4794532
+England,2024-Q2,accelerated,6.555,31428,4794532
+England,2024-Q3,accelerated,6.557,31438,4794532
+England,2024-Q4,accelerated,6.588,31584,4794532
+England,2025-Q1,accelerated,6.489,31111,4794532
+England,2025-Q2,accelerated,6.268,30054,4794532
+England,2025-Q3,accelerated,6.002,28776,4794532
+England,2025-Q4,accelerated,5.718,27413,4794532
+England,2026-Q1,accelerated,5.525,26492,4794532
+England,2026-Q2,accelerated,5.748,27557,4794532
+Doncaster,2019-Q4,bailiff,1.812,47,25941
+Doncaster,2020-Q1,bailiff,1.85,48,25941
+Doncaster,2020-Q2,bailiff,1.388,36,25941
+Doncaster,2020-Q3,bailiff,1.002,26,25941
+Doncaster,2020-Q4,bailiff,0.54,14,25941
+Doncaster,2021-Q1,bailiff,0.0,0,25941
+Doncaster,2021-Q2,bailiff,0.231,6,25941
+Doncaster,2021-Q3,bailiff,0.54,14,25941
+Doncaster,2021-Q4,bailiff,0.694,18,25941
+Doncaster,2022-Q1,bailiff,0.848,22,25941
+Doncaster,2022-Q2,bailiff,1.002,26,25941
+Doncaster,2022-Q3,bailiff,1.156,30,25941
+Doncaster,2022-Q4,bailiff,1.426,37,25941
+Doncaster,2023-Q1,bailiff,1.696,44,25941
+Doncaster,2023-Q2,bailiff,1.773,46,25941
+Doncaster,2023-Q3,bailiff,2.236,58,25941
+Doncaster,2023-Q4,bailiff,2.159,56,25941
+Doncaster,2024-Q1,bailiff,2.197,57,25941
+Doncaster,2024-Q2,bailiff,2.12,55,25941
+Doncaster,2024-Q3,bailiff,1.542,40,25941
+Doncaster,2024-Q4,bailiff,1.658,43,25941
+Doncaster,2025-Q1,bailiff,1.773,46,25941
+Doncaster,2025-Q2,bailiff,1.927,50,25941
+Doncaster,2025-Q3,bailiff,2.082,54,25941
+Doncaster,2025-Q4,bailiff,2.159,56,25941
+Doncaster,2026-Q1,bailiff,2.043,53,25941
+Doncaster,2026-Q2,bailiff,1.927,50,25941
+Yorkshire and The Humber,2019-Q4,bailiff,1.759,796,452554
+Yorkshire and The Humber,2020-Q1,bailiff,1.743,789,452554
+Yorkshire and The Humber,2020-Q2,bailiff,1.277,578,452554
+Yorkshire and The Humber,2020-Q3,bailiff,0.842,381,452554
+Yorkshire and The Humber,2020-Q4,bailiff,0.464,210,452554
+Yorkshire and The Humber,2021-Q1,bailiff,0.044,20,452554
+Yorkshire and The Humber,2021-Q2,bailiff,0.228,103,452554
+Yorkshire and The Humber,2021-Q3,bailiff,0.621,281,452554
+Yorkshire and The Humber,2021-Q4,bailiff,0.778,352,452554
+Yorkshire and The Humber,2022-Q1,bailiff,1.191,539,452554
+Yorkshire and The Humber,2022-Q2,bailiff,1.582,716,452554
+Yorkshire and The Humber,2022-Q3,bailiff,1.757,795,452554
+Yorkshire and The Humber,2022-Q4,bailiff,1.995,903,452554
+Yorkshire and The Humber,2023-Q1,bailiff,2.196,994,452554
+Yorkshire and The Humber,2023-Q2,bailiff,2.126,962,452554
+Yorkshire and The Humber,2023-Q3,bailiff,2.154,975,452554
+Yorkshire and The Humber,2023-Q4,bailiff,2.329,1054,452554
+Yorkshire and The Humber,2024-Q1,bailiff,2.285,1034,452554
+Yorkshire and The Humber,2024-Q2,bailiff,2.285,1034,452554
+Yorkshire and The Humber,2024-Q3,bailiff,2.269,1027,452554
+Yorkshire and The Humber,2024-Q4,bailiff,2.207,999,452554
+Yorkshire and The Humber,2025-Q1,bailiff,2.274,1029,452554
+Yorkshire and The Humber,2025-Q2,bailiff,2.329,1054,452554
+Yorkshire and The Humber,2025-Q3,bailiff,2.298,1040,452554
+Yorkshire and The Humber,2025-Q4,bailiff,2.28,1032,452554
+Yorkshire and The Humber,2026-Q1,bailiff,2.062,933,452554
+Yorkshire and The Humber,2026-Q2,bailiff,1.98,896,452554
+England,2019-Q4,bailiff,3.089,14808,4794532
+England,2020-Q1,bailiff,2.947,14130,4794532
+England,2020-Q2,bailiff,2.195,10526,4794532
+England,2020-Q3,bailiff,1.435,6880,4794532
+England,2020-Q4,bailiff,0.757,3629,4794532
+England,2021-Q1,bailiff,0.099,477,4794532
+England,2021-Q2,bailiff,0.318,1527,4794532
+England,2021-Q3,bailiff,0.982,4707,4794532
+England,2021-Q4,bailiff,1.273,6103,4794532
+England,2022-Q1,bailiff,1.747,8378,4794532
+England,2022-Q2,bailiff,2.24,10738,4794532
+England,2022-Q3,bailiff,2.363,11329,4794532
+England,2022-Q4,bailiff,2.762,13241,4794532
+England,2023-Q1,bailiff,3.19,15294,4794532
+England,2023-Q2,bailiff,3.313,15882,4794532
+England,2023-Q3,bailiff,3.396,16283,4794532
+England,2023-Q4,bailiff,3.616,17335,4794532
+England,2024-Q1,bailiff,3.68,17646,4794532
+England,2024-Q2,bailiff,3.899,18695,4794532
+England,2024-Q3,bailiff,4.095,19634,4794532
+England,2024-Q4,bailiff,4.18,20041,4794532
+England,2025-Q1,bailiff,4.286,20551,4794532
+England,2025-Q2,bailiff,4.236,20310,4794532
+England,2025-Q3,bailiff,4.304,20637,4794532
+England,2025-Q4,bailiff,4.303,20631,4794532
+England,2026-Q1,bailiff,4.174,20013,4794532
+England,2026-Q2,bailiff,4.128,19791,4794532
+Doncaster,2026-Q2,standard_rank,53.4,309,0
+Doncaster,2026-Q2,accelerated_rank,36.0,308,0
+Doncaster,2026-Q2,bailiff_rank,39.3,308,0

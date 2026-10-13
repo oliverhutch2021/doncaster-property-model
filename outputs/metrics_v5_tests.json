@@ -1,0 +1,594 @@
+{
+ "v2": {
+  "mdape": [
+   0.08755247020226364,
+   0.08882469589772699,
+   0.08664180987290325
+  ],
+  "within10": [
+   0.5504587155963303,
+   0.552627189324437,
+   0.5592994161801501
+  ],
+  "val_mdape": [
+   0.08388550477882808,
+   0.08465540172349975,
+   0.08512731286891789
+  ],
+  "trees": [
+   1644,
+   786,
+   1056
+  ]
+ },
+ "exact": {
+  "mdape": [
+   0.08725289019839479,
+   0.0873808964629465,
+   0.0869322670366529
+  ],
+  "within10": [
+   0.5572977481234362,
+   0.5589658048373645,
+   0.5591326105087573
+  ],
+  "val_mdape": [
+   0.08228876645804456,
+   0.08364735379949684,
+   0.08383175987433383
+  ],
+  "trees": [
+   1423,
+   1073,
+   1475
+  ]
+ },
+ "plot": {
+  "mdape": [
+   0.08489558448210725,
+   0.08507159511604298,
+   0.08394231818890721
+  ],
+  "within10": [
+   0.5676396997497914,
+   0.56814011676397,
+   0.5676396997497914
+  ],
+  "val_mdape": [
+   0.08232125161073009,
+   0.08191505881539349,
+   0.08259095850251437
+  ],
+  "trees": [
+   722,
+   1170,
+   740
+  ]
+ },
+ "street": {
+  "mdape": [
+   0.085034310173937,
+   0.08479791344664261,
+   0.08471183048430148
+  ],
+  "within10": [
+   0.5649708090075063,
+   0.5658048373644704,
+   0.5643035863219349
+  ],
+  "val_mdape": [
+   0.08429984559302181,
+   0.08377447668822799,
+   0.08263069704175
+  ],
+  "trees": [
+   616,
+   670,
+   961
+  ]
+ },
+ "size_nn": {
+  "mdape": [
+   0.08586765858374505,
+   0.08573614073645382,
+   0.085944785256098
+  ],
+  "within10": [
+   0.5579649708090075,
+   0.5618015012510426,
+   0.5624687239366138
+  ],
+  "val_mdape": [
+   0.08565219197746951,
+   0.0853037658739587,
+   0.08465246274901425
+  ],
+  "trees": [
+   957,
+   1017,
+   888
+  ]
+ },
+ "epc_x": {
+  "mdape": [
+   0.08520873211878194,
+   0.08487827852430713,
+   0.08425054006813092
+  ],
+  "within10": [
+   0.5636363636363636,
+   0.5641367806505421,
+   0.5689741451209341
+  ],
+  "val_mdape": [
+   0.08370872447463502,
+   0.08432524486375285,
+   0.08519987624122774
+  ],
+  "trees": [
+   722,
+   942,
+   1344
+  ]
+ },
+ "voa": {
+  "mdape": [
+   0.08755417921290382,
+   0.08642437468626084,
+   0.08582430284771636
+  ],
+  "within10": [
+   0.5529608006672226,
+   0.5556296914095079,
+   0.5606338615512927
+  ],
+  "val_mdape": [
+   0.08421338549730117,
+   0.08394945165319673,
+   0.08586825358088351
+  ],
+  "trees": [
+   1172,
+   1179,
+   1376
+  ]
+ },
+ "all": {
+  "mdape": [
+   0.082288098524263,
+   0.08216886993286956,
+   0.08165783991866439
+  ],
+  "within10": [
+   0.5861551292743953,
+   0.5796497080900751,
+   0.5766472060050042
+  ],
+  "val_mdape": [
+   0.07927984165124055,
+   0.08126840509982344,
+   0.07906564833084387
+  ],
+  "trees": [
+   1684,
+   1037,
+   1753
+  ]
+ },
+ "all_minus_exact": {
+  "mdape": [
+   0.08207718957652282,
+   0.0815673496371402,
+   0.0819544204564799
+  ],
+  "within10": [
+   0.5813177648040033,
+   0.5793160967472895,
+   0.5791492910758966
+  ],
+  "val_mdape": [
+   0.0815046753164147,
+   0.0789907294378851,
+   0.0810602125681868
+  ],
+  "trees": [
+   942,
+   1225,
+   1011
+  ]
+ },
+ "all_minus_voa": {
+  "mdape": [
+   0.08201913963031897,
+   0.08181863409208086,
+   0.08180619052189265
+  ],
+  "within10": [
+   0.5856547122602168,
+   0.5824854045037531,
+   0.5814845704753961
+  ],
+  "val_mdape": [
+   0.07981157628882936,
+   0.07863803235314716,
+   0.07949778142333924
+  ],
+  "trees": [
+   1065,
+   1465,
+   1007
+  ]
+ },
+ "all_minus_size_nn": {
+  "mdape": [
+   0.08259015282143792,
+   0.0814672926347656,
+   0.082124887740625
+  ],
+  "within10": [
+   0.5774812343619683,
+   0.5849874895746455,
+   0.5798165137614679
+  ],
+  "val_mdape": [
+   0.07989780401976522,
+   0.08061907453779679,
+   0.07961523673572787
+  ],
+  "trees": [
+   1328,
+   1168,
+   1235
+  ]
+ },
+ "core": {
+  "mdape": [
+   0.08199560982741612,
+   0.08296993151561069,
+   0.08228103668482667
+  ],
+  "within10": [
+   0.580650542118432,
+   0.5771476230191827,
+   0.5808173477898249
+  ],
+  "val_mdape": [
+   0.0800235381039779,
+   0.07872380649906524,
+   0.08010207236414407
+  ],
+  "trees": [
+   1312,
+   1507,
+   1443
+  ]
+ },
+ "core_tuned": {
+  "mdape": [
+   0.08087362650680949,
+   0.08078795063049207,
+   0.08148675896177394
+  ],
+  "within10": [
+   0.5811509591326105,
+   0.5818181818181818,
+   0.5831526271893245
+  ],
+  "val_mdape": [
+   0.0781985337564178,
+   0.07849361151255024,
+   0.07969022090831188
+  ],
+  "trees": [
+   2186,
+   2047,
+   1454
+  ],
+  "params": {
+   "num_leaves": 63,
+   "min_data_in_leaf": 80,
+   "feature_fraction": 0.65,
+   "lambda_l2": 20,
+   "learning_rate": 0.03,
+   "objective": "regression_l1",
+   "max_bin": 511,
+   "min_sum_hessian_in_leaf": 0.001
+  }
+ },
+ "tuning_trials": [
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.8,
+    "lambda_l2": 1,
+    "learning_rate": 0.03,
+    "objective": "regression_l1",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08125775322734227,
+   "within10": 0.5826522101751459,
+   "val_mdape": 0.07996197860586222,
+   "trees": 1477
+  },
+  {
+   "params": {
+    "num_leaves": 31,
+    "min_data_in_leaf": 10,
+    "feature_fraction": 1.0,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "huber",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.08268167393943061,
+   "within10": 0.5739783152627189,
+   "val_mdape": 0.07937038649512114,
+   "trees": 919
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.8,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "regression",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08256002592543273,
+   "within10": 0.5761467889908257,
+   "val_mdape": 0.08338786034198079,
+   "trees": 146
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.5,
+    "lambda_l2": 1,
+    "learning_rate": 0.05,
+    "objective": "huber",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.0835708529737229,
+   "within10": 0.5733110925771476,
+   "val_mdape": 0.08089825500656425,
+   "trees": 466
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 1.0,
+    "lambda_l2": 0,
+    "learning_rate": 0.03,
+    "objective": "regression",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08342114108630101,
+   "within10": 0.5753127606338615,
+   "val_mdape": 0.0818671599037093,
+   "trees": 358
+  },
+  {
+   "params": {
+    "num_leaves": 127,
+    "min_data_in_leaf": 10,
+    "feature_fraction": 0.65,
+    "lambda_l2": 1,
+    "learning_rate": 0.03,
+    "objective": "huber",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.08134950787885806,
+   "within10": 0.5838198498748958,
+   "val_mdape": 0.08004106266337285,
+   "trees": 826
+  },
+  {
+   "params": {
+    "num_leaves": 31,
+    "min_data_in_leaf": 10,
+    "feature_fraction": 0.5,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "huber",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.08229474013935784,
+   "within10": 0.5819849874895746,
+   "val_mdape": 0.08014884262866737,
+   "trees": 884
+  },
+  {
+   "params": {
+    "num_leaves": 127,
+    "min_data_in_leaf": 80,
+    "feature_fraction": 0.65,
+    "lambda_l2": 1,
+    "learning_rate": 0.05,
+    "objective": "regression",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08315368727209377,
+   "within10": 0.5771476230191827,
+   "val_mdape": 0.08194816684346604,
+   "trees": 191
+  },
+  {
+   "params": {
+    "num_leaves": 63,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 1.0,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "regression",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08258166909499084,
+   "within10": 0.5763135946622185,
+   "val_mdape": 0.08156261254398056,
+   "trees": 284
+  },
+  {
+   "params": {
+    "num_leaves": 63,
+    "min_data_in_leaf": 80,
+    "feature_fraction": 0.5,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "regression",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08364422823989127,
+   "within10": 0.581651376146789,
+   "val_mdape": 0.08137872812461885,
+   "trees": 369
+  },
+  {
+   "params": {
+    "num_leaves": 63,
+    "min_data_in_leaf": 20,
+    "feature_fraction": 0.65,
+    "lambda_l2": 1,
+    "learning_rate": 0.05,
+    "objective": "regression",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08414828349155525,
+   "within10": 0.5761467889908257,
+   "val_mdape": 0.08262757375496624,
+   "trees": 448
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.65,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "regression_l1",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08324722861695918,
+   "within10": 0.5734778982485405,
+   "val_mdape": 0.08033746164070571,
+   "trees": 767
+  },
+  {
+   "params": {
+    "num_leaves": 127,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.8,
+    "lambda_l2": 1,
+    "learning_rate": 0.05,
+    "objective": "huber",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.08163757406695901,
+   "within10": 0.5803169307756464,
+   "val_mdape": 0.0792602604133858,
+   "trees": 366
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 20,
+    "feature_fraction": 0.5,
+    "lambda_l2": 5,
+    "learning_rate": 0.05,
+    "objective": "regression_l1",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08281614731804002,
+   "within10": 0.5721434528773979,
+   "val_mdape": 0.08109877424801597,
+   "trees": 823
+  },
+  {
+   "params": {
+    "num_leaves": 63,
+    "min_data_in_leaf": 80,
+    "feature_fraction": 0.65,
+    "lambda_l2": 20,
+    "learning_rate": 0.03,
+    "objective": "regression_l1",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08087362650680949,
+   "within10": 0.5811509591326105,
+   "val_mdape": 0.0781985337564178,
+   "trees": 2186
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 10,
+    "feature_fraction": 0.5,
+    "lambda_l2": 5,
+    "learning_rate": 0.03,
+    "objective": "huber",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001,
+    "alpha": 0.15
+   },
+   "mdape": 0.08194165771791777,
+   "within10": 0.5793160967472895,
+   "val_mdape": 0.08080741193183229,
+   "trees": 767
+  },
+  {
+   "params": {
+    "num_leaves": 255,
+    "min_data_in_leaf": 20,
+    "feature_fraction": 1.0,
+    "lambda_l2": 20,
+    "learning_rate": 0.05,
+    "objective": "regression_l1",
+    "max_bin": 511,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08277628597511878,
+   "within10": 0.5718098415346122,
+   "val_mdape": 0.08132792569460388,
+   "trees": 973
+  },
+  {
+   "params": {
+    "num_leaves": 31,
+    "min_data_in_leaf": 40,
+    "feature_fraction": 0.65,
+    "lambda_l2": 20,
+    "learning_rate": 0.03,
+    "objective": "regression",
+    "max_bin": 255,
+    "min_sum_hessian_in_leaf": 0.001
+   },
+   "mdape": 0.08297221214496768,
+   "within10": 0.576814011676397,
+   "val_mdape": 0.08321410695353548,
+   "trees": 1141
+  }
+ ]
+}
