@@ -1462,18 +1462,26 @@
   $('#rent-use').addEventListener('click', () => { const R = rentEstimate(); if (!R) return; $('#b-rent').value = String(R.est); state.touched.rent = true; renderInvest(); });
   const drawRentLadder = (box, R, items) => {
     fresh(box);
-    const W = Math.max(280, box.clientWidth), H = 124, yc = 62, m = { l: 12, r: 12 };
+    const W = Math.max(280, box.clientWidth), m = { l: 12, r: 12 };
     const vals = [R.lo, R.hi, R.est, ...items.map((i) => i.v)], x = d3.scaleLinear([d3.min(vals) * 0.94, d3.max(vals) * 1.04], [m.l, W - m.r]);
-    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', `Estimated rent ${gbp(R.est)} a month, likely ${gbp(R.lo)} to ${gbp(R.hi)}`);
-    const gx = svg.append('g').attr('transform', `translate(0,${H - 18})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 110))).tickFormat((v) => '£' + d3.format(',')(v)).tickSizeOuter(0)); cleanAxis(gx);
-    svg.append('rect').attr('x', x(R.lo)).attr('width', x(R.hi) - x(R.lo)).attr('y', yc - 9).attr('height', 18).attr('rx', 9).attr('fill', dash.colors[0]).attr('fill-opacity', 0.18);
-    // labels go in the first free row above or below the line, so none overlap
-    const rowsY = [yc - 22, yc + 30, yc - 40, yc + 46], ends = rowsY.map(() => -Infinity);
-    items.slice().sort((a, b) => a.v - b.v).forEach((it) => {
-      const xx = x(it.v); svg.append('line').attr('x1', xx).attr('x2', xx).attr('y1', yc - 12).attr('y2', yc + 12).attr('stroke', it.kind === 'need' ? 'var(--color-fg)' : 'var(--cds-chart-reference)').attr('stroke-width', 1.5).attr('stroke-dasharray', it.kind === 'need' ? '3 2' : null);
-      const tx = svg.append('text').attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text(it.t), w = tx.node().getComputedTextLength();
-      let k = rowsY.findIndex((ry, i) => xx - w / 2 > ends[i] + 8); if (k < 0) k = rowsY.length - 1;
-      const cx = Math.max(m.l + w / 2, Math.min(W - m.r - w / 2, xx)); tx.attr('x', cx).attr('y', rowsY[k]).attr('text-anchor', 'middle'); ends[k] = cx + w / 2;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('role', 'img').attr('aria-label', `Estimated rent ${gbp(R.est)} a month, likely ${gbp(R.lo)} to ${gbp(R.hi)}`);
+    const gx = svg.append('g'), band = svg.append('rect'), ticks = svg.append('g');
+    // labels go in the first row, above or below the line, that clears where the last one there ends (after keeping it inside
+    // the chart); on a narrow screen more rows stack upwards and the chart grows to fit them
+    const off = (k) => (k === 1 ? 30 : -22 - 18 * Math.max(0, k - 1)), ends = [-Infinity, -Infinity];
+    const placed = items.slice().sort((a, b) => a.v - b.v).map((it) => {
+      const tx = svg.append('text').attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').attr('text-anchor', 'middle').text(it.t), w = tx.node().getComputedTextLength();
+      const cx = Math.max(m.l + w / 2, Math.min(W - m.r - w / 2, x(it.v)));
+      let k = ends.findIndex((e) => cx - w / 2 > e + 8); if (k < 0) { k = ends.length; ends.push(-Infinity); }
+      ends[k] = cx + w / 2; return { it, tx, cx, k };
+    });
+    const yc = 62 + 18 * Math.max(0, ends.length - 3), H = yc + 62;
+    svg.attr('viewBox', `0 0 ${W} ${H}`);
+    gx.attr('transform', `translate(0,${H - 18})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 110))).tickFormat((v) => '£' + d3.format(',')(v)).tickSizeOuter(0)); cleanAxis(gx);
+    band.attr('x', x(R.lo)).attr('width', x(R.hi) - x(R.lo)).attr('y', yc - 9).attr('height', 18).attr('rx', 9).attr('fill', dash.colors[0]).attr('fill-opacity', 0.18);
+    placed.forEach(({ it, tx, cx, k }) => {
+      const xx = x(it.v); ticks.append('line').attr('x1', xx).attr('x2', xx).attr('y1', yc - 12).attr('y2', yc + 12).attr('stroke', it.kind === 'need' ? 'var(--color-fg)' : 'var(--cds-chart-reference)').attr('stroke-width', 1.5).attr('stroke-dasharray', it.kind === 'need' ? '3 2' : null);
+      tx.attr('x', cx).attr('y', yc + off(k));
     });
     const dot = svg.append('circle').attr('cx', x(R.est)).attr('cy', yc).attr('r', 8).attr('fill', dash.colors[0]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2.5);
     if (motionOK() && box._v != null && box._v !== R.est) dot.attr('cx', x(box._v)).transition().duration(500).ease(d3.easeCubicInOut).attr('cx', x(R.est)); box._v = R.est;
@@ -2168,16 +2176,27 @@
     lsvg.append('path').attr('clip-path', `url(#${lclip})`).attr('d', d3.area().x((p) => p[0]).y0(B.ly(0)).y1((p) => p[1])(pts)).attr('fill', dash.colors[0]).attr('fill-opacity', 0.12);
     lsvg.append('path').attr('clip-path', `url(#${lclip})`).attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', dash.colors[0]).attr('stroke-width', 2).attr('stroke-linejoin', 'round').attr('stroke-linecap', 'round');
     B.ltitle = lsvg.append('text').attr('x', lm.l + 2).attr('y', 12).attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)');
-    // moments, from the data: the boom year, the 2008 peak, the low and the recovery
-    const iBoom = d3.maxIndex(ds.chg), mk = [];
-    if (iBoom > 0) mk.push({ y: Z.years[iBoom], t: `${Z.years[iBoom]} boom: ${sgn(ds.chg[iBoom], 0)} in a year`, up: true });
-    if (isFinite(num(D.peak_year))) mk.push({ y: num(D.peak_year), t: `${D.peak_year} peak`, up: true });
-    if (isFinite(num(D.trough_year))) mk.push({ y: num(D.trough_year), t: `${D.trough_year} low, ${sgn(num(D.peak_fall_pct), 0)}`, up: false });
-    if (isFinite(num(D.recovered_year))) mk.push({ y: num(D.recovered_year), t: `Back to the peak by ${D.recovered_year}`, up: false });
+    // moments, from the data: the boom year, the 2008 peak, the low and the recovery (p: which keeps its label when they crowd)
+    const iBoom = d3.maxIndex(ds.chg), mk = [], narrow = LW < 520;
+    if (iBoom > 0) mk.push({ y: Z.years[iBoom], t: narrow ? `${Z.years[iBoom]} boom ${sgn(ds.chg[iBoom], 0)}` : `${Z.years[iBoom]} boom: ${sgn(ds.chg[iBoom], 0)} in a year`, up: true, p: 2 });
+    if (isFinite(num(D.peak_year))) mk.push({ y: num(D.peak_year), t: `${D.peak_year} peak`, up: true, p: 0 });
+    if (isFinite(num(D.trough_year))) mk.push({ y: num(D.trough_year), t: `${D.trough_year} low${narrow ? '' : ','} ${sgn(num(D.peak_fall_pct), 0)}`, up: false, p: 1 });
+    if (isFinite(num(D.recovered_year))) mk.push({ y: num(D.recovered_year), t: narrow ? `Peak again ${D.recovered_year}` : `Back to the peak by ${D.recovered_year}`, up: false, p: 3 });
     B.marks = lsvg.append('g').selectAll('g').data(mk).join('g').style('pointer-events', 'none');
     B.marks.append('circle').attr('cx', (d) => B.lx(d.y)).attr('cy', (d) => B.ly(B.dv[Z.years.indexOf(d.y)])).attr('r', 3.5).attr('fill', 'var(--color-fg)').attr('stroke', 'var(--color-panel)').attr('stroke-width', 1.5);
     B.marks.append('text').attr('x', (d) => B.lx(d.y)).attr('y', (d) => B.ly(B.dv[Z.years.indexOf(d.y)]) + (d.up ? -9 : 15)).attr('text-anchor', (d) => (B.lx(d.y) > LW - 150 ? 'end' : B.lx(d.y) < lm.l + 60 ? 'start' : 'middle'))
       .attr('fill', 'var(--color-fg)').attr('stroke', 'var(--color-panel)').attr('stroke-width', 3).attr('paint-order', 'stroke').style('font-size', 'var(--cds-font-size-caption)').text((d) => d.t);
+    // most important first: a label that would overlap one already placed, or leave the chart, tries one step further out, then is left off (its dot stays)
+    const taken = [];
+    B.marks.selectAll('text').nodes().sort((a, b) => d3.select(a).datum().p - d3.select(b).datum().p).forEach((n) => {
+      const t = d3.select(n), y0 = +t.attr('y'), d = t.datum();
+      const fits = [0, d.up ? -13 : 13].some((dy) => {
+        t.attr('y', y0 + dy); const b = n.getBBox();
+        const ok = b.y >= 0 && b.y + b.height <= LH - lm.b && b.x >= 0 && b.x + b.width <= LW && !taken.some((o) => b.x < o.x + o.width + 4 && o.x < b.x + b.width + 4 && b.y < o.y + o.height && o.y < b.y + b.height);
+        if (ok) taken.push(b); return ok;
+      });
+      if (!fits) t.attr('display', 'none');
+    });
     B.rule = lsvg.append('line').attr('y1', lm.t).attr('y2', LH - lm.b).attr('stroke', 'var(--color-fg)').attr('stroke-width', 1).style('pointer-events', 'none');
     B.dot = lsvg.append('circle').attr('r', 4.5).attr('fill', dash.colors[0]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2).style('pointer-events', 'none');
     // drag across the line to choose the period; a click picks a year

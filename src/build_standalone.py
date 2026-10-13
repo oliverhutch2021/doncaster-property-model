@@ -36,7 +36,7 @@ if TEST:
     texts["comps"] = (D / "comps.csv").read_text(encoding="utf-8")
     for f in sorted(D.glob("epc_*.csv")): texts[f.stem] = f.read_text(encoding="utf-8")
 texts["market_monthly"] = (ROOT / "outputs/dash/market_monthly.csv").read_text(encoding="utf-8")
-data = {"csv": texts, "json": {k: json.load(open(D / f"{k}.json")) for k in JSON}}
+data = {"csv": texts, "json": {k: json.loads((D / f"{k}.json").read_text(encoding="utf-8")) for k in JSON}}
 blob = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
 
 css = (SRC / "_css.html").read_text(encoding="utf-8"); body = (SRC / "_body.html").read_text(encoding="utf-8")
@@ -114,11 +114,11 @@ html = f"""<!doctype html>
 </div>
 <script id="dpm-data" type="application/json">{blob}</script>
 <script>/*! {(SRC / "vendor/LICENSE-d3.txt").read_text(encoding="utf-8").strip()} */
-{D3.read_text()}</script>
+{D3.read_text(encoding="utf-8")}</script>
 {shim}
 {app}
 </body></html>"""
 html = html.replace("__STANDALONE__", "false" if TEST else "true")
 dest = pathlib.Path(TEST) if TEST else pathlib.Path(os.environ["DPM_OUT"]) if os.environ.get("DPM_OUT") else OUT / "index.html"
-dest.write_text(html, encoding="utf-8")
+dest.write_text(html, encoding="utf-8", newline="\n")                 # the same bytes on Windows as elsewhere
 print("wrote", dest, round(dest.stat().st_size / 1e6, 1), "MB")

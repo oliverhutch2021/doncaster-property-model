@@ -1,0 +1,3 @@
+# Text files are checked out with LF on every system, so src/build_standalone.py rebuilds public/index.html byte for byte
+# (tests/test_build.py) on Windows too. Binary files (the PDF) are detected and left alone.
+* text=auto eol=lf

@@ -8,6 +8,6 @@ import pathlib, sys
 P = pathlib.Path(__file__).resolve().parents[1] / "dashboard"
 page = (P / "_css.html").read_text(encoding="utf-8") + (P / "_body.html").read_text(encoding="utf-8")
 if "--check" in sys.argv:
-    ok = (P / "index.html").exists() and (P / "index.html").read_text(encoding="utf-8") == page
+    ok = (P / "index.html").exists() and (P / "index.html").read_bytes() == page.encode("utf-8")
     print("dashboard/index.html is", "current" if ok else "OUT OF DATE: run python src/build_page.py"); sys.exit(0 if ok else 1)
-(P / "index.html").write_text(page, encoding="utf-8"); print("wrote dashboard/index.html", f"{len(page.encode()) / 1e3:.0f} kB")
+(P / "index.html").write_text(page, encoding="utf-8", newline="\n"); print("wrote dashboard/index.html", f"{len(page.encode()) / 1e3:.0f} kB")

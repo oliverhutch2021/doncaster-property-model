@@ -244,7 +244,8 @@ python tests/test_parity.py   # predict.py builds the same features as training 
 python tests/test_privacy.py  # no house numbers or names in the public copy, no address lookup in the shared model/
 ```
 `test_ui.py` needs Playwright with Chromium. In a full checkout it builds a private test copy with the address lookup
-(never published); from this zip it runs the cases that don't need addresses against `public/index.html`.
+(never published); from this repository, which has no address lookup, it runs the cases that don't need addresses
+against `public/index.html`.
 
 ## Use the model in Python
 
@@ -294,7 +295,8 @@ Prices are at the valuation month in `model/model_meta.json` (September 2026).
 
 ### Licences and attribution
 
-The code is under the MIT licence (`LICENSE`). The data keeps its own licences:
+The MIT licence (`LICENSE`) covers the code. The data in `outputs/`, `model/` and `public/` is derived from the
+sources above and keeps their licences:
 
 - Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the
   [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
@@ -346,12 +348,12 @@ datasets of the ones before, so the order matters. Rerunning the last steps repr
 (`production_v18.py` gives the same 2,043 trees, byte for byte). A single rerun of every step from freshly
 downloaded data hasn't been done in one go; refreshed raw data will move the numbers.
 
-**Rebuilding the page from this zip.** The page source is `dashboard/`: `_css.html` and `_body.html` (joined into
+**Rebuilding the page.** The page source is `dashboard/`: `_css.html` and `_body.html` (joined into
 `index.html` by `src/build_page.py`), `market_accuracy.js`, `deal_charts.js` and `app.js` (the Market and Accuracy tabs
 and the Investing tab's rate, tornado and past-decades charts have scripts of their own because the Claude dashboard
 refuses any one file over 256 KB), and `vendor/d3.min.js`. Every assumption
 (tax rates, costs, rates, refurbishment prices) is in one file, `config/assumptions.csv`, with its source; the steps
-that set them only add missing keys, and `src/apply_assumptions.py` copies it to the dashboard. The zip carries the
+that set them only add missing keys, and `src/apply_assumptions.py` copies it to the dashboard. The repository carries the
 dashboard's datasets in `outputs/dash2/` except the address lookups, so `python src/build_page.py` and
 `python src/build_standalone.py` run from it, and `tests/test_build.py` checks the result matches `public/index.html`
 byte for byte.
@@ -437,7 +439,7 @@ docs/How-the-model-works.pdf plain-English explanation of the model, its uses an
   neighbourhoods from red to blue as the rate elsewhere falls, and a buy-to-let ranking that builds up when first seen.
   Nothing plays by itself when the reader's system asks for reduced motion.
 - **Light or dark**: a switch in the header (the page otherwise follows the system or app theme).
-- **Version and changelog**: the header shows the dashboard's version and date (version 25, 13 Oct 2026); it opens a
+- **Version and changelog**: the header shows the dashboard's version and date (version 26, 13 Oct 2026); it opens a
   Changelog tab listing every version. The list is the `changelog` dataset (`outputs/dash2/changelog.csv`, one row per change): add rows with the next version number for each
   release and the header follows.
 - **Market** and **Model accuracy** tabs, and a method note.
@@ -445,9 +447,9 @@ docs/How-the-model-works.pdf plain-English explanation of the model, its uses an
 ### Public copy
 
 `public/index.html` is one self-contained file (about 11 MB) holding the page, the model and its data, built by
-`python src/build_standalone.py` from the dashboard datasets. It runs in any browser with no server. To host it free on
-GitHub Pages: create a public repository, upload the file as `index.html`, then Settings → Pages → deploy from the `main`
-branch. It is served at `https://<username>.github.io/<repo>/`.
+`python src/build_standalone.py` from the dashboard datasets. It runs in any browser with no server. It is published at
+https://oliverhutch2021.github.io/doncaster-property-model/ by `.github/workflows/pages.yml`, which deploys `public/` to
+GitHub Pages on every push to `main` (repository Settings → Pages → Source: GitHub Actions).
 
 The public copy leaves out house-level address data: the EPC address lookup, sales history and the saved list are hidden,
 and comparable sales show the street without the house number. Everything else, including the estimate, range, SHAP
