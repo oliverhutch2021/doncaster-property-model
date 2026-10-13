@@ -2035,8 +2035,12 @@
     const box = $('#btl-chart'); fresh(box); if (!data.length) { $('#btl-legend').replaceChildren(); return; }
     const W = Math.max(300, box.clientWidth), H = 350, m = { t: 30, r: 16, b: 40, l: 48 };   // the y label sits above the plot
     const xd = nbReturn(N.D, o), all = data.concat(xd ? [{ x: xd }] : []);
-    const x = d3.scaleLinear(d3.extent(all, (d) => d.x.px), [m.l, W - m.r]).nice(), y = d3.scaleLinear(d3.extent(all, (d) => d.x.py), [H - m.b, m.t]).nice();
+    const x = d3.scaleLinear(d3.extent(all, (d) => d.x.px), [m.l, W - m.r]), y = d3.scaleLinear(d3.extent(all, (d) => d.x.py), [H - m.b, m.t]);
     const rr = d3.scaleSqrt([0, d3.max(data, (d) => num(d.r.sales_per_year))], [3, 13]);
+    // widen each scale by the biggest circle (and its outline), so circles at the edges stay inside the plot; not
+    // rounded with nice(), which can add a whole tick step each side and squash the circles together
+    const padScale = (s, px) => { const [a, b] = s.domain(), [r0, r1] = s.range(), k = (b - a) / Math.max(1, Math.abs(r1 - r0) - 2 * px); s.domain(b > a ? [a - px * k, b + px * k] : [a - 0.5, a + 0.5]); };
+    padScale(x, 15); padScale(y, 15);
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Net yield against price growth by neighbourhood');
     const gx = svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor((W - m.l - m.r) / 70))).tickFormat((v) => d3.format('.1f')(v) + '%').tickSize(-(H - m.t - m.b))); cleanAxis(gx); gx.select('.domain').remove();
     const gy = svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat((v) => d3.format('.1f')(v) + '%').tickSize(-(W - m.l - m.r))); cleanAxis(gy); gy.select('.domain').remove();
@@ -2068,17 +2072,21 @@
     if (glide) end(circ.transition().delay((d) => (intro ? 250 + d.rank * 30 : 0)).duration(intro ? 800 : 650).ease(d3.easeCubicInOut)); else end(circ);
     cache.btlW = W; cache.btlPos = new Map(data.map((d) => [d.r.msoa21, [x(d.x.px), y(d.x.py)]]));
     if (xd) svg.append('circle').attr('cx', x(xd.px)).attr('cy', y(xd.py)).attr('r', 6).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).style('pointer-events', 'none');
-    // labels: the top three and the selected one, nudged apart
+    // labels: the top three and the selected one; each moves down or up a line at a time until it clears the ones before
     const lab = data.slice(0, 3).concat(data.filter((d) => d.r.msoa21 === sel && d.rank > 3));
     if (xd) lab.push({ r: { name: 'Doncaster' }, x: xd, ring: true });
     const placed = [];
     lab.forEach((d) => {
-      const cx = x(d.x.px), cy = y(d.x.py), off = d.ring ? 9 : rr(num(d.r.sales_per_year)) + 4; let ly = cy;
-      placed.forEach((p) => { if (Math.abs(p - ly) < 13) ly = p + 13; }); placed.push(ly);
+      const cx = x(d.x.px), cy = y(d.x.py), off = d.ring ? 9 : rr(num(d.r.sales_per_year)) + 4;
       const right = cx < W - 150;
-      const lt = svg.append('text').attr('x', right ? cx + off : cx - off).attr('y', ly).attr('dy', '0.35em').attr('text-anchor', right ? 'start' : 'end')
+      const lt = svg.append('text').attr('x', right ? cx + off : cx - off).attr('y', cy).attr('dy', '0.35em').attr('text-anchor', right ? 'start' : 'end')
         .attr('fill', 'var(--color-fg)').attr('stroke', 'var(--color-panel)').attr('stroke-width', 3).attr('paint-order', 'stroke').attr('stroke-linejoin', 'round')
         .style('font-size', 'var(--cds-font-size-caption)').style('pointer-events', 'none').text(d.r.name);
+      // unmeasured (a hidden tab), a label counts as overlapping any other at its height, as before
+      const w = lt.node().getComputedTextLength(), lh = Math.max(14, lt.node().getBBox().height + 1), x0 = right ? cx + off : cx - off - w;
+      const hit = (ly) => placed.some((p) => (!w || !p.w || (x0 < p.x0 + p.w && p.x0 < x0 + w)) && Math.abs(p.y - ly) < lh);
+      let ly = cy; for (let k = 1; hit(ly) && k <= 12; k++) ly = cy + (k % 2 ? 1 : -1) * lh * Math.ceil(k / 2);
+      lt.attr('y', ly); placed.push({ x0, w, y: ly });
       if (glide) lt.attr('opacity', 0).transition().delay(intro ? 1500 : 500).duration(350).attr('opacity', 1);
     });
     const allAbove = data.every((d) => d.x.above > 0), allBelow = data.every((d) => d.x.above < 0);
@@ -2385,9 +2393,9 @@
     const y = d3.scaleLinear([ymin, d3.max(all, (d) => d.v) * 1.04], [H - m.b, m.t]).nice();
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', opts.label);
     // end labels name each line; where the names won't fit in 40% of the width, they show the value only (the legend names them)
-    let endText = (s, v) => `${s.name} ${opts.endFmt(v)}`;
+    let endText = (s, v) => `${s.name} ${opts.endFmt(v)}`, lh = 0;
     if (opts.endLabels) {
-      const width = (f) => { let ew = 0; series.forEach((s) => { const l = s.values.filter((d) => isFinite(d.v)).at(-1); if (!l) return; const tx = svg.append('text').text(f(s, l.v)).style('font-size', 'var(--cds-font-size-caption)'); ew = Math.max(ew, tx.node().getComputedTextLength()); tx.remove(); }); return ew; };
+      const width = (f) => { let ew = 0; series.forEach((s) => { const l = s.values.filter((d) => isFinite(d.v)).at(-1); if (!l) return; const tx = svg.append('text').text(f(s, l.v)).style('font-size', 'var(--cds-font-size-caption)'); ew = Math.max(ew, tx.node().getComputedTextLength()); lh = Math.max(lh, tx.node().getBBox().height); tx.remove(); }); return ew; };
       let ew = width(endText); if (ew + 12 > W * 0.4) { endText = (s, v) => opts.endFmt(v); ew = width(endText); }
       m.r = Math.min(ew + 12, W * 0.4);
     }
@@ -2404,7 +2412,10 @@
       .transition().delay(k * 150).duration(1300).ease(d3.easeCubicInOut).attr('stroke-dashoffset', 0).on('end', function () { d3.select(this).attr('stroke-dasharray', null).attr('stroke-dashoffset', null); }); });
     if (opts.endLabels) {
       const ends = series.map((s) => { const l = s.values.filter((d) => isFinite(d.v)).at(-1); return l ? { y: y(l.v), text: endText(s, l.v) } : null; }).filter(Boolean).sort((a, b) => a.y - b.y);
-      for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 14) ends[i].y = ends[i - 1].y + 14;
+      // a label's own height apart, pushed down; if that runs below the plot, pushed back up from the bottom
+      const gap = Math.max(14, lh + 1), low = H - m.b;
+      for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < gap) ends[i].y = ends[i - 1].y + gap;
+      if (ends.length && ends.at(-1).y > low) { ends.at(-1).y = low; for (let i = ends.length - 2; i >= 0; i--) if (ends[i + 1].y - ends[i].y < gap) ends[i].y = ends[i + 1].y - gap; }
       ends.forEach((e) => { const tx = svg.append('text').attr('x', W - m.r + 6).attr('y', e.y).attr('dy', '0.35em').attr('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').text(e.text);
         if (anim) tx.attr('opacity', 0).transition().delay(1200).duration(400).attr('opacity', 1); });
     }

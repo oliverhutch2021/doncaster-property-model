@@ -284,7 +284,7 @@ window.DPM_DEAL = (h) => {
     const placed = []; ok_.slice().sort((a, b) => a.irr - b.irr).forEach((r) => { let row = 0; while (placed.some((p) => p.row === row && Math.abs(xs(p.r.irr) - xs(r.irr)) < 2 * r0 + 2)) row++; placed.push({ r, row }); });
     const rowsN = Math.max(noIrr.length, d3.max(placed, (p) => p.row + 1) || 0), SH = sm.t + rowsN * (2 * r0 + 2) + sm.b + 4;
     const s2 = svgIn(sbox, SW, SH, '10-year IRR after tax for each past decade'), base = SH - sm.b;
-    const gx2 = s2.append('g').attr('transform', `translate(0,${base})`).call(d3.axisBottom(xs).ticks(Math.min(8, Math.floor((SW - sm.l - sm.r) / 60))).tickFormat((v) => fix0(v * 100, 0) + '%').tickSizeOuter(0)); cleanAxis(gx2);
+    const gx2 = s2.append('g').attr('transform', `translate(0,${base})`).call(d3.axisBottom(xs).ticks(Math.min(8, Math.floor((SW - sm.l - sm.r) / 60))).tickFormat((v) => pct(v * 100, 0)).tickSizeOuter(0)); cleanAxis(gx2);   // pct: −5%, not -5%
     // the gilt's and your figure's labels sit either side of their lines when the two are close
     const close = isFinite(og) && isFinite(P.irr) && Math.abs(xs(P.irr) - xs(og)) < 120, side = (v, other) => (close ? (v < other ? 'end' : 'start') : xs(v) > SW - 80 ? 'end' : xs(v) < sm.l + 60 ? 'start' : 'middle');
     const markAt = (v, text, dashArr, anchor) => { s2.append('line').attr('x1', xs(v)).attr('x2', xs(v)).attr('y1', 4).attr('y2', base).attr('stroke', 'var(--color-fg)').attr('stroke-width', 1).attr('stroke-dasharray', dashArr);

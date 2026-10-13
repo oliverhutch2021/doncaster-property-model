@@ -95,3 +95,6 @@ version,date,model_version,headline,change
 27,2026-10-13,8,Tidier forms and tables,"Rounded money figures put the minus sign first, as everywhere else: the projection's cash line reads −£2k, not £−2k."
 27,2026-10-13,8,Tidier forms and tables,"The best buy-to-let table's headings and names wrap, so all fifteen columns fit on a desktop screen without scrolling sideways."
 27,2026-10-13,8,Tidier forms and tables,"On a phone, a long value such as a school's name wraps, instead of squeezing its label to one word a line."
+28,2026-10-13,8,Chart labels with room to breathe,"Line labels at the right-hand end of a chart sit a full line apart, so the cheaper and middle areas' labels no longer touch."
+28,2026-10-13,8,Chart labels with room to breathe,"The neighbourhood chart leaves room for its biggest circles, so none runs into the chart's edge or its axis label."
+28,2026-10-13,8,Chart labels with room to breathe,"The past-decades returns axis shows −5% with a minus sign, as everywhere else."
