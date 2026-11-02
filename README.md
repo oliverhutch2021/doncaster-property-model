@@ -68,7 +68,9 @@ python src/build_standalone.py               # rebuild the single-file dashboard
 ## How it's built
 
 - **Data:** about 50,000 Land Registry sales since 2015 matched to energy certificates, with deprivation, plot sizes
-  from title plans, street and nearest-sale prices, and each home's certificate history.
+  from title plans, street and nearest-sale prices, and each home's certificate history. The raw files are joined
+  in DuckDB SQL ([`sql/`](sql): cleaning, locations, repeat sales with window functions), with row-count checks
+  after each step.
 - **Model:** LightGBM (2,043 trees) on log prices deflated by a quality-adjusted Doncaster index, with a local
   correction from recent nearby errors. Every change was tested over three random seeds and kept only if it beat the
   noise between them.
