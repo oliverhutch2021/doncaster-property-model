@@ -2,7 +2,7 @@
 // index.html loads this before app.js, and app.js calls window.DPM_TABS once its own helpers exist, passing the ones
 // these tabs use. Nothing else is shared, and the code is the same as when it was part of app.js.
 window.DPM_TABS = (h) => {
-  const { $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, kv, lineChart, median, num, ok, parseMonth, pill, pts, rows, safe, sgn, state, tip, typed } = h;
+  const { $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip } = h;
   state.possMetric = 'standard';
   document.querySelectorAll('#poss-metric button').forEach((b) => b.addEventListener('click', () => {
     state.possMetric = b.dataset.m; document.querySelectorAll('#poss-metric button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); safe('court claims', renderPoss);

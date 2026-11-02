@@ -54,7 +54,7 @@ two months old, as published Land Registry data would allow.
 
 ```
 pip install lightgbm pandas numpy           # enough for the tests and predict.py; requirements.txt has the full pipeline's
-node tests/test_units.js                     # 101 checks: tax, IRR, projections, input checks, listing parser
+node tests/test_units.js                     # 107 checks: tax, IRR, projections, input checks, listing parser
 python tests/test_build.py                   # the public page rebuilds from source byte for byte
 python tests/test_privacy.py                 # no house-level address data in anything shared
 python tests/test_ui.py                      # browser tests (needs: pip install playwright pandas; playwright install chromium)

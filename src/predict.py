@@ -118,9 +118,9 @@ def street_levels(d, postcode, ptype, epc):
 
 def neighbours(d, lat, lon, ptype):
     c = d["comps"]; dist = haversine_km(lat, lon, c.lat.values, c.lon.values)
-    same = np.argsort(np.where(c.type.values == ptype, dist, np.inf))[:10]; same = same[c.type.values[same] == ptype]
+    same = np.argsort(np.where(c.type.values == ptype, dist, np.inf), kind="stable")[:10]; same = same[c.type.values[same] == ptype]
     has_area = c.floor_area.notna().values & (c.floor_area.values > 0)
-    area = np.argsort(np.where(has_area, dist, np.inf))[:15]; area = area[has_area[area]]
+    area = np.argsort(np.where(has_area, dist, np.inf), kind="stable")[:15]; area = area[has_area[area]]
     return dict(knn_lvl=float(np.median(c.y_defl.values[same])) if len(same) >= 3 else np.nan, knn_dist=float(dist[same].mean()) if len(same) >= 3 else np.nan,
                 knn_ppsqm=float(np.median(c.y_defl.values[area] - np.log(c.floor_area.values[area]))) if len(area) >= 5 else np.nan)
 
@@ -163,7 +163,7 @@ def value(d, a, epc=None, explain=False):
     meta = d["meta"]; pc, feat = features(d, a, epc)
     x = pd.DataFrame([[feat[f] for f in meta["features"]]], columns=meta["features"], dtype=float)
     c = d["comps"][d["comps"].resid.notna()]; k, alpha = int(meta["local_k"]), float(meta["local_alpha"])
-    near = np.argsort(haversine_km(pc.lat, pc.lon, c.lat.values, c.lon.values))[:k]
+    near = np.argsort(haversine_km(pc.lat, pc.lon, c.lat.values, c.lon.values), kind="stable")[:k]
     local, spread = 0.0, np.nan
     if len(c) >= k:
         rs = c.resid.values[near]; md = float(np.median(rs)); local = alpha * md; spread = float(np.median(np.abs(rs - md)))

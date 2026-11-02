@@ -325,7 +325,7 @@ window.DPM_DEAL = (h) => {
     // invalid deal inputs: nothing from the last valid deal may stay on screen
     clear() {
       ['#rate-chart', '#tor-chart', '#fan-chart', '#fan-irr'].forEach((s) => { const b = $(s); if (b) { fresh(b); b._key = null; b._move = null; b._sig = null; } });
-      ['#rate-note', '#tor-note', '#fan-note', '#rate-legend', '#tor-legend', '#fan-legend'].forEach((s) => { const e = $(s); if (e) e.replaceChildren(); });
+      ['#rate-note', '#tor-note', '#fan-note', '#fan-sub', '#rate-legend', '#tor-legend', '#fan-legend'].forEach((s) => { const e = $(s); if (e) e.replaceChildren(); });
       if (out) out.textContent = '—';
     }
   };

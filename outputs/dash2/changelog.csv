@@ -99,3 +99,10 @@ version,date,model_version,headline,change
 28,2026-10-13,8,Chart labels with room to breathe,"The neighbourhood chart leaves room for its biggest circles, so none runs into the chart's edge or its axis label."
 28,2026-10-13,8,Chart labels with room to breathe,"The past-decades returns axis shows −5% with a minus sign, as everywhere else."
 29,2026-10-13,8,A steadier rate slider,"Dragging the mortgage rate slider no longer shakes the page: when a new rate adds or drops a line in the cards above (the interest relief cap near the break-even rate, say), the page scrolls to match, so the slider stays under your finger."
+30,2026-10-18,8,Fixes from a sixth review,"A listing that gives the plot in acres, or with decimals (0.12 acres (485 sq m), 485.6 sq m), no longer has its plot read as the floor area; 'would make a perfect new home' no longer ticks New build."
+30,2026-10-18,8,Fixes from a sixth review,"Reopening a saved home restores which details came from its certificate and last sale, so changing the home afterwards clears them as picking an address does."
+30,2026-10-18,8,Fixes from a sixth review,"A last sale month before 1995 or after the valuation month is refused, rather than valued at today's prices or silently dropped."
+30,2026-10-18,8,Fixes from a sixth review,"A certificate's exact build year goes to the model, as in training and the command-line tool; the list still shows the nearest band."
+30,2026-10-18,8,Fixes from a sixth review,A limited company's rental losses still carried forward in year 10 now reduce the corporation tax on the sale.
+30,2026-10-18,8,Fixes from a sixth review,Emptying a setting to retype it no longer refills the default as you type; area totals say when the risk allowance is taken off; a paused time-lapse shows one year throughout; the same percentage rounds the same way everywhere.
+30,2026-10-18,8,Fixes from a sixth review,"The 'why this estimate' breakdown is worked out again only when the home changes, so switching tabs or theme is about four times faster."

@@ -27,7 +27,11 @@ These change inputs while the page is still counting or typing, not only on sett
       scale still until the drag ends, then grows it
   N3  each end of a tornado bar is the deal's own figure with that input changed (rent raised 10%, rate lowered 1 point)
   N4  the past-decades fan: 22 stretches, its "your growth figure" IRR is the deal's, and an invalid deposit clears all three
-      new charts until it is fixed"""
+      new charts until it is fixed
+  P1-P7 sixth review: a plot in acres with square metres in brackets isn't the floor area; "new home" isn't a new build;
+      a last-sale month outside the price index is refused; an invalid deal leaves no old works split or fan text; an
+      emptied setting isn't refilled while you type; area totals say when the risk allowance is taken off; pausing the
+      time-lapse shows one year everywhere"""
 import glob, os, pathlib, subprocess, sys
 import pandas as pd
 from playwright.sync_api import sync_playwright
@@ -325,6 +329,37 @@ with sync_playwright() as p:
     back = [pg.evaluate(f"() => !!document.querySelector('{s_} svg')") for s_ in ("#rate-chart", "#tor-chart", "#fan-chart", "#fan-irr")]
     check("N4 the past-decades fan matches the deal, and an invalid deposit clears all three charts", stretches and stretches.group(1) == "22" and n_dec == 22 and yours and yours.group(1) == txt("#r-irr") and not any(gone) and all(back),
           (stretches.group(1) if stretches else None, n_dec, yours.group(1) if yours else None, txt("#r-irr"), gone, back))
+    # P1-P7: sixth review
+    p1 = paste("3 bedroom detached house for sale, Doncaster DN4 7HA. Offers over £325,000. Freehold. Set on a plot of approximately 0.12 acres (485 sq m). Floor area 118 sq m.")
+    p1b = paste("3 bedroom detached house for sale, Doncaster DN4 7HA. Plot area 485.6 sq m. Floor area 118 sq m.")
+    check("P1 a plot given in acres or with decimals isn't read as the floor area", p1["area"] == "118" and p1b["area"] == "118" and v("#in-plot") == "486", (p1["area"], p1b["area"], v("#in-plot")))
+    p2 = paste("3 bedroom semi-detached house for sale, Doncaster DN4 7HA. £185,000. This would make a perfect new home.")
+    check("P2 'a perfect new home' isn't a new build", not pg.is_checked("#in-new"), p2["found"][:120])
+    pg.click("#listing-clear"); pg.wait_for_timeout(500)
+    pg.fill("#in-postcode", "DN4 7HA"); pg.dispatch_event("#in-postcode", "input"); pg.fill("#in-area", "85"); pg.fill("#in-prev-price", "30000"); pg.fill("#in-prev-month", "1990-05"); pg.wait_for_timeout(900)
+    p3 = (txt("#v-base"), txt("#pc-err") or "")
+    pg.fill("#in-prev-month", "1995-05"); pg.wait_for_timeout(900); p3b = txt("#v-base")
+    pg.fill("#in-prev-month", "2026-09"); pg.wait_for_timeout(900); p3c = txt("#v-base")   # after the index ends, up to the valuation month: the latest index
+    pg.fill("#in-prev-price", ""); pg.fill("#in-prev-month", ""); pg.wait_for_timeout(500)
+    check("P3 a last-sale month before the price index or after the valuation month is refused", p3[0] == "—" and "1995-01" in p3[1] and p3b != "—" and p3c != "—", (p3, p3b, p3c))
+    pg.click("#tab-invest"); pg.wait_for_timeout(1200)
+    pg.fill("#b-works", "10000"); pg.fill("#b-improve", "4000"); pg.wait_for_timeout(600); pl_ok = "counts as improvements" in (txt("#pl-note") or "")
+    pg.fill("#b-improve", "20000"); pg.wait_for_timeout(600); p4 = (txt("#pl-note") or "", txt("#fan-sub") or "")
+    pg.fill("#b-improve", "0"); pg.fill("#b-works", "0"); pg.wait_for_timeout(600)
+    check("P4 an invalid deal leaves no works split or past-decades text from the last valid one", pl_ok and "improvements" not in p4[0] and "stretch" not in p4[1], p4)
+    def retype(sel, keys):
+        pg.click(sel); pg.keyboard.press("End")
+        for _ in range(8): pg.keyboard.press("Backspace")
+        pg.keyboard.type(keys); pg.wait_for_timeout(600); return v(sel)
+    p5 = [retype("#b-rate", "6.1"), retype("#f-area", "9")]
+    pg.fill("#f-area", ""); pg.fill("#b-rate", "5.66")
+    pg.click("#tab-areas"); pg.wait_for_timeout(1500); p5.append(retype("#rk-tenant", "5"))
+    check("P5 an emptied setting isn't refilled with its default while you type", p5 == ["6.1", "9", "5"], p5)
+    on = pg.get_attribute(".risk-toggle", "aria-pressed") == "true"
+    check("P6 Doncaster's total return says when the risk allowance is taken off", on and "risk" in (txt("#btl-foot") or "").split("Rents are")[0], (txt("#btl-foot") or "")[:160])
+    pg.locator("#lapse-play").scroll_into_view_if_needed(); pg.click("#lapse-play"); pg.wait_for_timeout(3300); pg.click("#lapse-play"); pg.wait_for_timeout(600)
+    big, race = txt("#lapse-big"), txt("#lapse-race-h") or ""
+    check("P7 a paused time-lapse shows the same year in the bar race as in the big year", big and f"to {big}" in race, (big, race))
     pg.click("#tab-value"); pg.wait_for_timeout(500)
     check("no page errors", not errs, errs[:3])
     b.close()

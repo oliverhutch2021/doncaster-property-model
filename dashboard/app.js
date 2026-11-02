@@ -8,7 +8,7 @@
     return (r < 0 ? '−' : '') + '£' + (m ? d3.format('.2f')(Math.abs(r)) + 'm' : d3.format(',.0f')(Math.abs(r)) + 'k');
   };
   // round to the shown precision before choosing the sign, so -0.04 reads "0.0", never "−0.0"
-  const fix0 = (v, d) => { const r = Math.round(v * 10 ** d) / 10 ** d; return r === 0 ? 0 : r; };
+  const fix0 = (v, d) => { const r = Math.sign(v) * Math.round(Math.abs(v) * 10 ** d) / 10 ** d; return r === 0 ? 0 : r; };
   const pct = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : d3.format(`.${d}f`)(fix0(v, d)) + '%';
   const sgn = (v, d = 1) => { if (v == null || !isFinite(v)) return '—'; const r = fix0(v, d); return (r > 0 ? '+' : r < 0 ? '−' : '') + d3.format(`.${d}f`)(Math.abs(r)) + '%'; };
   const num = (x) => (x === '' || x == null) ? NaN : Number(x);
@@ -319,6 +319,7 @@
     const model = getModel(), pcs = getPcs(), lv = getLevels(), comps = getComps(), idx = getIndex();
     if (!model || !pcs || !lv || !comps || !idx || !getStreets()) return { status: 'loading' };
     const bad = badInput(inp); if (bad) return { status: 'invalid', msg: bad };
+    if (isFinite(inp.prevPrice) && inp.prevPrice > 0) { const m0 = [...idx.raw.keys()].sort()[0]; if (inp.prevMonth < m0 || inp.prevMonth > model.valMonth) return { status: 'invalid', msg: `The last sale month must be between ${m0} and ${model.valMonth}. Correct it to see an estimate.` }; }
     const pc = pcs.get(inp.postcode);
     if (!pc) return { status: 'nopc' };
     if (pc.in_doncaster === '0') return { status: 'outside', ward: pc.ward };      // in the sales file, but its small area is in another borough
@@ -392,7 +393,7 @@
     return {
       postcode: normPc(val('#in-postcode')), type: val('#in-type'), tenure: val('#in-tenure'), newBuild: $('#in-new').checked,
       condition: val('#in-condition') || 'average', beds: val('#in-beds'), area: num(val('#in-area')), rooms: num(val('#in-rooms')),
-      form: num(val('#in-form')), age: num(val('#in-age')), bungalow: $('#in-bungalow').checked ? 1 : 0,
+      form: num(val('#in-form')), age: e && state.epcAuto['#in-age'] && isFinite(num(e.age_year)) ? num(e.age_year) : num(val('#in-age')), bungalow: $('#in-bungalow').checked ? 1 : 0,
       sap: e && !state.sapManual && isFinite(num(e.sap_current)) ? num(e.sap_current) : ratingSel,
       sapPot: e && !state.sapManual ? num(e.sap_potential) : NaN, gas: e ? ({ Y: 1, N: 0 }[e.mains_gas] ?? NaN) : NaN, epc: e,
       prevPrice: num(val('#in-prev-price')), prevMonth: val('#in-prev-month'), asking: num(val('#in-asking')),
@@ -418,6 +419,7 @@
   // ================= EPC address lookup =================
   const SAP_TO_SELECT = (sap) => (sap >= 92 ? '95' : sap >= 81 ? '86' : sap >= 69 ? '74.5' : sap >= 55 ? '61.5' : sap >= 39 ? '46.5' : sap >= 21 ? '29.5' : '10');
   const AGE_OPTS = [1890, 1914.5, 1939.5, 1958, 1971, 1979, 1986.5, 1993, 1999, 2004.5, 2009, 2018];
+  const ageOpt = (y) => AGE_OPTS.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a));
   const fillAddresses = () => {
     const pc = normPc(val('#in-postcode')), sel = $('#in-address');
     const district = pc.split(' ')[0];
@@ -461,7 +463,7 @@
     setField('#in-rooms', isFinite(num(r.rooms)) ? String(num(r.rooms)) : '');
     setField('#in-form', r.built_form_code === '' || r.built_form_code == null ? '' : String(r.built_form_code));
     const ay = num(r.age_year);
-    setField('#in-age', isFinite(ay) ? String(AGE_OPTS.reduce((a, b) => (Math.abs(b - ay) < Math.abs(a - ay) ? b : a))) : '');
+    setField('#in-age', isFinite(ay) ? String(ageOpt(ay)) : '');
     setField('#in-rating', isFinite(num(r.sap_current)) ? SAP_TO_SELECT(num(r.sap_current)) : '');
     setField('#in-bungalow', String(r.epc_type === 'Bungalow'));
     const t = r.epc_type === 'Flat' || r.epc_type === 'Maisonette' ? 'F' : ({ '0': 'D', '1': 'S', '2': 'T', '3': 'T', '4': 'T', '5': 'T' }[String(r.built_form_code)] || val('#in-type'));
@@ -534,10 +536,10 @@
     if (/\bbungalow\b/.test(low)) { fromListing('#in-bungalow', true); found.push('bungalow'); }
     if (/end[\s-](of[\s-])?terrace/.test(low)) fromListing('#in-form', '2'); else if (/mid[\s-]terrace/.test(low)) fromListing('#in-form', '3');
     if (/\bleasehold\b/.test(low)) { fromListing('#in-tenure', 'L'); found.push('leasehold'); } else if (/\bfreehold\b/.test(low)) { fromListing('#in-tenure', 'F'); found.push('freehold'); }
-    if (/\bnew[\s-]build\b|\bnew home\b/.test(low)) { fromListing('#in-new', true); found.push('new build'); }
-    const noPlot = low.replace(/plot[^.]{0,30}?[\d,]+\s*(?:sq\.?\s*m\b|sqm|m²|sq\.?\s*ft|sqft)/g, ' ');
+    if (/\bnew[\s-]build\b/.test(low)) { fromListing('#in-new', true); found.push('new build'); }
+    const noPlot = low.replace(/plot(?:[^.]|\.\d){0,40}?[\d,]+(?:\.\d+)?\s*(?:sq\.?\s*m\b|sqm|m²|sq\.?\s*ft|sqft)/g, ' ');
     const sqm = noPlot.match(/([\d,]+(?:\.\d+)?)\s*(?:sq\.?\s*m\b|sqm|m²|m2\b|square met)/), sqft = noPlot.match(/([\d,]+(?:\.\d+)?)\s*(?:sq\.?\s*ft|sqft|ft²|square f)/);
-    const acre = low.match(/(\d+(?:\.\d+)?)\s*acres?\b/), plotSq = low.match(/plot[^.]{0,30}?([\d,]+)\s*(?:sq\.?\s*m\b|sqm|m²)/);
+    const acre = low.match(/(\d+(?:\.\d+)?)\s*acres?\b/), plotSq = low.match(/plot(?:[^.]|\.\d){0,40}?([\d,]+(?:\.\d+)?)\s*(?:sq\.?\s*m\b|sqm|m²)/);
     if (acre && +acre[1] < 20) { fromListing('#in-plot', Math.round(+acre[1] * 4046.86)); found.push(`plot ${acre[1]} acres`); }
     else if (plotSq) { fromListing('#in-plot', Math.round(money(plotSq[1]))); found.push(`plot ${plotSq[1]} m²`); }
     const ctb = text.match(/council tax(?: band)?\s*[:\-]?\s*(?:band\s*)?([A-H])\b/i); if (ctb) { fromListing('#in-ctband', ctb[1].toUpperCase()); found.push('council tax band ' + ctb[1].toUpperCase()); }
@@ -621,6 +623,7 @@
   };
   const renderValue = () => {
     fillCondition(); getPcs(); fillAddresses();
+    if (state.reopen && state.addrKey) { const r = state.reopen; state.reopen = null; if (normPc(val('#in-postcode')) === normPc(restore(r.inputs || {}).postcode || '')) { openSaved(r); return; } }
     if (failed($('#value-tiles'), ['model_trees', 'model_meta', 'postcodes', 'levels', 'comps'])) return;
     const inp = inputs(), v = value(inp);
     $('#pc-err').textContent = v.status === 'nopc' ? (inp.postcode ? `${inp.postcode} isn't in the Doncaster postcode list. Check it, or pick one from the suggestions.` : 'Enter a Doncaster postcode.')
@@ -759,7 +762,7 @@
   const renderWhy = (v, cond) => {
     const box = $('#why-chart'), model = getModel(); fresh(box);
     if (!model || !model.groups || !model.trees[0][0] || model.trees[0][0].length < 8) { $('#why-start').textContent = ''; return; }
-    const nF = model.features.length, x = model.features.map((f) => v.feat[f]), phi = treeShap(model.trees, x, nF), fi = new Map(model.features.map((f, i) => [f, i]));
+    const nF = model.features.length, x = model.features.map((f) => v.feat[f]), xk = x.join(), phi = cache.shapKey === xk ? cache.shap : (cache.shapKey = xk, cache.shap = treeShap(model.trees, x, nF)), fi = new Map(model.features.map((f, i) => [f, i]));
     const items = Object.entries(model.groups).map(([g, fs]) => ({ g, v: d3.sum(fs, (f) => phi[fi.get(f)]),
       parts: fs.map((f) => ({ f, v: phi[fi.get(f)], x: v.feat[f] })).filter((p) => Math.abs(p.v) >= 0.001).sort((a, b) => Math.abs(b.v) - Math.abs(a.v)) }));
     if (v.local) items.push({ g: 'Local correction', v: v.local, note: `${d3.format('.0%')(model.alpha)} of the model's median miss on the ${model.k} nearest sales since ${monthLabel(model.poolFrom)}`, parts: [] });
@@ -918,13 +921,23 @@
   const openSaved = (rec) => {
     const i = restore(rec.inputs || {});
     $('#in-postcode').value = i.postcode || ''; state.addrKey = null; state.epc = null; fillAddresses();
-    if (i.epc && i.epc.address) { const k = state.epcOptions.findIndex((r) => r.address === i.epc.address); if (k >= 0) $('#in-address').value = String(k); }
-    state.epc = i.epc || null; state.sapManual = !!i.sapManual;
-    const setv = (s, v) => { $(s).value = v == null || (typeof v === 'number' && !isFinite(v)) ? '' : String(v); };
+    // the saved home's certificate is applied as picking its address would (so its fields and last sale belong to it and
+    // leave with it); a saved value that differs from the certificate's was typed in, and is written back as yours
+    $('#in-prev-price').value = ''; $('#in-prev-month').value = ''; state.prevAuto = false;
+    const k = i.epc && i.epc.address ? state.epcOptions.findIndex((r) => r.address === i.epc.address) : -1;
+    if (k >= 0) { $('#in-address').value = String(k); applyEpc(state.epcOptions[k]); } else { applyEpc(null); state.epc = i.epc || null; }
+    state.sapManual = !!i.sapManual;
+    const str = (v) => (v == null || (typeof v === 'number' && !isFinite(v)) ? '' : String(v));
+    const setv = (s, v) => { if ($(s).value !== str(v)) { $(s).value = str(v); releaseEpc(s); } };
     setv('#in-type', i.type); setv('#in-tenure', i.tenure); setv('#in-beds', i.beds); setv('#in-condition', i.condition); setv('#in-area', i.area); setv('#in-rooms', i.rooms);
-    setv('#in-form', i.form); setv('#in-age', i.age); setv('#in-prev-price', i.prevPrice); setv('#in-prev-month', i.prevMonth); setv('#in-asking', i.asking); setv('#in-plot', i.plot); setv('#in-ctband', i.ctband);
-    if (isFinite(i.sap)) $('#in-rating').value = SAP_TO_SELECT(i.sap);
-    $('#in-bungalow').checked = !!i.bungalow; $('#in-new').checked = !!i.newBuild;
+    setv('#in-form', i.form); setv('#in-age', isFinite(i.age) ? ageOpt(i.age) : ''); setv('#in-asking', i.asking); setv('#in-plot', i.plot); setv('#in-ctband', i.ctband);
+    setv('#in-rating', isFinite(i.sap) ? SAP_TO_SELECT(i.sap) : '');
+    if ($('#in-prev-price').value !== str(i.prevPrice) || $('#in-prev-month').value !== str(i.prevMonth)) {
+      $('#in-prev-price').value = str(i.prevPrice); $('#in-prev-month').value = str(i.prevMonth); state.prevAuto = false; state.prevNew = i.prevNew ? 1 : 0;
+    }
+    if ($('#in-bungalow').checked !== !!i.bungalow) { $('#in-bungalow').checked = !!i.bungalow; releaseEpc('#in-bungalow'); }
+    $('#in-new').checked = !!i.newBuild;
+    state.reopen = i.epc && i.epc.address && !state.addrKey ? rec : null;
     freshDeal(); state.listingOwned = {}; state.listingRent = null;
     if (isFinite(rec.rent)) { state.listingRent = rec.rent; }
     showTab('value');
@@ -965,7 +978,7 @@
     ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income']];
   const syncDefaults = () => {
     const A = getAss(); if (!A) return;
-    DEFAULTS.forEach(([s, k]) => { if ($(s).value === '' && A[k]) $(s).value = String(A[k].v); });
+    DEFAULTS.forEach(([s, k]) => { if ($(s).value === '' && A[k] && document.activeElement !== $(s)) $(s).value = String(A[k].v); });
     if ($('#b-works').value === '') $('#b-works').value = '0';
     const L = state.last;
     if (L && !state.touched.price) $('#b-price').value = String(Math.round((isFinite(L.inp.asking) && L.inp.asking > 0 ? L.inp.asking : L.adj) / 1000) * 1000);
@@ -979,7 +992,7 @@
       $('#b-epc').value = String(isFinite(sap) && sap < 69 ? Math.round(Math.min(A.epc_upgrade_avg.v, cap)) : 0);
     }
     if (!state.touched.gPrice) { const H = homeReturn(); if (H && isFinite(H.g)) $('#p-price').value = String(Math.round(H.g * 100) / 100); }
-    if ($('#f-area').value === '' || !state.touched.farea) $('#f-area').value = String(L && isFinite(L.inp.area) ? Math.round(L.inp.area) : A.floor_area.v);
+    if (!state.touched.farea) $('#f-area').value = String(L && isFinite(L.inp.area) ? Math.round(L.inp.area) : A.floor_area.v);
   };
   [['#b-price', 'price'], ['#b-rent', 'rent'], ['#b-epc', 'epcCost'], ['#f-area', 'farea'], ['#p-price', 'gPrice']].forEach(([s, k]) => $(s).addEventListener('input', () => { state.touched[k] = true; renderInvest(); }));
   ['#b-deposit', '#b-rate', '#b-term', '#b-fee', '#b-letting', '#b-maint', '#b-voids', '#b-ins', '#b-comp', '#b-legal', '#b-works', '#b-improve', '#b-income', '#p-rent', '#p-cost', '#f-baths', '#f-quote', '#f-cont', '#f-months', '#f-fin', '#f-ltv']
@@ -1008,15 +1021,14 @@
   };
   // tax on the gain when the home is sold (gov.uk, 2026/27): an individual pays 18% (basic rate) or 24% (higher rate) on
   // the gain above the £3,000 annual exempt amount; a company pays corporation tax on it, on top of that year's profit, with
-  // no exempt amount. Gain = sale price less selling costs, less the price, stamp duty, legal costs, works and EPC upgrade.
-  // A basic-rate owner pays 24% on any part of the gain above their unused basic-rate band; that isn't modelled.
+  // no exempt amount. Gain = sale price less selling costs, less the price, stamp duty, legal costs and improvements.
   // A basic-rate owner pays 18% only on the part of the taxable gain that fits in what's left of the basic-rate band
   // (£37,700) after their other taxable income and that year's rental profit, and 24% on the rest (gov.uk's example:
   // £20,000 income and a £52,600 gain pay £10,842). Returns the tax and how much fell at each rate.
   const gainsTaxDetail = (d, A, gain, profitThatYear = 0) => {
     const v = (k, dflt) => (A[k] ? A[k].v : dflt), none = { tax: 0, low: 0, high: 0, taxable: 0 };
     if (!(gain > 0)) return none;
-    if (d.owner === 'company') return { ...none, tax: corpTax(Math.max(0, profitThatYear) + gain, A) - corpTax(Math.max(0, profitThatYear), A), taxable: gain };
+    if (d.owner === 'company') return { ...none, tax: corpTax(Math.max(0, profitThatYear + gain), A) - corpTax(Math.max(0, profitThatYear), A), taxable: gain };   // a company's carried losses go against the gain too (CTA 2010 s62)
     const taxable = Math.max(0, gain - v('cgt_aea', 3000)), hi = v('cgt_higher', 24) / 100, lo = v('cgt_basic', 18) / 100;
     if (d.owner === 'higher') return { tax: taxable * hi, low: 0, high: taxable, taxable };
     const income = isFinite(d.income) ? d.income : v('cgt_other_income', 20000), left = Math.max(0, v('basic_rate_band', 37700) - income - Math.max(0, profitThatYear));
@@ -1130,7 +1142,7 @@
       proj.push({ t, rent: y.annualRent, post: y.post, value, loan: bal, equity: value - bal, cum });
       cfs.push(y.post + (t === 10 ? value * (1 - sell) - bal : 0));
     }
-    const gain = proj[9].value * (1 - sell) - (d.price + tax + d.legal + d.improve), gt = gainsTaxDetail(d, A, gain, y10 ? y10.taxable : 0);
+    const gain = proj[9].value * (1 - sell) - (d.price + tax + d.legal + d.improve), gt = gainsTaxDetail(d, A, gain, y10 ? y10.taxable - y10.carry.loss : 0);
     const cfsT = cfs.slice(); cfsT[10] -= gt.tax;
     const roots = irrRoots(cfsT);
     return { loan, tax, cashIn, proj, cfs, cfsT, gain, gt, cgt: gt.tax, roots, irr: roots.length === 1 ? roots[0] : NaN, profit: cfsT.reduce((a, b) => a + b, 0) };
@@ -1138,7 +1150,7 @@
   const clearDeal = (msg) => {
     ['#r-gross', '#r-cash', '#r-coc', '#r-irr'].forEach((s) => { $(s).textContent = '—'; $(s).className = 'big'; });
     ['#r-gross-note', '#r-cash-note', '#r-irr-note', '#r-stress'].forEach((s) => ($(s).textContent = ''));
-    kv($('#r-detail'), []); ['#stress-table tbody', '#proj-table tbody'].forEach((s) => $(s).replaceChildren()); fresh($('#proj-chart')); dealCharts.clear();
+    kv($('#r-detail'), []); ['#stress-table tbody', '#proj-table tbody'].forEach((s) => $(s).replaceChildren()); fresh($('#proj-chart')); dealCharts.clear(); $('#pl-note').textContent = '';
     $('#b-notes').textContent = msg; $('#b-notes').className = 'note warnc';
   };
   const renderDeal = () => {
@@ -1648,7 +1660,7 @@
   ['#rk-tenant', '#rk-flood', '#rk-years'].forEach((s) => $(s).addEventListener('input', () => render()));
   const renderRiskHow = (A) => {
     const N = getNb(); if (!A || !A.risk_tenant_pct || !N) return;
-    [['#rk-tenant', 'risk_tenant_pct'], ['#rk-flood', 'risk_flood_extra'], ['#rk-years', 'risk_downturn_years']].forEach(([s, k]) => { if ($(s).value === '') $(s).value = String(A[k].v); });
+    [['#rk-tenant', 'risk_tenant_pct'], ['#rk-flood', 'risk_flood_extra'], ['#rk-years', 'risk_downturn_years']].forEach(([s, k]) => { if ($(s).value === '' && document.activeElement !== $(s)) $(s).value = String(A[k].v); });
     const S = riskSet(A), cr = courtRatio(), P = getPoss ? getPoss() : null, dC = P && P.latest('Doncaster', 'standard'), eC = P && P.latest('England', 'standard');
     const li = (tx) => { const e = document.createElement('li'); e.textContent = tx; return e; };
     $('#risk-how').replaceChildren(
@@ -1872,7 +1884,7 @@
   const NB_MAP = {
     above: { lvl: 'nb', kind: 'div', better: 1, zero: true, get: (r, o) => nbReturn(r, o)?.above, fmt: (v) => pts(v),
       note: (o) => `Total return a year minus ${o.oppName} (${pct(o.opp, 2)}). Blue beats it, red falls short.` },
-    total: { lvl: 'nb', kind: 'div', better: 1, get: (r, o) => nbReturn(r, o)?.total, fmt: (v) => pct(v, 1), note: () => 'Net yield plus the average price growth a year, for a cash purchase.' },
+    total: { lvl: 'nb', kind: 'div', better: 1, get: (r, o) => nbReturn(r, o)?.total, fmt: (v) => pct(v, 1), note: () => (state.riskOn ? 'Net yield plus the average price growth a year, less the risk allowance, for a cash purchase.' : 'Net yield plus the average price growth a year, for a cash purchase.') },
     net: { lvl: 'nb', kind: 'div', better: 1, get: (r, o) => nbReturn(r, o)?.net, fmt: (v) => pct(v, 1), note: () => 'Rent after running costs, with buying and selling costs spread over the holding period, as a share of the price.' },
     gross: { lvl: 'nb', kind: 'div', better: 1, get: (r, o) => nbReturn(r, o)?.gross, fmt: (v) => pct(v, 1), note: () => "A year's rent at Doncaster's ONS average for the type, over the local median price. Rents are borough-wide, so this mostly reflects local prices." },
     growth: { lvl: 'nb', kind: 'div', better: 1, get: (r, o) => num(r[`growth_${o.basis}y`]), fmt: (v) => pct(v, 1), note: (o) => `Average price growth a year over the last ${o.basis} years, from a repeat-sales index.` },
@@ -1935,7 +1947,7 @@
         d3.select(this).attr('stroke', 'var(--color-fg)').attr('stroke-width', 1.75).raise();
         const [x, y] = d3.pointer(e, box), q = nbReturn(s.nb, o), lines = [['t', s.nb ? s.nb.name + (M.lvl === 'lsoa' ? ` · ${s.r.lsoa21}` : '') : s.r.lsoa21]];
         lines.push(['', `${$('#map-metric').selectedOptions[0].textContent}: ${fin(s.v) ? M.fmt(s.v) : '—'}`]);
-        if (q) { lines.push(['', `Total return ${pct(q.total, 1)} (net yield ${pct(q.net, 1)} + growth ${pct(q.growth, 1)})`]); lines.push(['', `Typical ${gbpK(q.price)} · ${pts(q.above)} vs ${o.oppShort} (${pct(o.opp, 2)})`]); }
+        if (q) { lines.push(['', `Total return ${pct(q.total, 1)} (net yield ${pct(q.net, 1)} + growth ${pct(q.growth, 1)}${state.riskOn && q.rk ? ` − risk ${d3.format('.1f')(q.rk.total)}` : ''})`]); lines.push(['', `Typical ${gbpK(q.price)} · ${pts(q.above)} vs ${o.oppShort} (${pct(o.opp, 2)})`]); }
         lines.push(['', 'Click for its figures']); t.show(lines, x, y);
       })
       .on('mouseleave', function () { d3.select(this).attr('stroke', 'var(--color-panel)').attr('stroke-width', M.lvl === 'nb' ? 1.25 : 0.6); t.hide(); })
@@ -2027,7 +2039,7 @@
       tb.appendChild(tr);
     });
     const xd = nbReturn(N.D, o);
-    $('#btl-foot').textContent = `Doncaster overall: net yield ${pct(xd && xd.net, 1)}, growth ${pct(xd && xd.growth, 1)} a year, total ${pct(xd && xd.total, 1)} (${pts(xd && xd.above)} vs ${o.oppShort}). ` +
+    $('#btl-foot').textContent = `Doncaster overall: net yield ${pct(xd && xd.net, 1)}, growth ${pct(xd && xd.growth, 1)} a year, ${state.riskOn && xd && xd.rk ? `risk allowance ${d3.format('.1f')(xd.rk.total)} points a year, ` : ''}total ${pct(xd && xd.total, 1)} (${pts(xd && xd.above)} vs ${o.oppShort}). ` +
       'Rents are Doncaster-wide ONS averages, as no open source gives rents for smaller areas, so cheaper areas get higher yields and real local rents may differ. ' +
       'Growth figures carry an 80% range of about ±0.3 points a year (see each neighbourhood), so close ranks are a tie. Private renters are from Census 2021; EPC, flood and deprivation figures are homes-weighted from the smaller areas.';
   };
@@ -2242,7 +2254,6 @@
     $('#lapse-period-t').textContent = `${a} to ${b}`;
     document.querySelectorAll('#lapse-presets button').forEach((x) => x.setAttribute('aria-pressed', String(Number(x.dataset.a) === a && Number(x.dataset.b) === b)));
     $('#lapse-y').min = String(a + 1); $('#lapse-y').max = String(b);
-    $('#lapse-race-h').textContent = `Growth ${a} to ${b}, top 10`;
     $('#lapse-y').closest('label').hidden = lapse.mode !== 'year';
     B.ltitle.text(`Doncaster: value of today's typical home${full ? '' : ` · ${a} to ${b}: ${sgn(g, 0)}`}`);
     syncBrush(); setLapseBtn();
@@ -2260,7 +2271,7 @@
     const ds = Z.series.get(LA_CODE), smooth = lapse.playing && motionOK();
     if (B.lastY !== Y) {
       B.lastY = Y;
-      $('#lapse-big').textContent = String(Y);
+      $('#lapse-big').textContent = String(Y); $('#lapse-race-h').textContent = `Growth ${a} to ${Y}, top 10`;
       $('#lapse-y').value = String(Y); $('#lapse-y').setAttribute('aria-valuetext', `Year to August ${Y}`);
       if (lapse.mode === 'year') {
         B.paths.attr('fill', (r) => lapseTok(Z.series.get(r.msoa21).chg[i]));
@@ -2316,14 +2327,14 @@
     };
     lapse.raf = requestAnimationFrame(step);
   };
-  $('#lapse-play').addEventListener('click', () => (lapse.playing ? lapsePause() : lapsePlay()));
+  $('#lapse-play').addEventListener('click', () => { if (!lapse.playing) { lapsePlay(); return; } lapsePause(); lapseFrame(Math.floor(lapse.t)); });
   $('#lapse-y').addEventListener('input', (e) => { lapsePause(); lapseFrame(Number(e.target.value)); setLapseBtn(); });
   // the two handles of the period slider: each keeps at least a year from the other
   $('#lapse-from').addEventListener('input', (e) => { const B = lapse.built; if (!B) return; let a = Number(e.target.value); if (a > B.Z.y1 - 1) a = B.Z.y1 - 1; const b = Math.max(lapse.to, a + 1); if (a !== lapse.from || b !== lapse.to) setLapseWindow(a, b); else syncWindowUI(); });
   $('#lapse-to').addEventListener('input', (e) => { const B = lapse.built; if (!B) return; let b = Number(e.target.value); if (b < B.Z.y0 + 1) b = B.Z.y0 + 1; const a = Math.min(lapse.from, b - 1); if (a !== lapse.from || b !== lapse.to) setLapseWindow(a, b); else syncWindowUI(); });
   document.querySelectorAll('#lapse-mode button').forEach((btn) => btn.addEventListener('click', () => {
     lapse.mode = btn.dataset.m; document.querySelectorAll('#lapse-mode button').forEach((x) => x.setAttribute('aria-pressed', String(x === btn)));
-    if (lapse.built) { lapsePause(); lapse.built.lastY = null; syncWindowUI(); lapseFrame(lapse.mode === 'growth' ? lapse.to : (lapse.t ?? lapse.to)); }
+    if (lapse.built) { lapsePause(); lapse.built.lastY = null; syncWindowUI(); lapseFrame(lapse.mode === 'growth' ? lapse.to : Math.floor(lapse.t ?? lapse.to)); }
   }));
   const renderLapse = () => {
     if (failed($('#lapse-map'), ['neighbourhoods', 'nbhd_index', 'lsoa_map'])) return;
@@ -2523,7 +2534,7 @@
   // ================= Market and Accuracy tabs (market_accuracy.js) =================
   // in a file of their own, loaded first: one page file can't exceed 256 KB. They get the helpers they use from here
   const missingTabs = (name) => () => { throw new Error(`market_accuracy.js didn't load, so ${name} can't be drawn`); };
-  const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, kv, lineChart, median, num, ok, parseMonth, pill, pts, rows, safe, sgn, state, tip, typed }) : {};
+  const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip }) : {};
   const renderMarket = tabs2.renderMarket || missingTabs('the Market tab'), renderAccuracy = tabs2.renderAccuracy || missingTabs('the Accuracy tab');
   // the mortgage-rate, sensitivity and past-decades charts on the Investing tab (deal_charts.js, loaded first as well)
   const dealCharts = window.DPM_DEAL ? window.DPM_DEAL({ $, gbp, gbpK, pct, fix0, num, fresh, tip, cleanAxis, motionOK, onFirstView, state, yearCalc, projectDeal, DEAL_CHECKS, getNb, homeReturn, LA_CODE, renderInvest, failed })

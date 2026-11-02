@@ -12,7 +12,7 @@ const helpers = cut('const gbp = ', 'const num = ') + cut('const num = ', 'const
 const fns = new Function('d3', 'getModel', 'parseMonth', helpers + cut('const sdlt = ', 'const DEFAULTS') + cut('const lastSaleMonths', 'const rentSeries') + cut('const LIMITS', 'const value = ') + cut('const taxRates', 'const kv = ') + cut('const DEAL_CHECKS', 'const clearDeal')
   + cut('const normPc', 'const hav = ') + cut('const WORD_NUM', 'const readListing')
   + '; return { badInput, taxRates, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt };')(d3, () => ({ valMonth: '2026-09' }), (s) => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, 1)));
-const { badInput, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt } = fns;
+const { badInput, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt } = fns;
 
 let fails = 0, n = 0;
 const near = (got, want, tol) => (Number.isNaN(want) ? Number.isNaN(got) : Math.abs(got - want) <= tol);
@@ -168,6 +168,15 @@ eq('no gain, no capital gains tax', fall.cgt, 0);
 // a deep fall leaves the sale below the loan: money in, money back each year, money in again at the end, so two rates fit
 const deep = projectDeal(DD, AP, d3.range(1, 11).map((t) => 150000 * 0.97 ** t));
 eq('a sale below the loan: two rates, so no single IRR', deep.roots.length, 2, 0); eq('  and irr is left undefined', deep.irr, NaN);
+
+// ---------- sixth review ----------
+eq('fix0 rounds halves away from zero: -16.5', fix0(-16.5, 0), -17, 0); eq('fix0 rounds halves away from zero: 16.5', fix0(16.5, 0), 17, 0);
+// a company's rental losses still carried forward are set against the gain in the year of sale (CTA 2010 s62)
+eq('company: losses carried forward reduce the corporation tax on the gain', gainsTaxDetail({ owner: 'company' }, AP, 45000, -30000).tax, 15000 * 0.19);
+eq('company: no losses, tax on the gain alone', gainsTaxDetail({ owner: 'company' }, AP, 45000, 0).tax, 45000 * 0.19);
+eq('individual: a rental loss doesn\'t reduce capital gains tax', gainsTaxDetail({ owner: 'higher' }, AP, 45000, -30000).tax, 42000 * 0.24);
+const CO = projectDeal({ ...DD, owner: 'company', rate: 0.09, works: 20000 }, AP), COnoloss = gainsTaxDetail({ owner: 'company' }, AP, CO.gain, 0).tax;
+truthy('company deal with losses carried to year 10 pays less than tax on the whole gain', CO.cgt < COnoloss - 1);
 
 // ---------- no negative zero (fourth review) ----------
 eq("pct(-0.04) reads 0.0%", pct(-0.04) === '0.0%' ? 1 : 0, 1, 0); eq("sgn(-0.04) has no sign", sgn(-0.04) === '0.0%' ? 1 : 0, 1, 0); eq("sgn(-0.06) keeps it", sgn(-0.06) === '−0.1%' ? 1 : 0, 1, 0);

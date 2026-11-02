@@ -234,7 +234,7 @@ condition they put right: decorating a home that needs a full renovation adds no
 ## Tests
 
 ```
-node tests/test_units.js      # 101 checks: Section 24, corporation tax, CGT across the basic-rate band, IRR (repeated, close and several rates), the 10-year projection, input checks, listing parser, condition rule
+node tests/test_units.js      # 107 checks: Section 24, corporation tax, CGT across the basic-rate band, IRR (repeated, close and several rates), the 10-year projection, input checks, listing parser, condition rule
 python tests/test_ui.py       # 42 browser cases: listings, impossible inputs clearing every result, edits mid-animation and mid-typing, deal, flip, CGT, condition, Market and Accuracy tabs, the rate slider, tornado and past-decades fan
 python tests/test_build.py    # the page rebuilds from its source, the assumptions are config/, the public copy rebuilds byte for byte, no page file over 256 KB
 python tests/test_parity.py   # predict.py builds the same features as training (full checkout with the address lookup)
