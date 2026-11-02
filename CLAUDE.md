@@ -19,7 +19,7 @@ Never say a task is done until these checks pass. When you report back, say whic
 
 ### Environment notes
 
-- Node.js isn't on PATH on this machine. RStudio's bundled Node works: `& "C:\Program Files\RStudio\resources\app\bin\node\node.exe" tests/test_units.js`.
-- `test_ui.py` and the screenshots need Playwright with Chromium, and `test_ui.py` also needs pandas. All three were installed on 13 Oct 2026 (`pip install playwright pandas`, then `python -m playwright install chromium`).
+- The unit tests need Node.js. If `node` isn't on PATH, a bundled copy works (RStudio ships one).
+- `test_ui.py` and the screenshots need Playwright with Chromium, and `test_ui.py` also needs pandas: `pip install playwright pandas`, then `python -m playwright install chromium`.
 - Screenshot `public/index.html`, the self-contained page; `dashboard/index.html` is only the page source. The Saved tab is hidden in the public copy. Block `fonts.g*` requests as `test_ui.py` does; the one failed request this leaves in the console is that font, not a page error.
 - `test_parity.py` and some `test_ui.py` cases need the private address lookup (see the README); without it, those cases can't run.
