@@ -106,3 +106,4 @@ version,date,model_version,headline,change
 30,2026-10-18,8,Fixes from a sixth review,A limited company's rental losses still carried forward in year 10 now reduce the corporation tax on the sale.
 30,2026-10-18,8,Fixes from a sixth review,Emptying a setting to retype it no longer refills the default as you type; area totals say when the risk allowance is taken off; a paused time-lapse shows one year throughout; the same percentage rounds the same way everywhere.
 30,2026-10-18,8,Fixes from a sixth review,"The 'why this estimate' breakdown is worked out again only when the home changes, so switching tabs or theme is about four times faster."
+31,2026-11-02,8,One headline accuracy figure,"The Accuracy tab's median error and within 10% now use the strict test the README and the comparison use, where the model only sees sales at least two months old: 8.1% and 59%. With every earlier sale it is 8.0% and 60%, as the note under them says."

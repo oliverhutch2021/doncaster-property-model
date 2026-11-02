@@ -93,7 +93,9 @@ window.DPM_TABS = (h) => {
     }
     if (ok('accuracy')) {
       const Aa = rows('accuracy'), g = (mdl, mt) => num((Aa.find((x) => x.model === mdl && x.split === 'test_2025_26' && x.metric === mt) || {}).value);
-      $('#a-mdape').textContent = d3.format('.1%')(g('dashboard', 'mdape')); $('#a-w10').textContent = d3.format('.0%')(g('dashboard', 'within10'));
+      const rt = ok('method_compare') ? rows('method_compare').find((r) => r.method === 'model_realtime') : null;   // the strict score, as in the README
+      $('#a-mdape').textContent = rt ? d3.format('.1%')(num(rt.mdape)) : '—'; $('#a-w10').textContent = rt ? d3.format('.0%')(num(rt.within10)) : '—';
+      $('#a-mdape-all').textContent = d3.format('.1%')(g('dashboard', 'mdape')); $('#a-w10-all').textContent = d3.format('.0%')(g('dashboard', 'within10'));
       $('#a-w20').textContent = d3.format('.0%')(g('dashboard', 'within20')); $('#a-cov').textContent = d3.format('.0%')(g('dashboard', 'coverage_80'));
       const tb = $('#breakdown-table tbody'); tb.replaceChildren();
       const add = (name, n, md, w10) => { const tr = document.createElement('tr'); cell(tr, name); cell(tr, d3.format(',')(n), 'r'); cell(tr, d3.format('.1%')(md), 'r'); cell(tr, d3.format('.0%')(w10), 'r'); tb.appendChild(tr); };

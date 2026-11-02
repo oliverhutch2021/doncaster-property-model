@@ -31,7 +31,9 @@ These change inputs while the page is still counting or typing, not only on sett
   P1-P7 sixth review: a plot in acres with square metres in brackets isn't the floor area; "new home" isn't a new build;
       a last-sale month outside the price index is refused; an invalid deal leaves no old works split or fan text; an
       emptied setting isn't refilled while you type; area totals say when the risk allowance is taken off; pausing the
-      time-lapse shows one year everywhere"""
+      time-lapse shows one year everywhere
+  Q1  the Accuracy tab's headline median error and within 10% are the strict scores the comparison uses (the model
+      only sees sales at least two months old); its note gives the scores with every earlier sale"""
 import glob, os, pathlib, subprocess, sys
 import pandas as pd
 from playwright.sync_api import sync_playwright
@@ -294,6 +296,12 @@ with sync_playwright() as p:
         if tab == "market": pg.click("#poss-metric button[aria-pressed=false] >> nth=0"); pg.wait_for_timeout(800)   # its own listener, also moved
         drawn.update({i: pg.evaluate("(i) => !!document.querySelector('#' + i + ' svg')", i) for i in ids})
     check("N1 the Market and Accuracy tabs draw every chart", all(drawn.values()), [k for k, x in drawn.items() if not x] or len(drawn))
+    # Q1: one headline accuracy figure, the strict score the README and the comparison chart use (the Accuracy tab is open)
+    rt = pg.evaluate("() => { const r = dash.data('method_compare').data.find((x) => x.method === 'model_realtime'); return r ? [Number(r.mdape), Number(r.within10)] : null; }")
+    full = pg.evaluate("() => ['mdape', 'within10'].map((m) => Number(dash.data('accuracy').data.find((x) => x.model === 'dashboard' && x.split === 'test_2025_26' && x.metric === m).value))")
+    q1 = (txt("#a-mdape"), txt("#a-w10"), txt("#a-mdape-all"), txt("#a-w10-all"))
+    check("Q1 the Accuracy tab's headline is the strict score the comparison uses; its note gives the every-sale score",
+          bool(rt) and q1 == (f"{rt[0] * 100:.1f}%", f"{rt[1] * 100:.0f}%", f"{full[0] * 100:.1f}%", f"{full[1] * 100:.0f}%"), q1)
     # N2-N4: the deal charts (deal_charts.js)
     money = lambda t: float(t.replace("£", "").replace(",", "").replace("−", "-").split()[0])
     pg.click("#tab-invest"); pg.wait_for_timeout(1500)

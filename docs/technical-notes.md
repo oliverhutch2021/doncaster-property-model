@@ -75,7 +75,7 @@ Little aggregate change. The 35 test sales (0.6%) that used a later certificate 
 rule (median error 9.5% → 15.5%; for 2020's 135, 10.9% → 11.8%). The deprivation scores (2025) and plot sizes
 (current title plans) have no dated versions; dropping them is a sensitivity test, not a measure of their timing,
 because it also loses what they legitimately add. Not measured: neighbour price per m² uses each neighbour's
-best-known floor area. The 8.04% headline is the seed used throughout the project; the three-seed mean is 7.99%.
+best-known floor area. The 8.04% figure is the seed used throughout the project; the three-seed mean is 7.99%.
 
 ## Registration lag and seed averaging (fourth review, `src/eval_cohorts_seeds.py`)
 
@@ -130,8 +130,9 @@ most sales appear in Land Registry's published data (new builds and some others 
   missing flag; logs of skewed sizes and counts; size by type; a fixed effect for each postcode sector). The model beats
   it by 1.7 points. The earlier "ridge 16.2%" row was the first version's model on its smaller feature set, which
   overstated the gap.
-- The reported 8.04% let the model's local price features use every earlier sale. With the two-month cut-off it is
-  8.07%, so the result doesn't depend on data that wouldn't be published yet.
+- The 8.04% elsewhere in these notes lets the model's local price features use every earlier sale. With the two-month
+  cut-off it is 8.07% (59% within 10%), the headline figure, so the result doesn't depend on data that wouldn't be
+  published yet.
 - The index-the-last-sale method gets worse the older the last sale: 8.6% under 5 years, 18.1% at 10+ years
   (model 6.2% and 8.6% on the same homes). It also over-values by 4% at the median.
 - Commercial AVMs: UK portals don't publish their accuracy against sale prices. Hometrack (which powers Zoopla's estimate)

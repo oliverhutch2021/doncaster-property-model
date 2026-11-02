@@ -530,10 +530,10 @@
 
   <!-- ============ ACCURACY ============ -->
   <section id="accuracy" role="tabpanel" aria-labelledby="tab-accuracy" class="grid-wide" hidden>
-    <p class="note">Tested on 5,995 sales from January 2025 to August 2026 that the model never saw; trained on 2015-2023 and tuned on 2024.</p>
+    <p class="note">Tested on 5,995 sales from January 2025 to August 2026 that the model never saw; trained on 2015-2023 and tuned on 2024. Median error and within 10% are scored the strict way: the model only sees sales at least two months old, as published Land Registry data allows, like the comparison below. Letting it see every earlier sale gives <span id="a-mdape-all">—</span> and <span id="a-w10-all">—</span>, the version used for within 20%, the range check and the breakdowns.</p>
     <div class="tiles">
-      <div class="tile"><span class="label">Median error</span><span class="big" id="a-mdape" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=mdape">—</span><span class="muted">Half of sales are within this</span></div>
-      <div class="tile"><span class="label">Within 10% of the sale price</span><span class="big" id="a-w10" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=within10">—</span><span class="muted">Share of test sales</span></div>
+      <div class="tile"><span class="label">Median error</span><span class="big" id="a-mdape" data-source="method_compare" data-field="mdape" data-where="method=model_realtime">—</span><span class="muted">Half of sales are within this</span></div>
+      <div class="tile"><span class="label">Within 10% of the sale price</span><span class="big" id="a-w10" data-source="method_compare" data-field="within10" data-where="method=model_realtime">—</span><span class="muted">Share of test sales</span></div>
       <div class="tile"><span class="label">Within 20%</span><span class="big" id="a-w20" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=within20">—</span><span class="muted">Share of test sales</span></div>
       <div class="tile"><span class="label">80% range contains the price</span><span class="big" id="a-cov" data-source="accuracy" data-field="value" data-where="model=dashboard&amp;split=test_2025_26&amp;metric=coverage_80">—</span><span class="muted">Target 80%</span></div>
     </div>
