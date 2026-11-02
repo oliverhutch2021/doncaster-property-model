@@ -1,3 +1,7 @@
 # Text files are checked out with LF on every system, so src/build_standalone.py rebuilds public/index.html byte for byte
 # (tests/test_build.py) on Windows too. Binary files (the PDF) are detected and left alone.
 * text=auto eol=lf
+
+# public/index.html is the built dashboard (one generated 11 MB file). Without this, GitHub's language bar
+# counts the repository as mostly HTML; the code is Python and JavaScript.
+public/index.html linguist-generated
