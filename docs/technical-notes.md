@@ -171,6 +171,41 @@ most sales appear in Land Registry's published data (new builds and some others 
   Oct 2022 to Sep 2023, the last edition with quartiles), as ratios around the estimate.
 - Untested on individual lets (none are open), so the page says so and asks for a check against listings.
 
+### New-tenancy adjustment (v32, provisional, `src/rent_newlet.py`)
+
+ONS averages the rents tenants are paying, including long tenancies whose rent lags the market. A buyer letting today
+sets a new rent, so the estimate is moved to a new tenancy in two steps:
+
+- **Rented mix.** The formula anchors ONS's average rent for a type to the average price of that type, but privately
+  rented homes are cheaper than the average home of their type (energy certificate tenure, latest certificate per
+  address since 2016, valued at their LSOA's 2024+ £/m² × floor area). The gap passes into rent through β:
+  × 1.072 detached, × 1.019 semi-detached, × 1.044 terraced, × 1.022 flats.
+- **New-let premium.** If a share p of tenancies reprice to the market each year and rents grow at g, rents being paid
+  settle at new-let ÷ (1 + premium), premium = (1 − (1 − p) ÷ (1 + g)) ÷ p − 1. With g = 5.6% a year (Doncaster, ONS,
+  Aug 2024 to Aug 2026) and p = 0.30 (an assumption: 20% of private renters moved in within the last year, English
+  Housing Survey 2023-24, plus sitting tenants moved to market rents), the premium is 12.4%. It falls as rent growth slows.
+- **Check, not used:** Zoopla's Doncaster new-let rent (Sep 2025) sits 14.6% above the unadjusted formula run to
+  Zoopla's typical buy-to-let price (terraced anchor); the two steps give 17.4% for terraces.
+- The deal, the neighbourhood returns and the yield comparisons all use the new-tenancy rent; recent sales' yields
+  (`nb_dist`) are shifted by the same factor. Provisional until tested on observed lettings: an FOI request for HMRC
+  Valuation Office lettings records (with tenancy start dates) and the Geographic Data Service's small-area rents are
+  pending, and `src/rent_fit.py` fits and tests a model on either.
+
+## Value tab additions (v32)
+
+- **Comparables adjusted to this home.** The model values a home like this one (without its last sale) at its own
+  postcode and size, at the comparable's postcode, and at the comparable's postcode and floor area. Each sale in
+  today's money × (this home ÷ this home at the comparable's place and size) is what it says this home is worth, with
+  the size and location gaps as the reason. The adjusted sales' median and middle half sit beside the estimate.
+- **Where each detail comes from.** Energy certificate, Land Registry (sale or title plan), the listing, typed in, or
+  not given, with a count of the six key details (floor area, rooms, build age, energy rating, plot, last sale) taken
+  from official records.
+- **Who lives nearby.** Census 2021 for the postcode's LSOA against Doncaster and England (`src/census_profile.py`;
+  tables TS054, TS067, TS068, TS007A, TS045; three or more cars count as three).
+- **One-page report.** A print stylesheet shows only a report built from the Value tab (estimate, rent, details and
+  sources, adjusted comparables, the area, Census); the browser's print or Save as PDF gives one A4 page
+  (`tests/test_ui.py` S5).
+
 ## Tenant risk (v11, `src/tenants_v11.py`)
 
 - **Court claims** (Market tab): Ministry of Justice landlord possession statistics to April-June 2026, per 1,000

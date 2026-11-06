@@ -38,9 +38,10 @@ two months old, as published Land Registry data would allow.
 ## What the dashboard does
 
 - **Value a property:** pick an address or paste a Rightmove or Zoopla listing; get the estimate, range, confidence,
-  a condition adjustment calibrated on repeat sales, an asking-price check, comparable sales and a breakdown of what
-  moved the value (SHAP, computed in the browser).
-- **Investing:** the home against recent sales in its neighbourhood; a rent estimate; a full buy-to-let deal analyser
+  a condition adjustment calibrated on repeat sales, an asking-price check, comparable sales adjusted to this home by
+  the model, where each detail comes from, a breakdown of what moved the value (SHAP, computed in the browser), a
+  Census 2021 profile of the neighbourhood, and a one-page printable report.
+- **Investing:** the home against recent sales in its neighbourhood; a rent estimate for a new tenancy (provisional); a full buy-to-let deal analyser
   (stamp duty, Section 24, limited company, capital gains tax, lender stress test, 10-year after-tax IRR); what the
   mortgage rate does, which inputs matter most, and what the deal would have made over each past decade; a
   buy-refurbish-sell calculator.
@@ -95,6 +96,7 @@ outputs/      evaluation results and dashboard data   docs/        PDF guide, te
 | postcodes.io (ONS Postcode Directory) | Coordinates, 2021 LSOA, ward |
 | English Indices of Deprivation 2025 (MHCLG) | Neighbourhood deprivation, including crime and living environment |
 | ONS Price Index of Private Rents | Doncaster rents by bedrooms and type, rent growth |
+| ONS Census 2021 (Nomis) | Who lives nearby: tenure, qualifications, students, age, cars, per neighbourhood |
 | DWP Local Housing Allowance 2026-27 | Housing benefit caps, Doncaster BRMA |
 | Environment Agency flood risk by postcode (NaFRA2, 2025) | Flood risk card, map, buy-to-let warning (tested in the model) |
 | DfT NaPTAN | Rail stations and bus stops (tested in the model) |
@@ -136,6 +138,7 @@ download (see the script).
 ## Limitations
 
 - Condition isn't in any open dataset, so it is a user input calibrated from repeat sales.
-- Rents are Doncaster-wide averages by type, so area yields overstate returns in the cheapest areas.
+- Rents are Doncaster-wide averages by type, moved to a new tenancy by a provisional adjustment that hasn't yet been
+  tested on local lettings, so area yields are indicative and overstate returns in the cheapest areas.
 - About 6% of sales have no matched EPC; they are valued without size, with a wider range.
 - Not a survey, mortgage valuation or financial advice.

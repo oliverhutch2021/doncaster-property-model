@@ -32,9 +32,13 @@ These change inputs while the page is still counting or typing, not only on sett
       a last-sale month outside the price index is refused; an invalid deal leaves no old works split or fan text; an
       emptied setting isn't refilled while you type; area totals say when the risk allowance is taken off; pausing the
       time-lapse shows one year everywhere
+  S1-S5 version 32: the rent is for a new tenancy and used in the deal; each detail says where it came from; comparables
+      are adjusted to this home with a reason; the Census card matches its table; the printed report is one A4 page
+  Q2  the header line quotes the same headline score as the Accuracy tab
   Q1  the Accuracy tab's headline median error and within 10% are the strict scores the comparison uses (the model
       only sees sales at least two months old); its note gives the scores with every earlier sale"""
 import glob, os, pathlib, subprocess, sys
+import re
 import pandas as pd
 from playwright.sync_api import sync_playwright
 
@@ -302,6 +306,8 @@ with sync_playwright() as p:
     q1 = (txt("#a-mdape"), txt("#a-w10"), txt("#a-mdape-all"), txt("#a-w10-all"))
     check("Q1 the Accuracy tab's headline is the strict score the comparison uses; its note gives the every-sale score",
           bool(rt) and q1 == (f"{rt[0] * 100:.1f}%", f"{rt[1] * 100:.0f}%", f"{full[0] * 100:.1f}%", f"{full[1] * 100:.0f}%"), q1)
+    lede = txt("#lede") or ""
+    check("Q2 the header line quotes the same headline score", f"within {rt[0] * 100:.1f}% of the price paid and {rt[1] * 100:.0f}% within 10%" in lede, lede[-110:])
     # N2-N4: the deal charts (deal_charts.js)
     money = lambda t: float(t.replace("£", "").replace(",", "").replace("−", "-").split()[0])
     pg.click("#tab-invest"); pg.wait_for_timeout(1500)
@@ -368,6 +374,43 @@ with sync_playwright() as p:
     pg.locator("#lapse-play").scroll_into_view_if_needed(); pg.click("#lapse-play"); pg.wait_for_timeout(3300); pg.click("#lapse-play"); pg.wait_for_timeout(600)
     big, race = txt("#lapse-big"), txt("#lapse-race-h") or ""
     check("P7 a paused time-lapse shows the same year in the bar race as in the big year", big and f"to {big}" in race, (big, race))
+    # S1-S5: version 32 (new-tenancy rent, source tags, adjusted comparables, Census profile, one-page report), on a home typed in by hand
+    pg.click("#tab-value"); pg.wait_for_timeout(500)
+    set_postcode("DN6 9NN")
+    if FULL: pg.select_option("#in-address", ""); pg.wait_for_timeout(500)
+    pg.select_option("#in-type", "S")
+    for s in ("#in-area", "#in-rooms", "#in-plot", "#in-prev-price", "#in-prev-month", "#in-asking"): pg.fill(s, "")
+    for s in ("#in-age", "#in-rating", "#in-form"): pg.select_option(s, "")
+    pg.select_option("#in-condition", "average")
+    pg.fill("#in-area", "82"); pg.dispatch_event("#in-area", "input"); pg.wait_for_timeout(1500)
+    s2 = txt("#v-src-sum") or ""
+    check("S2 each detail says where it came from, with a count from official records", s2 == "Where the details come from: 0 of 6 from official records, 5 not given", s2)
+    if FULL:
+        o = [x for x in options() if x[0] and "m²" in x[1]]
+        pg.select_option("#in-address", o[0][0]); pg.wait_for_timeout(1500); pg.click("#v-src-sum"); pg.wait_for_timeout(200)
+        s2b = (txt("#v-src-sum") or "", txt("#v-src-list") or "")
+        check("S2b a picked address tags its size and rating as from the energy certificate", "energy certificate" in s2b[1].split("Floor area")[1].split("\n")[1] and "of 6 from official records" in s2b[0], s2b[0])
+        pg.select_option("#in-address", ""); pg.wait_for_timeout(500); pg.fill("#in-area", "82"); pg.dispatch_event("#in-area", "input"); pg.wait_for_timeout(1200)
+    crow = pg.eval_on_selector_all("#comps-table tbody tr", "trs => trs.map(tr => [tr.cells[0].innerText, tr.cells[3].innerText, tr.cells[4].innerText])")
+    money_ = lambda s: float(s.replace("£", "").replace(",", "")) if s.strip().startswith("£") else float("nan")
+    same = [(money_(a), money_(b)) for w, a, b in crow if "Similar size, similar location" in w]
+    check("S3 comparables are adjusted to this home with a reason each; near-identical ones barely move", crow and all(money_(r[2]) > 0 for r in crow) and all(("larger" in r[0] or "smaller" in r[0] or "similar size" in r[0].lower()) for r in crow)
+          and all(abs(b / a - 1) < 0.06 for a, b in same) and "point to" in (txt("#comps-note") or ""), (len(crow), same[:2], (txt("#comps-note") or "")[:80]))
+    cz = pd.read_csv(D / "census.csv").set_index("geo")
+    here = pg.eval_on_selector_all("#census-table tbody tr", "trs => trs.map(tr => [tr.cells[0].innerText, tr.cells[1].innerText, tr.cells[2].innerText])")
+    want = f"{cz.loc['E01007487', 'private_rented_pct']:.0f}%", f"{cz.loc['E08000017', 'private_rented_pct']:.0f}%"
+    check("S4 the Census card shows the postcode's neighbourhood against Doncaster", here and here[0][0] == "Households renting privately" and tuple(here[0][1:]) == want and "Doncaster 002A" in (txt("#census-where") or ""), (here[:1], want))
+    vb = txt("#v-base")
+    pg.click("#tab-invest"); pg.wait_for_timeout(1500)
+    nl = pg.evaluate("() => Object.fromEntries(dash.data('rent_newlet').data.map((r) => [r.key, Number(r.value)]))")
+    rb = txt("#rent-build") or ""; paid = money(rb.split("Rent being paid on a home like this")[1].strip()); est = money(txt("#rent-est"))
+    check("S1 the rent is for a new tenancy: rent being paid x the rented mix x the new-let premium, used in the deal", "provisional" in rb and abs(est / paid / (nl["mix_S"] * (1 + nl["newlet_premium"])) - 1) < 0.012 and money(v("#b-rent")) == est, (paid, est, v("#b-rent")))
+    pg.click("#tab-value"); pg.wait_for_timeout(600)
+    pg.evaluate("() => { window.print = () => {}; document.querySelector('#print-btn').click(); }")
+    rep = pg.evaluate("() => document.querySelector('#report').textContent")
+    pg.emulate_media(media="print"); pdf = pg.pdf(format="A4"); pg.emulate_media(media="screen")
+    pages = len(re.findall(rb"/Type\s*/Page[^s]", pdf))
+    check("S5 the printed report is one A4 page with the estimate, details, comparables and rent", pages == 1 and "Valuation report" in rep and vb in rep and "Like this home" in rep and "new tenancy" in rep, (pages, rep[:90]))
     pg.click("#tab-value"); pg.wait_for_timeout(500)
     check("no page errors", not errs, errs[:3])
     b.close()

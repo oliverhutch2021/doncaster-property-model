@@ -18,7 +18,7 @@ TEST = os.environ.get("DPM_TEST_BUILD")
 SRC = ROOT / "dashboard"; D3 = SRC / "vendor/d3.min.js"   # d3 7.9.0 (ISC licence)
 CSV = ["ablation", "accuracy", "accuracy_breakdown", "area_bias", "assumptions", "comps", "condition", "ct_mix", "ext_flag", "feature_importance",
        "layer_tests", "levels", "lha", "pc_extras", "places", "postcodes", "price_index", "rents", "rules", "sectors", "street_levels", "streets",
-       "test_sample", "tier_index", "nbhd_index", "nb_dist", "rent_model", "possession", "changelog", "strict_eval"] + [k for k in ("method_compare", "backtest", "ratio_study", "confidence") if (D / f"{k}.csv").exists()]
+       "test_sample", "tier_index", "nbhd_index", "nb_dist", "rent_model", "possession", "changelog", "strict_eval"] + [k for k in ("method_compare", "backtest", "ratio_study", "confidence", "rent_newlet", "census", "broadband") if (D / f"{k}.csv").exists()]
 JSON = ["model_trees", "model_meta", "lsoa_map", "neighbourhoods"] + (["conf_trees"] if (D / "conf_trees.json").exists() else [])
 
 def read_csv(path):

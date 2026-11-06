@@ -90,6 +90,34 @@
 .dpm th button { all: unset; cursor: pointer; }
 .dpm tbody tr:hover td { background: color-mix(in srgb, var(--color-fg) 4%, transparent); }
 .dpm .show-narrow { display: none; }
+.dpm .comp-why { display: block; font-size: 0.85em; }
+.dpm details.srcs { margin: 0.4rem 0; }
+.dpm details.srcs summary { cursor: pointer; color: var(--color-fg-muted); }
+.dpm .src-off { color: var(--color-ok); }
+.dpm .src-none { color: var(--color-fg-muted); }
+.dpm #report { display: none; }
+@media print {
+  @page { size: A4; margin: 11mm; }
+  html, body { background: #fff !important; }
+  .dpm-foot { display: none !important; }
+  .dpm > *:not(#report) { display: none !important; }
+  .dpm { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+  .dpm #report { display: block !important; color: #111; font-size: 8.6pt; line-height: 1.32; }
+  #report h1 { font-size: 15pt; margin: 0 0 1mm; }
+  #report h2 { font-size: 10pt; margin: 3mm 0 1mm; border-bottom: 0.4pt solid #999; padding-bottom: 0.5mm; }
+  #report .r-meta, #report .r-note, #report .r-foot { color: #444; margin: 0 0 1mm; }
+  #report .r-foot { margin-top: 3mm; font-size: 7.4pt; }
+  #report .r-hero { display: flex; gap: 8mm; margin: 2mm 0; }
+  #report .r-hero > div { display: flex; flex-direction: column; gap: 0.4mm; }
+  #report .r-l { color: #444; }
+  #report .r-big { font-size: 17pt; }
+  #report table { width: 100%; border-collapse: collapse; }
+  #report th, #report td { text-align: left; padding: 0.5mm 1.5mm 0.5mm 0; border-bottom: 0.3pt solid #ddd; vertical-align: top; }
+  #report th.r, #report td.r { text-align: right; }
+  #report .r-src td.r, #report .r-src th.r, #report .r-comps td:last-child, #report .r-comps th:last-child { text-align: left; }
+  #report .r-kv td { border-bottom: 0.3pt solid #eee; width: 25%; }
+  #report .r-kv td.r-k { color: #444; }
+}
 @media (max-width: 640px) { .dpm .hide-narrow { display: none; } .dpm .show-narrow { display: block; font-size: 0.92em; } }
 /* wide tables get the full row on desktop rather than scrolling inside a half-width card */
 .dpm .grid > .card.wide { grid-column: 1 / -1; }

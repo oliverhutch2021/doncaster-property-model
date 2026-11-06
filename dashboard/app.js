@@ -649,7 +649,7 @@
     }
     const tested = $('#v-tested'), TY = ok('confidence') ? rows('confidence').filter((r) => r.kind === 'typed') : [];
     if (tested) {
-      const head = ok('accuracy') ? rows('accuracy').find((r) => r.model === 'dashboard' && r.split === 'test_2025_26' && r.metric === 'mdape') : null, few = !inp.epc && TY.length && head, aOnly = TY.find((r) => r.level === 'area only'), tOnly = TY.find((r) => r.level === 'type only');
+      const head = isFinite(headline('mdape')) ? { value: headline('mdape') } : null, few = !inp.epc && TY.length && head, aOnly = TY.find((r) => r.level === 'area only'), tOnly = TY.find((r) => r.level === 'type only');
       tested.textContent = few && aOnly && tOnly ? `Typed in by hand, estimates are less sure than the ${pct(num(head.value) * 100, 1)} headline: on 2025-26 test sales entered with only a floor area the median error was ${pct(num(aOnly.mdape) * 100, 1)}, and with only the type ${pct(num(tOnly.mdape) * 100, 1)}. Picking the address adds the certificate and last sale.` : '';
     }
     $('#cond-row').hidden = !cond.adj;
@@ -669,7 +669,9 @@
     $('#v-imd').textContent = isFinite(dec) ? `Decile ${dec}` : '—';
     $('#v-imd-note').textContent = `${v.pc.ward || ''}${isFinite(dec) ? ` · deprivation decile, 1 is the most deprived 10% in England` : ''}`;
     renderComps(v, inp);
+    renderSources(inp);
     renderAround(v);
+    renderCensus(v);
     renderWhy(v, cond);
     renderCt(v, inp);
     renderHist(inp);
@@ -698,15 +700,71 @@
       const i = idx.raw.get(String(c.date).slice(0, 7));
       return { ...c, dist: hav(v.lat, v.lon, c.latN, c.lonN), today: i ? c.priceN * model.indexLatest / i : NaN };
     }).sort((a, b) => a.dist - b.dist).slice(0, 12);
+    adjustComps(list, inp);
     list.forEach((r) => {
       const tr = document.createElement('tr');
       const where = (r.address ? r.address + ', ' : '') + r.postcode, sold = d3.utcFormat('%b %Y')(new Date(r.date)), ac = cell(tr, where); ac.title = where;
       const sl = document.createElement('span'); sl.className = 'show-narrow muted'; sl.textContent = 'Sold ' + sold; ac.appendChild(sl);       // on a phone the date sits under the address
-      cell(tr, sold, 'hide-narrow'); cell(tr, gbp(r.priceN), 'r hide-narrow'); cell(tr, gbp(r.today), 'r');
+      if (r.why) { const w = document.createElement('span'); w.className = 'muted comp-why'; w.textContent = r.why; ac.appendChild(w); }
+      cell(tr, sold, 'hide-narrow'); cell(tr, gbp(r.priceN), 'r hide-narrow'); cell(tr, gbp(r.today), 'r hide-narrow'); cell(tr, isFinite(r.adj) ? gbp(r.adj) : '—', 'r');
       cell(tr, isFinite(r.fa) && r.fa > 0 ? gbp(r.today / r.fa) : '—', 'r hide-narrow'); cell(tr, r.dist < 1 ? Math.max(10, Math.round(r.dist * 100) * 10) + ' m' : d3.format('.1f')(r.dist) + ' km', 'r');
       tb.appendChild(tr);
     });
+    const a = list.map((r) => r.adj).filter(isFinite).sort(d3.ascending);
+    $('#comps-note').textContent = a.length >= 3 ? `Adjusted to this home, these ${a.length} sales point to ${gbp(Math.round(median(a) / 1000) * 1000)} (middle half ${gbpK(d3.quantileSorted(a, 0.25))} to ${gbpK(d3.quantileSorted(a, 0.75))}), against the estimate of ${gbpK(v.est)} before any condition setting.` : '';
     drawCompsMap(v, list);
+  };
+  // where each detail the model uses came from, and how many of the six that matter most came from official records
+  const SRC_OFFICIAL = new Set(['cert', 'lr']);
+  const detailSources = (inp) => {
+    const e = state.epc, cert = e && e.lodged ? `energy certificate, ${monthLabel(String(e.lodged).slice(0, 7))}` : 'energy certificate';
+    const has = (sel) => $(sel).value !== '';
+    const shown = (sel) => { const el = $(sel); return el.tagName === 'SELECT' ? (el.options[el.selectedIndex] || {}).text : el.value; };
+    const typed = (sel) => (state.listingOwned[sel] ? ['listing', 'from the listing'] : ['you', 'you entered']);
+    const field = (sel) => (state.epcAuto[sel] && e ? ['cert', cert] : has(sel) ? typed(sel) : ['none', 'not given, so valued without it']);
+    const out = [];
+    const push = (name, [kind, src], value, key = true) => out.push({ name, kind, src, value, key });
+    const tCert = e ? (e.epc_type === 'Flat' || e.epc_type === 'Maisonette' ? 'F' : { 0: 'D', 1: 'S', 2: 'T', 3: 'T', 4: 'T', 5: 'T' }[String(e.built_form_code)]) : null;
+    push('Property type', tCert && tCert === inp.type ? ['cert', cert] : state.listingOwned['#in-type'] ? ['listing', 'from the listing'] : ['you', 'you chose'], shown('#in-type'), false);
+    push('Floor area', field('#in-area'), has('#in-area') ? shown('#in-area') + ' m²' : '—');
+    push('Bedrooms and living rooms', field('#in-rooms'), has('#in-rooms') ? shown('#in-rooms') : '—');
+    push('Built', field('#in-age'), has('#in-age') ? shown('#in-age') : '—');
+    const sapCert = e && !state.sapManual && isFinite(num(e.sap_current));
+    push('Energy rating', sapCert ? ['cert', cert] : state.sapFromListing ? ['listing', 'from the listing'] : has('#in-rating') ? ['you', 'you entered'] : ['none', 'not given, so valued without it'],
+      sapCert ? `${e.rating || shown('#in-rating')} (score ${num(e.sap_current)})` : has('#in-rating') ? shown('#in-rating') : '—');
+    const plotLR = e && isFinite(num(e.plot_m2)) && num(e.plot_m2) > 0;
+    push('Plot size', has('#in-plot') ? typed('#in-plot') : plotLR ? ['lr', 'HM Land Registry title plan'] : ['none', 'not given, so valued without it'],
+      has('#in-plot') ? shown('#in-plot') + ' m²' : plotLR ? `${d3.format(',')(Math.round(num(e.plot_m2)))} m²` : '—');
+    const noSale = e && !state.prevAuto && !has('#in-prev-price') && parseSales(e.sales).length === 0;
+    push('Last sale', state.prevAuto ? ['lr', `HM Land Registry, ${monthLabel(inp.prevMonth)}`] : has('#in-prev-price') ? ['you', 'you entered'] : noSale ? ['lr', 'HM Land Registry: none since 1995'] : ['none', 'not given, so valued without it'],
+      state.prevAuto || has('#in-prev-price') ? gbp(inp.prevPrice) : noSale ? 'None on record' : '—');
+    return out;
+  };
+  const renderSources = (inp) => {
+    const sum = $('#v-src-sum'), list = $('#v-src-list'); if (!sum || !list) return;
+    const d = detailSources(inp), key = d.filter((x) => x.key), off = key.filter((x) => SRC_OFFICIAL.has(x.kind)).length, none = key.filter((x) => x.kind === 'none').length;
+    sum.textContent = `Where the details come from: ${off} of ${key.length} from official records` + (none ? `, ${none} not given` : '');
+    kv(list, d.map((x) => [x.name, `${x.value} · ${x.src}`, SRC_OFFICIAL.has(x.kind) ? 'src-off' : x.kind === 'none' ? 'src-none' : '']));
+  };
+  // each comparable moved to this home with the model itself: value a home like this one (no last sale, which belongs to
+  // this home only) at its own postcode and size, then at the comparable's postcode, then at its postcode and floor area;
+  // adjusted = price in today's money x (this home ÷ this home at the comparable's place and size)
+  const adjustComps = (list, inp) => {
+    const base = { ...inp, prevPrice: NaN, prevMonth: '', prevNew: 0 }, v0 = value(base);
+    if (v0.status !== 'ok') return;
+    const sizeKnown = isFinite(inp.area) && inp.area > 0;
+    list.forEach((c) => {
+      const at = { ...base, postcode: c.postcode, epc: { ...(inp.epc || {}), address: c.address || '' } }, vl = value(at);
+      if (vl.status !== 'ok' || !isFinite(c.today)) return;
+      const sized = sizeKnown && isFinite(c.fa) && c.fa > 0, vc = sized ? value({ ...at, area: c.fa }) : vl;
+      if (vc.status !== 'ok') return;
+      c.adj = c.today * v0.est / vc.est;
+      const loc = vl.est / v0.est - 1, size = sized ? c.fa / inp.area - 1 : NaN, bits = [];
+      if (sized) bits.push(Math.abs(size) < 0.05 ? 'similar size' : `${pct(Math.abs(size) * 100, 0)} ${size > 0 ? 'larger' : 'smaller'}`);
+      else bits.push(sizeKnown ? 'size not recorded' : 'add a floor area to adjust for size');
+      bits.push(Math.abs(loc) < 0.03 ? 'similar location' : `location ${pct(Math.abs(loc) * 100, 0)} ${loc > 0 ? 'dearer' : 'cheaper'}`);
+      c.why = bits.join(', ').replace(/^./, (s) => s.toUpperCase());
+    });
   };
   const kmTxt = (d) => (d < 1 ? Math.round(d * 1000 / 10) * 10 + ' m' : d3.format('.1f')(d) + ' km');   // the unit never wraps away from its number
   const floodText = (ex) => {
@@ -716,6 +774,57 @@
     if (hm > 0) return [`High or medium for ${pct(hm * 100, 0)} of homes`, 'warnc'];
     if (an > 0) return [`Low or very low for ${pct(an * 100, 0)} of homes`, ''];
     return ['Not in an area at risk', 'good'];
+  };
+  // ================= one-page report =================
+  // built from what the Value tab shows; the print stylesheet hides everything else, so the browser's print (or Save as PDF) gives one A4 page
+  const buildReport = () => {
+    const box = $('#report'); if (!box) return false;
+    box.replaceChildren();
+    const L = state.last;
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    if (!L) { box.append(el('p', null, 'Value a home on the Value tab first, then print.')); return false; }
+    const inp = L.inp, model = getModel(), e = state.epc;
+    const where = e && e.address ? `${e.address}, ${inp.postcode}` : `${inp.postcode}${L.street ? ', ' + L.street.replace(/\w\S*/g, (w) => w[0] + w.slice(1).toLowerCase()) : ''}`;
+    box.append(el('h1', null, 'Valuation report'), el('p', 'r-meta', `${where} · ${TYPE_NAME[inp.type]} · ${model ? `prices at ${monthLabel(model.valMonth)}` : ''} · printed ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`));
+    const hero = el('div', 'r-hero'), a = el('div'), cond = L.cond && L.cond.adj ? `, ${L.cond.label.toLowerCase()}` : ', average condition';
+    a.append(el('span', 'r-l', 'Estimated value today'), el('b', 'r-big', gbp(Math.round(L.adj / 1000) * 1000)),
+      el('span', null, `80% range ${gbpK(L.lo * (1 + (L.cond ? L.cond.adj : 0) / 100))} to ${gbpK(L.hi * (1 + (L.cond ? L.cond.adj : 0) / 100))}${cond}`), el('span', null, $('#v-conf').innerText));
+    hero.append(a);
+    const R = rentEstimate();
+    if (R) { const b = el('div'); b.append(el('span', 'r-l', R.N ? 'Rent for a new tenancy (provisional)' : 'Estimated rent'), el('b', 'r-big', gbp(R.est) + ' a month'),
+      el('span', null, `Likely ${gbp(R.lo)} to ${gbp(R.hi)}${R.N ? `; rents being paid on homes like it about ${gbp(R.paid)}` : ''}`), el('span', null, `Gross yield at the estimate ${pct(1200 * R.est / L.adj, 1)}`)); hero.append(b); }
+    box.append(hero);
+    const two = (ps) => { const out = []; for (let i = 0; i < ps.length; i += 2) out.push([ps[i][0], ps[i][1], ps[i + 1] ? ps[i + 1][0] : '', ps[i + 1] ? ps[i + 1][1] : '']); return out; };
+    const grid = (rs) => { const tb = el('table', 'r-kv'); rs.forEach((r) => { const tr = el('tr'); r.forEach((c, i) => tr.append(el('td', i % 2 ? null : 'r-k', c))); tb.append(tr); }); return tb; };
+    const table = (head, rowsIn, cls) => { const tb = el('table', cls), th = el('tr'); head.forEach((h, i) => th.append(el('th', i ? 'r' : null, h))); tb.append(th); rowsIn.forEach((r) => { const tr = el('tr'); r.forEach((c, i) => tr.append(el('td', i ? 'r' : null, c))); tb.append(tr); }); return tb; };
+    const d = detailSources(inp), key = d.filter((x) => x.key), off = key.filter((x) => SRC_OFFICIAL.has(x.kind)).length;
+    box.append(el('h2', null, `The home: ${off} of ${key.length} key details from official records`), grid(two(d.map((x) => [x.name, `${x.value} · ${x.src}`]))));
+    const comps = [...$('#comps-table tbody').rows].slice(0, 6).map((tr) => { const c = tr.cells; const addr = c[0].firstChild ? c[0].firstChild.textContent : ''; const why = c[0].querySelector('.comp-why'); return [addr, c[1].textContent, c[2].textContent, c[4].textContent, why ? why.textContent : '']; });
+    if (comps.length) box.append(el('h2', null, 'Nearest comparable sales, adjusted to this home'), table(['Address', 'Sold', 'Price', 'Like this home', 'Why it differs'], comps.map((r) => [r[0], r[1], r[2], r[3], r[4]]), 'r-comps'), el('p', 'r-note', $('#comps-note').textContent));
+    const pairs = []; [...$('#around-risk').children, ...$('#around-amen').children].forEach((n) => { if (n.tagName === 'DT') { if (n.textContent.trim() || !pairs.length) pairs.push([n.textContent, []]); } else if (pairs.length && n.textContent) pairs.at(-1)[1].push(n.textContent); });
+    if (pairs.length) box.append(el('h2', null, 'Around this home'), grid(two(pairs.map(([k, v]) => [k, v.join(' · ')]))));
+    const C = getCensus(), here = C && L.pc ? C.get(L.pc.lsoa21) : null, la = C ? C.get('E08000017') : null;
+    if (here) box.append(el('h2', null, `Who lives nearby (Census 2021, ${here.name})`), table(['', 'Here', 'Doncaster'], CENSUS_ROWS.filter(([k]) => ['private_rented_pct', 'owned_pct', 'degree_pct', 'mean_age', 'cars_per_household'].includes(k))
+      .map(([k, name, u]) => { const f = (r) => { const x = num(r[k]); return u === '%' ? pct(x, 0) : u === 'y' ? d3.format('.0f')(x) : d3.format('.1f')(x); }; return [name, f(here), la ? f(la) : '—']; }), 'r-census'));
+    box.append(el('p', 'r-foot', `Doncaster Property Model: a statistical estimate from public data (HM Land Registry, energy certificates, ONS, Census 2021, OS, Environment Agency, DfE), not a survey, mortgage valuation, or financial advice. Median error on 5,995 test sales: 8.1%. oliverhutch2021.github.io/doncaster-property-model`));
+    return true;
+  };
+  $('#print-btn').addEventListener('click', () => { buildReport(); window.print(); });
+  window.addEventListener('beforeprint', () => { if (!$('#report').childElementCount) buildReport(); });
+  window.addEventListener('afterprint', () => $('#report').replaceChildren());
+  // Census 2021 for the home's neighbourhood (LSOA), against Doncaster and England (census dataset, src/census_profile.py)
+  const getCensus = () => (ok('census') ? (cache.census || (cache.census = new Map(rows('census').map((r) => [r.geo, r])))) : null);
+  const CENSUS_ROWS = [['private_rented_pct', 'Households renting privately', '%'], ['owned_pct', 'Owner-occupied', '%'], ['social_rented_pct', 'Renting from a council or housing association', '%'],
+    ['degree_pct', 'Adults with a degree or higher', '%'], ['no_qual_pct', 'Adults with no qualifications', '%'], ['students_pct', 'Schoolchildren and full-time students', '%'],
+    ['mean_age', 'Average age', 'y'], ['age65_pct', 'Aged 65 or over', '%'], ['cars_per_household', 'Cars or vans per household', 'n'], ['no_car_pct', 'Households with no car', '%']];
+  const renderCensus = (v) => {
+    const tb = $('#census-table tbody'); if (!tb) return; tb.replaceChildren();
+    const C = getCensus(), here = C && v.pc ? C.get(v.pc.lsoa21) : null, la = C ? C.get('E08000017') : null, en = C ? C.get('E92000001') : null;
+    $('#census-card').hidden = !here;
+    if (!here) return;
+    $('#census-where').textContent = `${here.name} (about ${d3.format(',')(Math.round(num(here.households) / 10) * 10)} households), the Census neighbourhood this postcode is in.`;
+    const f = (r, k, u) => { const x = num(r[k]); return !isFinite(x) ? '—' : u === '%' ? pct(x, 0) : u === 'y' ? d3.format('.0f')(x) : d3.format('.1f')(x); };
+    CENSUS_ROWS.forEach(([k, name, u]) => { const tr = document.createElement('tr'); cell(tr, name); cell(tr, f(here, k, u), 'r'); cell(tr, la ? f(la, k, u) : '—', 'r'); cell(tr, en ? f(en, k, u) : '—', 'r'); tb.appendChild(tr); });
   };
   const renderAround = (v) => {
     const r1 = $('#around-risk'), r2 = $('#around-amen');
@@ -1294,15 +1403,33 @@
     if (cache.rm) return cache.rm;
     return (cache.rm = { v: Object.fromEntries(rows('rent_model').map((r) => [r.key, num(r.value)])), row: Object.fromEntries(rows('rent_model').map((r) => [r.key, r])) });
   };
-  const modelRent = (RM, t, value) => RM.v['rent_' + t] * (value / RM.v['ref_price_' + t]) ** RM.v.beta;
+  const modelRent = (RM, t, value) => RM.v['rent_' + t] * (value / RM.v['ref_price_' + t]) ** RM.v.beta;   // a rent being paid (ONS basis)
+  // provisional new-tenancy adjustment (rent_newlet dataset, src/rent_newlet.py): the rented mix of each type, then the
+  // premium of a new let over rents being paid, from Doncaster's rent growth; without the dataset rents stay on the ONS basis
+  // the headline accuracy: the strict test (the model only sees sales at least two months old), as in the README and the
+  // comparison chart; the every-earlier-sale score if that table is missing
+  const headline = (mt) => {
+    const rt = ok('method_compare') ? rows('method_compare').find((r) => r.method === 'model_realtime') : null;
+    if (rt && isFinite(num(rt[mt]))) return num(rt[mt]);
+    return num((rows('accuracy').find((x) => x.model === 'dashboard' && x.split === 'test_2025_26' && x.metric === mt) || {}).value);
+  };
+  const getNL = () => {
+    if (!ok('rent_newlet')) return null;
+    if (cache.nl) return cache.nl;
+    const v = Object.fromEntries(rows('rent_newlet').map((r) => [r.key, num(r.value)])), row = Object.fromEntries(rows('rent_newlet').map((r) => [r.key, r]));
+    return (cache.nl = { v, row, mix: (t) => (isFinite(v['mix_' + t]) ? v['mix_' + t] : 1), prem: isFinite(v.newlet_premium) ? v.newlet_premium : 0 });
+  };
+  const nlF = (t) => { const N = getNL(); return N ? N.mix(t) * (1 + N.prem) : 1; };
+  const newletRent = (RM, t, value) => modelRent(RM, t, value) * nlF(t);
   const BED_KEY = (b) => (['1', '2', '3', '4'].includes(String(b)) ? String(b) : 'all');
   const BED_NAME = { 1: '1-bed', 2: '2-bed', 3: '3-bed', 4: '4+ bed', all: 'all' };
   const rentEstimate = () => {
     const RM = getRM(), L = state.last; if (!RM || !L || !L.inp) return null;
     const t = L.inp.type, V = L.adj; if (!TYPES.includes(t) || !isFinite(V) || V <= 0) return null;
     const base = RM.v['rent_' + t], ref = RM.v['ref_price_' + t], ratio = V / ref, raw = base * ratio ** RM.v.beta, k = BED_KEY(L.inp.beds);
-    const est = Math.round(raw / 5) * 5;
-    return { t, V, base, ref, ratio, est, lo: Math.round(raw * RM.v['rq_lq_' + k] / 5) * 5, hi: Math.round(raw * RM.v['rq_uq_' + k] / 5) * 5, k, RM };
+    const N = getNL(), nl = raw * nlF(t);
+    const est = Math.round(nl / 5) * 5, paid = Math.round(raw / 5) * 5;
+    return { t, V, base, ref, ratio, est, paid, N, lo: Math.round(nl * RM.v['rq_lq_' + k] / 5) * 5, hi: Math.round(nl * RM.v['rq_uq_' + k] / 5) * 5, k, RM };
   };
   const getDist = () => {
     if (!ok('nb_dist')) return null;
@@ -1383,7 +1510,7 @@
     $('#inv-sub').textContent = `${nb ? nbName + ' · ' : ''}bought at ${gbp(P)} against an estimated value of ${gbp(V)} · change the home on the Value tab and the price or rent in the deal below`;
     const H = homeReturn(), c = H.c, rent = d.rent, g = H.g, { net, rk: rkP, total } = H.total(P, rent);
     // a typical home of this type here, valued at the local median and let at its modelled rent
-    const R = nb || N.D, Pt = isFinite(num(R['median_' + t])) ? num(R['median_' + t]) : num(R.median_price), rt = modelRent(RM, t, Pt), netT = cashNet(Pt, rt, c, A), rkT = riskFor(R, Pt, rt, A, c.hold), totT = netT + g - (state.riskOn && rkT ? rkT.total : 0);
+    const R = nb || N.D, Pt = isFinite(num(R['median_' + t])) ? num(R['median_' + t]) : num(R.median_price), rt = newletRent(RM, t, Pt), netT = cashNet(Pt, rt, c, A), rkT = riskFor(R, Pt, rt, A, c.hold), totT = netT + g - (state.riskOn && rkT ? rkT.total : 0);
     countTo($('#inv-total'), total, (v) => pct(v, 1)); $('#inv-total-n').textContent = state.riskOn && rkP ? `Net yield ${pct(net, 1)} + growth ${pct(g, 1)} − risk ${d3.format('.1f')(rkP.total)} (tenants ${d3.format('.1f')(rkP.tenant)}, flood ${d3.format('.1f')(rkP.flood)}, downturn ${d3.format('.1f')(rkP.down)})` : `Net yield ${pct(net, 1)} + ${o.basis}-year growth ${pct(g, 1)}${rkP ? ` · risk allowance would take ${d3.format('.1f')(rkP.total)} pts` : ''}`;
     $('#inv-above-l').textContent = `Above ${o.oppName} (${pct(o.opp, 2)})`;
     const ab = $('#inv-above'); countTo(ab, total - o.opp, (v) => pts(v)); ab.classList.toggle('good', total > o.opp); ab.classList.toggle('badc', total < o.opp);
@@ -1400,9 +1527,10 @@
     const area = L.inp.area, dp = distFor(ms, t, 'ppsqm');
     if (dp && isFinite(area) && area > 0) { const x = Math.log(P / area), pb = pctBelow(dp, x); rowsDef.push({ key: 'ppsqm', h: 'Price per m²', x, d: dp, lower: true, fmt: (v) => gbp(Math.exp(v)),
       v: `${gbp(P / area)} per m² (${d3.format(',')(Math.round(area))} m²)`, z: -(x - dp.mean) / dp.sd, beat: 100 - pb.p, edge: -pb.edge, t1: `Typical ${gbp(Math.exp(dp.q[3][1]))} per m² for recent sales.`, what: 'cheaper per m² than' }); }
-    const dy = distFor(ms, t, 'yield');
+    // recent sales' yields were worked out at rents being paid (src/invest_v10.py); move them to new-tenancy rents like this home's
+    const dy0 = distFor(ms, t, 'yield'), sh = Math.log(nlF(t)), dy = dy0 && { ...dy0, mean: dy0.mean + sh, q: dy0.q.map(([p, v]) => [p, v + sh]) };
     if (dy && rent >= 0) { const y = 1200 * rent / P, x = y > 0 ? Math.log(y) : dy.q[0][1] - 0.15 * (dy.q[6][1] - dy.q[0][1]), pb = pctBelow(dy, x); rowsDef.push({ key: 'yield', h: 'Gross yield', x, d: dy, lower: false, fmt: (v) => pct(Math.exp(v), 1),
-      v: `${pct(y, 1)} at ${gbp(rent)} a month`, z: (x - dy.mean) / dy.sd, beat: pb.p, edge: pb.edge, t1: `Typical ${pct(Math.exp(dy.q[3][1]), 1)} for recent sales, at their modelled rents.`, what: 'a higher yield than' }); }
+      v: `${pct(y, 1)} at ${gbp(rent)} a month`, z: (x - dy.mean) / dy.sd, beat: pb.p, edge: pb.edge, t1: `Typical ${pct(Math.exp(dy.q[3][1]), 1)} for recent sales, at their modelled ${getNL() ? 'new-tenancy ' : ''}rents.`, what: 'a higher yield than' }); }
     const box = $('#inv-rows');
     if (!(isFinite(area) && area > 0)) rowsDef.push({ key: 'hint' });
     const keep = new Map([...box.querySelectorAll('.inv-row')].map((el) => [el.dataset.k, el]));
@@ -1441,12 +1569,16 @@
     const R = rentEstimate(), A = getAss(), L = state.last, o = nbOpts();
     if (!R || !A) { still($('#rent-est')); ['#rent-range', '#rent-note'].forEach((s) => ($(s).textContent = '')); kv($('#rent-build'), []); fresh(box); $('#rent-use').hidden = true; return; }
     const RM = R.RM, d = readDeal(), c = dealCosts(A), N = getNb(), rentOK = !dealProblem(d, ['rent']);
-    countTo($('#rent-est'), R.est, (v) => gbp(v)); $('#rent-range').textContent = `Likely ${gbp(R.lo)} to ${gbp(R.hi)} a month: the middle half of Doncaster rents for ${R.k === 'all' ? 'all homes' : BED_NAME[R.k] + ' homes'}, around the estimate`;
+    countTo($('#rent-est'), R.est, (v) => gbp(v)); $('#rent-range').textContent = `Likely ${gbp(R.lo)} to ${gbp(R.hi)} a month${R.N ? ' for a new tenancy' : ''}: the middle half of Doncaster rents for ${R.k === 'all' ? 'all homes' : BED_NAME[R.k] + ' homes'}, around the estimate`;
+    const NL = R.N, mix = NL ? NL.mix(R.t) : 1;
     kv($('#rent-build'), [
-      [`Doncaster average rent, ${TYPE_NAME[R.t].toLowerCase()} (ONS)`, gbp(R.base)],
+      [`Doncaster average rent being paid, ${TYPE_NAME[R.t].toLowerCase()} (ONS)`, gbp(R.base)],
       [`This home's value against Doncaster's average ${TYPE_SHORT[R.t].toLowerCase()} (${gbpK(R.ref)})`, `${d3.format('.2f')(R.ratio)}×`],
       [`Rents rise ${d3.format('.2f')(RM.v.beta)}% for each 1% of value`, `×${d3.format('.2f')(R.ratio ** RM.v.beta)}`],
-      ['Estimated rent', gbp(R.est)], 'sep',
+      ...(NL ? [['Rent being paid on a home like this', gbp(R.paid)],
+        [`Rented ${TYPE_PLURAL[R.t]} are cheaper than the average one, so ONS's average rent belongs to a cheaper home`, `×${d3.format('.3f')(mix)}`],
+        [`New tenancy premium (provisional): rents grew ${pct(NL.v.rent_growth_2y * 100, 1)} a year and about ${pct(NL.v.reprice_share * 100, 0)} of tenancies reset to the market each year`, `×${d3.format('.3f')(1 + NL.prem)}`],
+        ['Estimated rent for a new tenancy', gbp(R.est)]] : [['Estimated rent', gbp(R.est)]]), 'sep',
       [`Fitted across ${RM.v.n_areas} council areas; predicts an area's rents it hadn't seen to within`, `${d3.format('.1f')(RM.v.loo_error)}% (vs ${d3.format('.1f')(RM.v.loo_error_base)}% from the region alone)`],
       ['Inside Doncaster, rents across the four house types follow prices by', `${d3.format('.2f')(RM.v.slope_doncaster)}% per 1%`]]);
     // the rent ladder: estimate and range against the reference points
@@ -1470,7 +1602,9 @@
     }
     drawRentLadder(box, R, items);
     const src = RM.row['rq_lq_' + R.k] ? RM.row['rq_lq_' + R.k].source.replace('ONS private rental market statistics, Doncaster, ', '').replace(/ \((\d+) rents\)/, (m0, n) => `, from ${d3.format(',')(+n)} rents`) : '';
+    const zc = NL ? NL.v.check_zoopla_terraced : NaN;
     const notes = [`The middle half comes from ONS private rental market statistics for Doncaster (${src}), the last year they gave quartiles.`,
+      ...(NL ? [`ONS averages the rents tenants are paying now, including long tenancies whose rent lags the market; a buyer letting today sets a new rent. The two new-tenancy steps are provisional: the rented mix is measured from energy certificates, the premium is reasoned from rent growth and has not yet been tested on Doncaster lettings.${isFinite(zc) ? ` As a check, Zoopla's Doncaster new-let rents (September 2025) sat ${pct((zc - 1) * 100, 0)} above the unadjusted formula for terraces, against ${pct((nlF('T') - 1) * 100, 0)} here.` : ''}`] : []),
       'The estimate assumes homes within Doncaster follow the same link between rent and value as council areas do; it hasn\'t been tested on individual lets, as no open data has them. Check it against local listings.'];
     $('#rent-note').textContent = notes.join(' ');
     const use = $('#rent-use'); use.hidden = rentOK && Math.abs(d.rent - R.est) < 5; use.textContent = `Use ${gbp(R.est)} in the deal`;
@@ -1628,7 +1762,7 @@
     if (!r || !o) return null;
     const A = o.A, g = num(r[`growth_${o.basis}y`]);
     const part = (t) => {
-      const P = num(r['median_' + t]), rent = num(r['rent_' + t]); if (!isFinite(P) || !isFinite(rent) || P <= 0) return null;
+      const P = num(r['median_' + t]), rent = num(r['rent_' + t]) * nlF(t); if (!isFinite(P) || !isFinite(rent) || P <= 0) return null;   // ONS average, moved to a new tenancy
       const R = 12 * rent, income = R * (1 - A.voids.v / 52) * (1 - (A.letting_fee.v + A.maintenance.v) / 100) - A.insurance.v - A.compliance.v;
       const oneOff = (sdlt(P, A) + A.buying_costs.v + P * A.selling_costs.v / 100) / o.hold;
       return { P, n: num(r['n_' + t]) || 1, gross: 100 * R / P, net: 100 * (income - oneOff) / P, rk: riskFor(r, P, rent, A, o.hold) };
@@ -1765,7 +1899,7 @@
     if (N && o) {
       if (!state.nbPicked || !N.byId.has(state.nb)) state.nb = propertyNb(N) || (nbRanked(N, o)[0] || {}).r?.msoa21 || N.list[0].msoa21;
       const tn = o.type === 'A' ? 'each type of home' : TYPE_PLURAL[o.type];
-      $('#nb-ctl-note').textContent = `Returns are for a cash purchase at the local median price, let at Doncaster's ONS average rent for ${tn}. Net yield takes off letting and management (${pct(o.A.letting_fee.v, 0)} of rent), maintenance (${pct(o.A.maintenance.v, 0)}), ${o.A.voids.v} void weeks, insurance and safety checks, and spreads stamp duty (with the ${pct(o.A.sdlt_surcharge.v, 0)} surcharge), legal and selling costs over ${o.hold} years. Price growth is the average of the past ${o.basis} years, not a forecast. The opportunity cost is what the same cash could earn instead: ${o.oppName} at ${pct(o.opp, 2)}.${state.riskOn ? ' Risk allowance on: returns are after allowances for tenant risk, flood insurance, EPC upgrades and a future downturn.' : ''}`;
+      $('#nb-ctl-note').textContent = `Returns are for a cash purchase at the local median price, let at Doncaster's ONS average rent for ${tn}${getNL() ? ', moved to a new tenancy (provisional adjustment, Investing tab)' : ''}. Net yield takes off letting and management (${pct(o.A.letting_fee.v, 0)} of rent), maintenance (${pct(o.A.maintenance.v, 0)}), ${o.A.voids.v} void weeks, insurance and safety checks, and spreads stamp duty (with the ${pct(o.A.sdlt_surcharge.v, 0)} surcharge), legal and selling costs over ${o.hold} years. Price growth is the average of the past ${o.basis} years, not a forecast. The opportunity cost is what the same cash could earn instead: ${o.oppName} at ${pct(o.opp, 2)}.${state.riskOn ? ' Risk allowance on: returns are after allowances for tenant risk, flood insurance, EPC upgrades and a future downturn.' : ''}`;
     }
     safe('the neighbourhood profile', renderNb);
     safe('the time-lapse', renderLapse);
@@ -2543,7 +2677,7 @@
   // ================= header and render loop =================
   const renderHeader = () => {
     if (!ok('accuracy') || !ok('model_meta')) return;
-    const g = (mt) => num((rows('accuracy').find((x) => x.model === 'dashboard' && x.split === 'test_2025_26' && x.metric === mt) || {}).value);
+    const g = headline;
     const meta = Object.fromEntries(rows('model_meta').map((r) => [r.key, r.value]));
     $('#lede').textContent = `What a Doncaster home would sell for today, from ${d3.format(',')(num(meta.n_sales_model))} Land Registry sales matched to energy certificates. On 2025–26 sales it hadn't seen, half of its estimates were within ${d3.format('.1%')(g('mdape'))} of the price paid and ${d3.format('.0%')(g('within10'))} within 10%.`;
     $('#head-meta').textContent = `Prices to ${monthLabel(meta.index_latest_month)} · built from open data: HM Land Registry, energy certificates, ONS, OS`;
