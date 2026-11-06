@@ -11,3 +11,7 @@ tests/.private/
 outputs/standalone/
 # Claude Code personal settings
 .claude/settings.local.json
+
+# rent study: PropertyData listings may be kept for 60 days and not redistributed, so the pulls and anything fitted on them stay here
+data/private/
+outputs/private/
