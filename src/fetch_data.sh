@@ -47,5 +47,7 @@ mkdir -p voa && for f in 6a0ad444c75cc34a8ff8f397/CTSOP1.1.zip 6a0ad462229555d0f
 mkdir -p osmap && for t in SE SK; do curl -sSL -o osmap/oml_$t.zip "https://api.os.uk/downloads/v1/products/OpenMapLocal/downloads?area=$t&format=ESRI%C2%AE+Shapefile&redirect" && unzip -oqj osmap/oml_$t.zip "*/data/${t}_Building.*" -d osmap; done
 # UK House Price Index full file (HM Land Registry / ONS), for src/compare_methods.py
 mkdir -p ukhpi && curl -sSL -o ukhpi/UK-HPI-full-file-2026-07.csv "https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/UK-HPI-full-file-2026-07.csv"
+# ONS Census 2021 tables by LSOA, local authority and country (Nomis bulk downloads), for src/census_profile.py
+mkdir -p census2021 && for t in ts054 ts067 ts068 ts007a ts045; do curl -sS -o census2021/census2021-$t.zip "https://www.nomisweb.co.uk/output/census/2021/census2021-$t.zip"; done
 # Postcode coordinates and LSOA codes from postcodes.io
 cd ../.. && python3 src/fetch_postcodes.py
