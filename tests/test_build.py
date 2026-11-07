@@ -4,9 +4,10 @@
   2. the dashboard's assumptions are config/assumptions.csv, unchanged (src/apply_assumptions.py)
   3. src/build_standalone.py, run on dashboard/ and outputs/dash2/, gives the public copy byte for byte
      (public/index.html in the zip, outputs/standalone/index.html in a full checkout)
-  4. no page file is over 256 KB, the most the Claude dashboard accepts for one file (index.html and each script it loads)
+  4. no page file is over 256 KB once stored, the most the Claude dashboard accepts for one file (index.html and each
+     script it loads). It stores each file as a JSON document {"text": ...}, whose escaping adds about 1%, so that is measured
   python tests/test_build.py"""
-import filecmp, os, pathlib, re, subprocess, sys, tempfile
+import filecmp, json, os, pathlib, re, subprocess, sys, tempfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]; fails = []
 def check(name, ok, detail=""):
     print("PASS" if ok else "FAIL", name, detail); (None if ok else fails.append(name))
@@ -21,6 +22,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("3 the public copy rebuilds byte for byte", same, (r.stderr.strip().splitlines() or [""])[-1] if r.returncode else f"{out.stat().st_size / 1e6:.1f} MB vs {shipped}")
 page = ROOT / "dashboard/index.html"
 files = [page] + [ROOT / "dashboard" / f for f in re.findall(r'<script src="([\w.]+)"></script>', page.read_text(encoding="utf-8"))]
-big = [f"{f.name} {f.stat().st_size:,} bytes" for f in files if f.stat().st_size > 256 * 1024]
-check("4 every page file is under 256 KB", not big, ", ".join(big) or ", ".join(f"{f.name} {f.stat().st_size / 1024:.0f} KB" for f in files))
+stored = {f.name: len(json.dumps({"text": f.read_text(encoding="utf-8")}, ensure_ascii=False).encode("utf-8")) for f in files}
+big = [f"{n} {s:,} bytes stored" for n, s in stored.items() if s > 256 * 1024]
+check("4 every page file is under 256 KB as stored", not big, ", ".join(big) or ", ".join(f"{n} {s / 1024:.0f} KB" for n, s in stored.items()))
 sys.exit(1 if fails else 0)
