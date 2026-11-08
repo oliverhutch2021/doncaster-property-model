@@ -77,10 +77,11 @@
         <p class="note" id="v-tested" data-source="confidence accuracy"></p>
         <p class="muted" id="v-local"></p>
         <div class="cond-row" id="cond-row" hidden><span class="label" id="v-cond-label">If in this condition</span><span class="mid" id="v-cond">—</span><span class="muted" id="v-cond-note"></span></div>
-        <div class="mini" id="v-btl" data-source="rent_model rent_newlet assumptions" hidden>
+        <div class="mini btl3" id="v-btl" data-source="rent_model rent_newlet assumptions" hidden>
           <div><span class="label">Rent</span><span class="mid" id="v-rent">—</span><span class="muted" id="v-rent-note"></span></div>
           <div><span class="label">Yield</span><span class="mid" id="v-yield">—</span><span class="muted" id="v-yield-note"></span></div>
           <div><span class="label">Cash flow</span><span class="mid" id="v-cash">—</span><span class="muted" id="v-cash-note"></span></div>
+          <p class="muted btl-terms" id="v-btl-terms"></p>
         </div>
         <div class="mini">
           <div id="ask-tile"><span class="label">Asking price check</span><span class="mid" id="v-ask">—</span><span class="muted" id="v-ask-note">Add an asking price or paste a listing</span></div>
@@ -203,38 +204,38 @@
           <label class="fld">Purchase price (£) <input id="b-price" type="number" min="1000" max="20000000" step="1000"></label>
           <label class="fld">Deposit (%) <input id="b-deposit" type="number" min="0" max="100" step="1"></label>
           <label class="fld">Mortgage rate (%) <input id="b-rate" type="number" min="0" step="0.05"></label>
-          <label class="fld">Mortgage type <select id="b-mtype"><option value="io">Interest-only</option><option value="rep">Repayment</option></select></label>
           <label class="fld" title="Lenders test the rent against the interest at a stress rate. The PRA expects at least 5.5% or the rate + 2 points for shorter fixes; a fix of 5 years or more can be tested at its own rate (SS13/16).">Fixed for <select id="b-fix"><option value="5">5 years or more</option><option value="2">2 years</option></select></label>
+          <label class="fld">Mortgage type <select id="b-mtype"><option value="io">Interest-only</option><option value="rep">Repayment</option></select></label>
           <label class="fld">Term (years) <input id="b-term" type="number" min="5" max="40" step="1"></label>
           <label class="fld">Arrangement fee (£) <input id="b-fee" type="number" min="0" step="100"></label>
+          <label class="fld">Legal and survey (£) <input id="b-legal" type="number" min="0" step="100"></label>
         </div></fieldset>
-        <fieldset><legend>Rent and running costs</legend><div class="form">
+        <fieldset><legend>Rent and costs</legend><div class="form">
           <label class="fld">Monthly rent (£) <input id="b-rent" type="number" min="0" step="10"></label>
+          <label class="fld">Void weeks a year <input id="b-voids" type="number" min="0" max="52" step="1"></label>
           <label class="fld">Letting fee (% of rent) <input id="b-letting" type="number" min="0" step="0.5"></label>
           <label class="fld">Maintenance (% of rent) <input id="b-maint" type="number" min="0" step="0.5"></label>
-          <label class="fld">Void weeks a year <input id="b-voids" type="number" min="0" max="52" step="1"></label>
           <label class="fld">Insurance (£/yr) <input id="b-ins" type="number" min="0" step="10"></label>
-          <label class="fld">Safety checks, licences (£/yr) <input id="b-comp" type="number" min="0" step="10"></label>
-        </div></fieldset>
-        <fieldset><legend>Tax and one-off costs</legend><div class="form">
-          <label class="fld span2">Ownership <select id="b-owner"><option value="basic">Personal, basic-rate taxpayer</option><option value="higher">Personal, higher-rate taxpayer</option><option value="company">Limited company</option></select></label>
-          <label class="fld">Tax rates <select id="b-taxyear"><option value="2026">2026-27</option><option value="2027">From April 2027</option></select></label>
-          <label class="fld">Legal and survey (£) <input id="b-legal" type="number" min="0" step="100"></label>
+          <label class="fld" title="Gas safety and electrical checks, any licence, and the landlord register fee">Safety checks (£/yr) <input id="b-comp" type="number" min="0" step="10"></label>
           <label class="fld">Works before letting (£) <input id="b-works" type="number" min="0" step="500"></label>
           <label class="fld">EPC upgrade to C (£) <input id="b-epc" type="number" min="0" step="100"></label>
-          <label class="fld" title="Only improvements come off the gain when you sell: something the home didn't have, such as an extension or a loft conversion. Repairs, decorating and like-for-like replacements don't (gov.uk); the projection sets them against the first year's rental profit instead.">Of these, improvements (£) <input id="b-improve" type="number" min="0" step="500" value="0"></label>
-          <label class="fld" id="b-income-wrap" title="Your taxable income each year from other sources (salary, pension), after the personal allowance, not counting these homes' rent. It sets the capital gains tax rate when you sell (gains that fit in what's left of the £37,700 basic-rate band pay 18%, the rest 24%; HMRC's example uses £20,000), your tax band on a personal portfolio, and the tax on dividends from a company.">Your other taxable income (£/yr) <input id="b-income" type="number" min="0" step="1000"></label>
         </div></fieldset>
-        <fieldset><legend>Portfolio and company</legend><div class="form">
-          <label class="fld" title="The portfolio card below buys this home this many times. With Limited company chosen, the company's running costs are shared across them and corporation tax is worked out on all of them together.">Homes in the portfolio <input id="co-homes" type="number" min="1" max="200" step="1"></label>
-          <label class="fld" title="Limited company buy-to-let mortgages cost a little more than personal ones: Moneyfacts' averages were about 0.3 points higher for 5-year fixes in autumn 2025. Added to the mortgage rate above when the owner is a company.">Company mortgage premium (% points) <input id="co-prem" type="number" min="0" max="5" step="0.05"></label>
-          <label class="fld span2" id="co-source-wrap" title="Copies of this home, or the homes on your Saved list (each at the price and rent saved with it) with this one, all on this deal's deposit, mortgage and running costs. Save homes from the Value tab after looking at their deal.">Homes <select id="co-source"><option value="copies">Copies of this home</option><option value="saved">Your saved homes and this one</option></select></label>
+        <fieldset id="tax-fs"><legend>Ownership and tax</legend><div class="form">
+          <label class="fld span2">Ownership <select id="b-owner"><option value="basic">Personal, basic-rate taxpayer</option><option value="higher">Personal, higher-rate taxpayer</option><option value="company">Limited company</option></select></label>
+          <label class="fld span2">Tax rates <select id="b-taxyear"><option value="2026">2026-27</option><option value="2027">From April 2027</option></select></label>
+          <label class="fld span2" id="b-income-wrap" title="Your taxable income each year from other sources (salary, pension), after the personal allowance, not counting these homes' rent. It sets the capital gains tax rate when you sell (gains that fit in what's left of the £37,700 basic-rate band pay 18%, the rest 24%; HMRC's example uses £20,000), your tax band on a personal portfolio, and the tax on dividends from a company.">Other taxable income (£) <input id="b-income" type="number" min="0" step="1000"></label>
+          <label class="fld span2" title="Only improvements come off the gain when you sell: something the home didn't have, such as an extension or a loft conversion. Repairs, decorating and like-for-like replacements don't (gov.uk); the projection sets them against the first year's rental profit instead.">Of the works, improvements (£) <input id="b-improve" type="number" min="0" step="500" value="0"></label>
+        </div></fieldset>
+        <fieldset id="co-fs"><legend>Portfolio and company</legend><div class="form">
+          <label class="fld" title="The portfolio card below buys this home this many times. With Limited company chosen, the company's running costs are shared across them and corporation tax is worked out on all of them together.">Number of homes <input id="co-homes" type="number" min="1" max="200" step="1"></label>
+          <label class="fld" title="Limited company buy-to-let mortgages cost a little more than personal ones: Moneyfacts' averages were about 0.3 points higher for 5-year fixes in autumn 2025. Added to the mortgage rate above when the owner is a company.">Company rate premium (pts) <input id="co-prem" type="number" min="0" max="5" step="0.05"></label>
+          <label class="fld span2" id="co-source-wrap" title="Copies of this home, or the homes on your Saved list (each at the price and rent saved with it) with this one, all on this deal's deposit, mortgage and running costs. Save homes from the Value tab after looking at their deal.">Which homes <select id="co-source"><option value="copies">Copies of this home</option><option value="saved">Your saved homes and this one</option></select></label>
           <label class="fld span2" title="Lend the company your deposits and costs and it can pay them back tax-free before any dividends; put them in as share capital and what it pays you is dividends (the capital comes back tax-free at the end).">Your money goes in as <select id="co-funding"><option value="loan">A loan to the company</option><option value="shares">Share capital</option></select></label>
           <label class="fld" title="The company can pay you interest on your loan: a cost for it (saving corporation tax), savings income for you (your personal savings allowance and the starting rate for savings can cover some). It withholds 20% and pays it to HMRC quarterly on form CT61 (gov.uk). Set the rate you'd charge; 0% leaves it out.">Interest on your loan (%) <input id="co-dlrate" type="number" min="0" max="15" step="0.25"></label>
           <label class="fld" title="For the holding-period figures: pay you what it can each year (your loan first, then dividends), or keep its profit until the homes are sold.">Each year the company <select id="co-policy"><option value="pay">Pays you what it can</option><option value="keep">Keeps its profit</option></select></label>
-          <label class="fld" title="For the holding-period figures: the rate each home is remortgaged at when its fix ends (after 2 or 5 years, as set above), with a new arrangement fee. Left empty, it's the mortgage rate above; nobody knows the rate in 5 years, so try higher and lower.">Rate when you remortgage (%) <input id="co-refirate" type="number" min="0" max="20" step="0.05"></label>
-          <label class="fld" title="When a fix ends: keep the same loan; or borrow back up to the deposit's loan-to-value on today's value (only as far as the rent passes the lender's test) and take the cash, or put it towards more homes like this one.">At each remortgage <select id="co-refi"><option value="keep">Keep the same loan</option><option value="take">Borrow back, take the cash</option><option value="buy">Borrow back, buy more homes</option></select></label>
-          <label class="fld span2" title="Annual accounts and corporation tax return (£2,500 to £3,500 for a company with 10 or more homes, UK Property Accountants, 2026), plus the £50 Companies House confirmation statement. A company with fewer homes typically pays £1,500 to £3,500.">Company running costs, whole company (£/yr) <input id="co-cost" type="number" min="0" step="100"></label>
+          <label class="fld" title="Annual accounts and corporation tax return (£2,500 to £3,500 for a company with 10 or more homes, UK Property Accountants, 2026), plus the £50 Companies House confirmation statement. A company with fewer homes typically pays £1,500 to £3,500.">Company costs (£/yr) <input id="co-cost" type="number" min="0" step="100"></label>
+          <label class="fld" title="For the holding-period figures: the rate each home is remortgaged at when its fix ends (after 2 or 5 years, as set above), with a new arrangement fee. Left empty, it's the mortgage rate above; nobody knows the rate in 5 years, so try higher and lower.">Remortgage rate (%) <input id="co-refirate" type="number" min="0" max="20" step="0.05"></label>
+          <label class="fld span2" title="When a fix ends: keep the same loan; or borrow back up to the deposit's loan-to-value on today's value (only as far as the rent passes the lender's test) and take the cash, or put it towards more homes like this one.">At each remortgage <select id="co-refi"><option value="keep">Keep the same loan</option><option value="take">Borrow back, take the cash</option><option value="buy">Borrow back, buy more homes</option></select></label>
         </div></fieldset>
       </div>
       <p class="note" id="b-notes"></p>

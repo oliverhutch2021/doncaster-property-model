@@ -414,7 +414,7 @@ with sync_playwright() as p:
     pg.click("#tab-value"); pg.wait_for_timeout(500)
     # version 33: rent, yield and cash flow in the estimate box, the same deal as the Investing tab
     hr, hy = money(txt("#v-rent")), txt("#v-yield") or ""; price = money(v("#b-price"))
-    check("B1 the estimate box shows the deal's new-tenancy rent and its gross yield", hr == money(v("#b-rent")) and abs(float(hy.split("%")[0]) - 1200 * hr / price) < 0.06 and "a month" in (txt("#v-cash") or ""), (hr, hy, price))
+    check("B1 the estimate box shows the deal's new-tenancy rent and its gross yield", hr == money(v("#b-rent")) and abs(float(hy.split("%")[0]) - 1200 * hr / price) < 0.06 and "£" in (txt("#v-cash") or "") and "deposit" in (txt("#v-btl-terms") or ""), (hr, hy, price))
     # the street map: buildings, roads and street names around the property, a dot per comparable, and zoom that keeps the dots
     mp = lambda: pg.evaluate("() => { const s = document.querySelector('#comps-map svg.map'); return s && { b: (s.querySelector('.k-b') || {getAttribute: () => ''}).getAttribute('d').split('M').length - 1, r: s.querySelectorAll('.k-r').length, dots: s.querySelectorAll('circle.pt').length, names: [...s.querySelectorAll('.map-road')].map((e) => e.textContent), bar: (s.querySelector('.map-scale text') || {}).textContent }; }")
     m0 = mp(); pg.click("#comps-map .map-ui button"); pg.wait_for_timeout(700); m1 = mp()

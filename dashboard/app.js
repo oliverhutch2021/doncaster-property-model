@@ -686,12 +686,13 @@
     const y = yearCalc(d, A, { rent: d.rent, costMult: 1, balance: d.price * (1 - d.dep), year2027: d.taxYear === '2027' }), m = y.pre / 12;
     const who = { basic: 'basic-rate', higher: 'higher-rate', company: 'company' }[d.owner] || '';
     el.hidden = false;
-    $('#v-rent').textContent = `${gbp(d.rent)} a month`;
-    $('#v-rent-note').textContent = (d.rent === R.est ? 'For a new tenancy; likely ' : `Estimate ${gbp(R.est)}; likely `) + `${gbp(R.lo)} to ${gbp(R.hi)}`;
-    $('#v-yield').textContent = `${pct(y.annualRent / d.price * 100)} gross`;
-    $('#v-yield-note').textContent = `${pct((y.collected - y.opex) / d.price * 100)} after letting, upkeep, voids and insurance, at ${gbpK(d.price)}`;
-    $('#v-cash').textContent = `${gbp(m)} a month`; $('#v-cash').className = 'mid ' + (m >= 0 ? 'good' : 'badc');
-    $('#v-cash-note').textContent = `Before tax, with a ${pct(d.dep * 100, 0)} deposit and a ${pct(d.rate * 100, 2)} ${d.mtype === 'io' ? 'interest-only' : 'repayment'} mortgage; ${gbp(y.post / 12)} after ${who} tax. Change any of it under Investing`;
+    $('#v-rent').textContent = gbp(d.rent);
+    $('#v-rent-note').textContent = `A month${d.rent === R.est ? ', new tenancy' : ` (estimate ${gbp(R.est)})`}; likely ${gbp(R.lo)} to ${gbp(R.hi)}`;
+    $('#v-yield').textContent = pct(y.annualRent / d.price * 100);
+    $('#v-yield-note').textContent = `Gross; ${pct((y.collected - y.opex) / d.price * 100)} net of running costs`;
+    $('#v-cash').textContent = gbp(m); $('#v-cash').className = 'mid ' + (m >= 0 ? 'good' : 'badc');
+    $('#v-cash-note').textContent = `A month before tax; ${gbp(y.post / 12)} after ${who} tax`;
+    $('#v-btl-terms').textContent = `At ${gbpK(d.price)} with a ${pct(d.dep * 100, 0)} deposit and a ${pct(d.rate * 100, 2)} ${d.mtype === 'io' ? 'interest-only' : 'repayment'} mortgage. Change any of it under Investing.`;
   };
   // the 80% range as a bar, the estimate as a marker, and the asking price if given
   const drawRangeBar = (box, v, asking) => {
@@ -911,7 +912,7 @@
   // ================= SAVED PROPERTIES (private to each viewer, in the dashboard's own store) =================
   const WL = { col: null, items: [], off: false, err: null };
   // the public stand-alone copy has no private store or address register: hide what needs them
-  if (window.DPM_STANDALONE) { ['#save-card', '#tab-saved', '#hist-card', '#co-source-wrap'].forEach((s) => { const el = $(s); if (el) el.hidden = true; }); const al = $('#in-address').closest('label'); if (al) al.hidden = true; }
+  if (window.DPM_STANDALONE) { ['#save-card', '#tab-saved', '#hist-card'].forEach((s) => { const el = $(s); if (el) el.hidden = true; }); const al = $('#in-address').closest('label'); if (al) al.hidden = true; }
   const clean = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'number' && !isFinite(v) ? null : v)));
   const NUMK = ['area', 'rooms', 'form', 'age', 'sap', 'sapPot', 'gas', 'prevPrice', 'asking', 'plot', 'bungalow'];
   const restore = (inp) => { const o = { ...inp }; NUMK.forEach((k) => { o[k] = o[k] == null ? NaN : Number(o[k]); }); return o; };

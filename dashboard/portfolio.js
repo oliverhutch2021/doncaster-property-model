@@ -187,7 +187,7 @@ window.DPM_PORT = (h) => {
     const base = readDeal();
     if (![base.price, base.rent, base.dep, base.rate].every(isFinite) || base.price <= 0 || base.rent <= 0) { clear('Fill in the deal above to see a portfolio of homes like it.'); return; }
     const srcSel = $('#co-source'), savedN = (savedHomes() || []).filter((s) => s.price > 0 && s.rent > 0).length;
-    if (srcSel) { const opt = srcSel.querySelector('option[value="saved"]'); opt.disabled = !savedN; opt.textContent = savedN ? `Your ${savedN} saved home${savedN > 1 ? 's' : ''} and this one` : 'Your saved homes and this one (none saved with a deal yet)'; if (!savedN) srcSel.value = 'copies'; }
+    if (srcSel) { const opt = srcSel.querySelector('option[value="saved"]'); opt.disabled = !savedN; opt.textContent = savedN ? `Your ${savedN} saved home${savedN > 1 ? 's' : ''} and this one` : window.DPM_STANDALONE ? 'Your saved homes (private dashboard only)' : 'Your saved homes and this one (none saved with a deal yet)'; if (!savedN) srcSel.value = 'copies'; }
     const src = srcSel ? srcSel.value : 'copies', n = Math.max(1, Math.round(num(val('#co-homes'))) || A.ltd_homes.v);
     const homes = homesOf(A, base, src, n), N = homes.length;
     const o = { prem: (num(val('#co-prem')) || 0) / 100, coCost: num(val('#co-cost')) || 0, dlRate: (num(val('#co-dlrate')) || 0) / 100, policy: val('#co-policy') || 'pay', funding: val('#co-funding') || 'loan', refi: val('#co-refi') || 'keep', refiRate: num(val('#co-refirate')) / 100 };
