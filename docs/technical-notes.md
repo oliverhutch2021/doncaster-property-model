@@ -268,14 +268,20 @@ sets a new rent, so the estimate is moved to a new tenancy in two steps:
 ## Version 36: remortgaging
 
 - When a home's fix ends (every 2 or 5 years from when it was bought, never in the sale year) it moves to the remortgage
-  rate (today's to start; plus the company premium) with a new arrangement fee, a finance cost for tax.
+  rate (left empty, the deal's mortgage rate; plus the company premium) with a new arrangement fee, a finance cost for tax.
+  A repayment mortgage's monthly payment is then worked out once, on the balance over the term left, and kept until the
+  next remortgage (`yearCalc`'s `pay`).
 - Borrow back: the new loan is the smaller of the deposit's loan-to-value on the home's value then and what the rent
-  supports at the lender's test (125% or 145% cover at the stress rate for the fix), never less than the balance; a
-  repayment mortgage restarts over the remaining term. Taken out: paid to you (personally) or into the company's cash.
-  Buy more: a pot that buys copies of the first home at that year's price (deposit, stamp duty, fees) at the end of each
-  year; a company keeping its profit adds that too; anything unspent comes back at the sale.
+  supports at the lender's test (125% or 145% cover at the stress rate for the fix), never less than the balance. Taken
+  out: paid to you (personally, or by a company paying out its profit) or kept in the company's cash until the sale (a
+  company keeping its profit). Buy more: a pot that buys copies of the first home at that year's price at the end of each
+  year, each borrowing the smaller of the deposit's loan-to-value and what next year's rent passes the lender's test for,
+  so the cash needed is the rest of the price, stamp duty, legal costs and the fee; a company keeping its profit spends
+  that after the pot; anything unspent comes back at the sale and counts in the "keep them" equity for both owners.
 - Personally owned: interest on borrowing above what the home cost gets no Section 24 credit (HMRC PIM2105).
-- The single-home deal's own 10-year projection still keeps one rate and no remortgage. Test P7.
+- The single-home deal's own 10-year projection still keeps one rate and no remortgage. Tests: P7 (UI), and the
+  portfolio remortgage cases in `test_units.js` (payment over the term left, released equity, none in the sale year,
+  the default rate, a company's kept profit in year 1, homes bought within the rent test).
 
 
 ## Tenant risk (v11, `src/tenants_v11.py`)

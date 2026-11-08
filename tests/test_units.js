@@ -11,8 +11,8 @@ const cut = (a, b) => { const i = src.indexOf(a), j = src.indexOf(b, i); if (i <
 const helpers = cut('const gbp = ', 'const num = ') + cut('const num = ', 'const TYPE_NAME');
 const fns = new Function('d3', 'getModel', 'parseMonth', helpers + cut('const sdlt = ', 'const DEFAULTS') + cut('const lastSaleMonths', 'const rentSeries') + cut('const LIMITS', 'const value = ') + cut('const taxRates', 'const kv = ') + cut('const DEAL_CHECKS', 'const clearDeal')
   + cut('const normPc', 'const hav = ') + cut('const WORD_NUM', 'const readListing')
-  + '; return { badInput, taxRates, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt };')(d3, () => ({ valMonth: '2026-09' }), (s) => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, 1)));
-const { badInput, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt } = fns;
+  + '; return { badInput, taxRates, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt, annuity };')(d3, () => ({ valMonth: '2026-09' }), (s) => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, 1)));
+const { badInput, yearCalc, irrRoots, irr, signChanges, dealProblem, CASH_KEYS, COST_KEYS, MORTGAGE_KEYS, corpTax, gainsTax, listingType, listingPostcode, fix0, pct, sgn, gainsTaxDetail, condFor, projectDeal, sdlt, annuity } = fns;
 
 let fails = 0, n = 0;
 const near = (got, want, tol) => (Number.isNaN(want) ? Number.isNaN(got) : Math.abs(got - want) <= tol);
@@ -180,5 +180,49 @@ truthy('company deal with losses carried to year 10 pays less than tax on the wh
 
 // ---------- no negative zero (fourth review) ----------
 eq("pct(-0.04) reads 0.0%", pct(-0.04) === '0.0%' ? 1 : 0, 1, 0); eq("sgn(-0.04) has no sign", sgn(-0.04) === '0.0%' ? 1 : 0, 1, 0); eq("sgn(-0.06) keeps it", sgn(-0.06) === '−0.1%' ? 1 : 0, 1, 0);
+
+// ---------- the portfolio's remortgages (portfolio.js, after the version 36 review) ----------
+{
+  const csv = fs.readFileSync(path.join(root, 'config/assumptions.csv'), 'utf8').split(/\r?\n/).slice(1).filter(Boolean);
+  const AA = Object.fromEntries(csv.map((line) => { const f = line.match(/("([^"]|"")*"|[^,]*)(,|$)/g).map((x) => x.replace(/,$/, '')); return [f[0], { v: Number(f[2]) }]; }));
+  AA.hold_years = { v: 10 };
+  global.window = global.window || {};
+  new Function('window', fs.readFileSync(path.join(path.dirname(appPath), 'portfolio.js'), 'utf8'))(global.window);
+  const PF = global.window.DPM_PORT({ yearCalc, annuity, sdlt, corpTax, irrRoots });
+  const home = { price: 100000, rent: 2000, dep: 0.25, rate: 0.05, mtype: 'rep', term: 25, fee: 1000, letting: 0.1, maint: 0.05, voids: 2, ins: 300, comp: 250, legal: 1500,
+    works: 0, epc: 0, improve: 0, income: NaN, owner: 'basic', taxYear: '2027', gRent: 0, gPrice: 0, gCost: 0, fix5: true, prem: 0 };
+  const opts = { prem: 0, coCost: 0, dlRate: 0, policy: 'pay', funding: 'loan', refi: 'keep', refiRate: 0.07, other: 0 };
+  const run = (d, o, owner = 'basic', n = 1) => PF.project(AA, Array.from({ length: n }, () => ({ label: 'h', d })), owner, { ...opts, ...o });
+  // a repayment loan month by month: [loan, annual rate, years of the term left, months to run]
+  const sched = (...legs) => { let b = 0; legs.forEach(([loan, r, yrs, months]) => { if (loan != null) b = loan; const pay = annuity(b, r, yrs); for (let i = 0; i < months; i++) b -= pay - b * r / 12; }); return b; };
+
+  eq('yearCalc: a given payment is used in place of the original loan over the full term',
+    yearCalc({ ...home, owner: 'basic' }, AA, { rent: 0, costMult: 1, balance: 50000, year2027: true, pay: annuity(50000, 0.05, 10) }).endBalance, sched([50000, 0.05, 10, 12]), 0.01);
+  eq('yearCalc: no payment given, the original loan over the full term as before',
+    yearCalc({ ...home, owner: 'basic' }, AA, { rent: 0, costMult: 1, balance: 75000, year2027: true }).endBalance, sched([75000, 0.05, 25, 12]), 0.01);
+
+  // keep the loan: at 7% after the 5-year fix, the payment restarts on the balance over the 20 years left
+  const K = run(home, { refi: 'keep' });
+  eq('remortgage, same loan: the debt at the sale follows the balance over the term left', K.S.debt, sched([75000, 0.05, 25, 60], [null, 0.07, 20, 60]), 1);
+  // borrow back: prices up 6% a year, the rent covers the lender's test, so 75% of the value in year 5; repaid over 20 years
+  const gP = { ...home, gPrice: 0.06 }, Tk = run(gP, { refi: 'take' }), most = 0.75 * 100000 * 1.06 ** 5, b5 = sched([75000, 0.05, 25, 60]);
+  eq('borrow back: released = 75% of the value less the balance', Tk.T.released, most - b5, 1);
+  eq('borrow back: the new loan is repaid over the 20 years left, not reset every year', Tk.S.debt, sched([most, 0.07, 20, 60]), 1);
+  // never remortgaged in the sale year: a 7-year hold on 2-year fixes remortgages in years 3 and 5, not 7
+  AA.hold_years = { v: 7 };
+  eq('no remortgage (or fee) in the sale year', run({ ...home, fix5: false }, { refi: 'keep' }).T.fees, 2 * 1000, 0.01);
+  AA.hold_years = { v: 10 };
+  // a blank remortgage rate is the deal's own rate
+  eq('blank remortgage rate: the deal\'s rate', run(home, { refiRate: NaN }).refi.rate, 0.05, 1e-12);
+  // a company keeping its profit to buy more homes still shows it kept in year 1
+  const CB = run(home, { refi: 'buy', policy: 'keep' }, 'company'), c1 = CB.y1;
+  eq('company keeping its profit for more homes: year 1 shows what it kept', c1.kept, c1.coll - c1.opex - c1.int - c1.fees - c1.prin - c1.dl - c1.ct, 0.01);
+  truthy('  and it is more than nothing', c1.kept > 1000);
+  // homes bought from the pot borrow only what their rent passes the lender's test for: interest-only at 20% after the fix,
+  // £1,500 a month covers 18,000 / (125% x 20%) = £72,000, less than 75% of £100,000
+  const io = { ...home, mtype: 'io', rate: 0.03, rent: 1500 }, CI = run(io, { refi: 'buy', policy: 'keep', refiRate: 0.2 }, 'company');
+  truthy('company buys more homes with its kept profit', CI.T.bought >= 1);
+  eq('  each borrowing what its rent supports (the first home keeps its £75,000)', CI.S.debt, 75000 + CI.T.bought * 72000, 1);
+}
 
 console.log(fails ? `${fails} of ${n} FAILED` : `all ${n} passed`); process.exit(fails ? 1 : 0);

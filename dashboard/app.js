@@ -1002,7 +1002,7 @@
     return tax;
   };
   const DEFAULTS = [['#b-deposit', 'deposit'], ['#b-rate', 'mortgage_rate'], ['#b-term', 'mortgage_term'], ['#b-fee', 'product_fee'], ['#b-letting', 'letting_fee'], ['#b-maint', 'maintenance'],
-    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income'], ['#co-homes', 'ltd_homes'], ['#co-prem', 'ltd_rate_premium'], ['#co-cost', 'ltd_company_costs'], ['#co-dlrate', 'ltd_loan_rate'], ['#co-refirate', 'mortgage_rate']];
+    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income'], ['#co-homes', 'ltd_homes'], ['#co-prem', 'ltd_rate_premium'], ['#co-cost', 'ltd_company_costs'], ['#co-dlrate', 'ltd_loan_rate']];
   const syncDefaults = () => {
     const A = getAss(); if (!A) return;
     DEFAULTS.forEach(([s, k]) => { if ($(s).value === '' && A[k] && document.activeElement !== $(s)) $(s).value = String(A[k].v); });
@@ -1074,13 +1074,15 @@
   // carry = { fin, loss } brought forward from earlier years (none in a single-year view)
   // oneOff: a deduction from that year's taxable profit only (repairs in the works, in year 1 of the projection); it
   // changes the tax, not the cash flow, since the works are already in the cash put in
-  const yearCalc = (d, A, { rent, costMult, balance, year2027, rateAdj = 0, voids = d.voids, maintMult = 1, carry = { fin: 0, loss: 0 }, oneOff = 0 }) => {
+  // pay: the monthly repayment, when the loan isn't the original one over the full term (a remortgage, in portfolio.js)
+  const annuity = (loan, rate, years) => { const mr = rate / 12, n = Math.max(1, years) * 12; return mr > 0 ? loan * mr / (1 - (1 + mr) ** -n) : loan / n; };
+  const yearCalc = (d, A, { rent, costMult, balance, year2027, rateAdj = 0, voids = d.voids, maintMult = 1, carry = { fin: 0, loss: 0 }, oneOff = 0, pay: payIn }) => {
     const r = d.rate + rateAdj, annualRent = rent * 12, collected = annualRent * (52 - voids) / 52;
     const opex = collected * (d.letting + d.maint * maintMult) + (d.ins + d.comp + (d.co || 0)) * costMult;
     let interest = 0, principal = 0;
     if (d.mtype === 'io') interest = balance * r;
     else {
-      const mr = r / 12, n = d.term * 12, pay = mr > 0 ? (d.price * (1 - d.dep)) * mr / (1 - (1 + mr) ** -n) : (d.price * (1 - d.dep)) / n;
+      const mr = r / 12, pay = isFinite(payIn) ? payIn : annuity(d.price * (1 - d.dep), r, d.term);
       let b = balance; for (let i = 0; i < 12 && b > 0; i++) { const it = b * mr, pr = Math.min(b, pay - it); interest += it; principal += pr; b -= pr; }
     }
     const tr = taxRates(A, d.owner, year2027);
@@ -2594,7 +2596,7 @@
   // in a file of their own, loaded first: one page file can't exceed 256 KB. They get the helpers they use from here
   const missingTabs = (name) => () => { throw new Error(`market_accuracy.js didn't load, so ${name} can't be drawn`); };
   // the Value tab's source tags, Census card and one-page report (value_extras.js, its own file for the 256 KB limit)
-  PORT = window.DPM_PORT ? window.DPM_PORT({ $, gbp, pct, num, val, cell, readDeal, getAss, yearCalc, corpTax, projectDeal, irrRoots, savedHomes: () => WL.items }) : null;
+  PORT = window.DPM_PORT ? window.DPM_PORT({ $, gbp, pct, num, val, cell, readDeal, getAss, yearCalc, annuity, sdlt, corpTax, irrRoots, savedHomes: () => WL.items }) : null;
   MAPX = window.DPM_MAP ? window.DPM_MAP({ gbp, tip, rows }) : null;
   VX = window.DPM_VALUE ? window.DPM_VALUE({ $, state, monthLabel, num, gbp, gbpK, pct, parseSales, kv, cell, TYPE_NAME, getModel, rentEstimate, ok, rows }) : null;
   const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip }) : {};
