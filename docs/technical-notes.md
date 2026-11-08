@@ -265,6 +265,18 @@ sets a new rent, so the estimate is moved to a new tenancy in two steps:
   rate), borrowing against value, and the weakest home's own cover.
 - Tests: P4 (savings and capital gains by hand), P5 (the holding period adds up), P6 (loan interest).
 
+## Version 36: remortgaging
+
+- When a home's fix ends (every 2 or 5 years from when it was bought, never in the sale year) it moves to the remortgage
+  rate (today's to start; plus the company premium) with a new arrangement fee, a finance cost for tax.
+- Borrow back: the new loan is the smaller of the deposit's loan-to-value on the home's value then and what the rent
+  supports at the lender's test (125% or 145% cover at the stress rate for the fix), never less than the balance; a
+  repayment mortgage restarts over the remaining term. Taken out: paid to you (personally) or into the company's cash.
+  Buy more: a pot that buys copies of the first home at that year's price (deposit, stamp duty, fees) at the end of each
+  year; a company keeping its profit adds that too; anything unspent comes back at the sale.
+- Personally owned: interest on borrowing above what the home cost gets no Section 24 credit (HMRC PIM2105).
+- The single-home deal's own 10-year projection still keeps one rate and no remortgage. Test P7.
+
 
 ## Tenant risk (v11, `src/tenants_v11.py`)
 

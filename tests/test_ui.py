@@ -453,13 +453,23 @@ with sync_playwright() as p:
     for i in range(3):
         cin, dur, end, tot = (mny(key(k)[i]) for k in ("Your cash in", "Cash to you during", "Cash to you at the end", "Total back"))
         sold, debt, gtax = (mny(key(k)[i]) for k in ("Homes sold", "Mortgages repaid", "Tax on the gain"))
-        if i == 0: ok10 &= abs(end - (sold + debt + gtax)) <= 2
-        else: ok10 &= abs(end - (sold + debt + gtax + mny(key("Cash the company kept")[i]) + (mny(key("Closing")[i]) if i == 1 else 0) + mny(key("Your tax on taking")[i]))) <= 3
+        if i == 0: ok10 &= abs(end - (sold + debt + gtax + mny(key("Cash kept back")[i]))) <= 2
+        else: ok10 &= abs(end - (sold + debt + gtax + mny(key("Cash kept back")[i]) + (mny(key("Closing")[i]) if i == 1 else 0) + mny(key("Your tax on taking")[i]))) <= 3
         ok10 &= abs(tot - (cin + dur + end)) <= 2
     check("P5 the holding period adds up: cash in + cash during + cash at the end, and the sale's own lines", ok10 and "%" in key("10-year return")[0], {k: v for k, v in tY.items() if k.startswith(("Cash to you at", "Total", "10-year"))})
     cin1 = mny(rows_["Your cash in: deposits, stamp duty, fees, works"][1]); pg.fill("#co-dlrate", "5"); pg.dispatch_event("#co-dlrate", "input"); pg.wait_for_timeout(900)
     r5 = tbl("#port-table"); dl = -mny(r5["Interest the company pays you on your loan"][1]); pg.fill("#co-dlrate", "0"); pg.dispatch_event("#co-dlrate", "input"); pg.wait_for_timeout(600)
     check("P6 interest on your loan: the company pays 5% of what you put in, a cost before its profit", abs(dl - 0.05 * cin1) <= 2, (dl, cin1))
+    # version 36: remortgaging when each fix ends
+    fee = mny(v("#b-fee")); homes_ = int(r5["Homes"][0]); fees = {}
+    for fx, times in (("5", 1), ("2", 4)):
+        pg.select_option("#b-fix", fx); pg.wait_for_timeout(800); fees[fx] = (-mny(tbl("#port-10y")["Remortgage fees"][0]), homes_ * fee * times)
+    pg.select_option("#b-fix", "5"); pg.select_option("#co-refi", "buy"); pg.wait_for_timeout(900); tB = tbl("#port-10y")
+    sold_n = [int(x.split("(")[1].split(" ")[0]) if "(" in x else homes_ for x in tB[next(k for k in tB if k.startswith("Homes sold"))]]
+    bought = [int(x) for x in tB[next(k for k in tB if k.startswith("Homes bought"))]]
+    pg.select_option("#co-refi", "keep"); pg.wait_for_timeout(600)
+    check("P7 each home is remortgaged when its fix ends, with a new fee; released equity buys more homes",
+          all(abs(a - b) <= 2 for a, b in fees.values()) and all(s == homes_ + k for s, k in zip(sold_n, bought)) and bought[1] >= 1, (fees, sold_n, bought))
     pg.select_option("#b-owner", "basic"); pg.wait_for_timeout(500); pg.click("#tab-value"); pg.wait_for_timeout(500)
     check("no page errors", not errs, errs[:3])
     b.close()

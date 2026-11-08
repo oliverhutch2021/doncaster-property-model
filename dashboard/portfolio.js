@@ -53,61 +53,93 @@ window.DPM_PORT = (h) => {
     co: owner === 'company' ? coShare : 0, rate: d.rate - (d.prem || 0) + (owner === 'company' ? prem : 0) });
 
   // the whole portfolio over the holding period, one owner. policy: 'pay' takes what the company can pay each year (your
-  // loan first, then dividends) or 'keep' leaves it in the company until the end. Returns year 1, the totals and the
-  // cash flows to you for each way out.
+  // loan first, then dividends) or 'keep' leaves it in the company until the end. When each home's fixed rate ends it is
+  // remortgaged at o.refiRate with a new arrangement fee; o.refi: 'keep' the same loan, 'take' borrow back up to the
+  // deposit's loan-to-value (as far as the rent covers the lender's test) and take the cash, or 'buy' put it (and, for a
+  // company keeping its profit, that too) towards more homes like this one. Returns year 1, the totals and the cash flows
+  // to you for each way out.
   const project = (A, homes, owner, o) => {
-    const company = owner === 'company', H = Math.max(1, Math.round(A.hold_years.v)), sell = A.selling_costs.v / 100, n = homes.length;
-    const ds = homes.map((x) => forOwner(x.d, owner, o.prem, o.coCost / n)), base = ds[0];
+    const company = owner === 'company', H = Math.max(1, Math.round(A.hold_years.v)), sell = A.selling_costs.v / 100;
+    const ds = homes.map((x) => forOwner(x.d, owner, o.prem, 0)), base = ds[0];
     const gR = isFinite(base.gRent) ? base.gRent : 0, gP = isFinite(base.gPrice) ? base.gPrice : 0, gC = isFinite(base.gCost) ? base.gCost : 0;
     const cashIn = ds.reduce((s, d) => s + projectDeal(d, A).cashIn, 0), repairs = ds.reduce((s, d) => s + Math.max(0, d.works + d.epc - d.improve), 0);
-    const bal = ds.map((d) => d.price * (1 - d.dep)), T = { rent: 0, interest: 0, tax: 0, yourTax: 0, toYou: 0, dl: 0, ct: 0 };
-    let carryFin = 0, carryLoss = 0, ctLoss = 0, coCash = 0, loan = company && o.funding !== 'shares' ? cashIn : 0, y1 = null;
+    const F = base.fix5 ? 5 : 2, refiRate = (isFinite(o.refiRate) ? o.refiRate : base.rate - base.prem) + (company ? o.prem : 0);
+    // each home: when it was bought (0 = at the start), its loan, rate, and what it cost (for the gain and for what interest
+    // a person can set against the rent: only on borrowing up to what the home cost, HMRC PIM2105)
+    const P_ = ds.map((d) => ({ d, s: 0, bal: d.price * (1 - d.dep), rate: d.rate, cost: d.price, sdlt: projectDeal(d, A).tax }));
+    const T = { rent: 0, interest: 0, tax: 0, yourTax: 0, toYou: 0, dl: 0, ct: 0, fees: 0, released: 0, bought: 0 };
+    let carryFin = 0, carryLoss = 0, ctLoss = 0, coCash = 0, pot = 0, loan = company && o.funding !== 'shares' ? cashIn : 0, y1 = null, band = 'basic';
     const capital = company && o.funding === 'shares' ? cashIn : 0;
-    const cfs = [-cashIn], other = o.other;
+    const cfs = [-cashIn], other = o.other, stress = (r) => (base.fix5 ? r : Math.max(A.stress_rate.v / 100, r + 0.02));
     for (let t = 1; t <= H; t++) {
       const y27 = t > 1 || base.taxYear === '2027';
-      let coll = 0, opex = 0, int = 0, prin = 0;
-      ds.forEach((d, i) => {
-        const y = yearCalc(d, A, { rent: d.rent * (1 + gR) ** (t - 1), costMult: (1 + gC) ** (t - 1), balance: bal[i], year2027: y27 });
-        coll += y.collected; opex += y.opex; int += y.interest; prin += y.principal; bal[i] = y.endBalance;
+      // remortgage the homes whose fix has just ended
+      let fees = 0, released = 0;
+      P_.forEach((hm) => {
+        const age = t - 1 - hm.s; if (!(age > 0 && age % F === 0) || !(hm.bal > 0)) return;
+        fees += hm.d.fee; hm.rate = refiRate;
+        if (o.refi === 'keep') return;
+        const icr = (company || band === 'basic' ? A.icr_basic.v : A.icr_higher.v) / 100, rentY = hm.d.rent * (1 + gR) ** (t - 1) * 12;
+        const most = Math.min((1 - hm.d.dep) * hm.cost * (1 + gP) ** age, rentY / (icr * stress(refiRate)));
+        if (most > hm.bal) { released += most - hm.bal; hm.bal = most; hm.age0 = age; }
       });
-      const rep = t === 1 ? repairs : 0, row = { t, coll, opex, int, prin };
-      T.rent += coll; T.interest += int;
+      let coll = 0, opex = 0, int = 0, prin = 0, allowed = 0;
+      P_.forEach((hm) => {
+        if (hm.s >= t) return;
+        const dd = { ...hm.d, rate: hm.rate, co: 0 };
+        if (hm.age0 && hm.d.mtype !== 'io') Object.assign(dd, { price: hm.bal / (1 - hm.d.dep), term: Math.max(1, hm.d.term - hm.age0) });   // repayments reset on the new loan
+        const start = hm.bal, y = yearCalc(dd, A, { rent: hm.d.rent * (1 + gR) ** (t - 1), costMult: (1 + gC) ** (t - 1), balance: hm.bal, year2027: y27 });
+        coll += y.collected; opex += y.opex; int += y.interest; prin += y.principal; hm.bal = y.endBalance;
+        allowed += start > 0 ? y.interest * Math.min(1, hm.cost / start) : 0;
+      });
+      const coC = company ? o.coCost * (1 + gC) ** (t - 1) : 0; opex += coC;
+      const rep = t === 1 ? repairs : 0, row = { t, coll, opex, int, prin, fees, released };
+      T.rent += coll; T.interest += int; T.fees += fees; T.released += released;
       if (!company) {
-        // Section 24: the interest isn't deducted; a credit at the property basic rate on the lowest of the interest (with
-        // any carried forward), the property profit (after losses brought forward) and the taxable income
+        // Section 24: the interest isn't deducted; a credit at the property basic rate on the lowest of the finance costs
+        // (with any carried forward), the property profit (after losses brought forward) and the taxable income
         let prop = coll - opex - rep - carryLoss; carryLoss = Math.max(0, -prop); prop = Math.max(0, prop);
-        const t0 = personalTax(A, other, 0, 0, y27), t1 = personalTax(A, other, prop, 0, y27), fin = int + carryFin;
+        const t0 = personalTax(A, other, 0, 0, y27), t1 = personalTax(A, other, prop, 0, y27), fin = allowed + fees + carryFin;
         const relieved = Math.max(0, Math.min(fin, prop, t1.taxable)); carryFin = fin - relieved;
         const tax = Math.max(0, t1.total - t0.total - relieved * (y27 ? A.finance_credit_2027.v : A.finance_credit.v) / 100);
-        const cash = coll - opex - int - prin - tax;
-        Object.assign(row, { pre: coll - opex - int, tax, cash, toYou: cash, taxable: t1.taxable, band: t1.taxable > A.additional_threshold.v ? 'additional' : t1.taxable > A.basic_rate_band.v ? 'higher' : 'basic' });
+        let cash = coll - opex - int - fees - prin - tax;
+        if (o.refi === 'take') cash += released; else if (o.refi === 'buy') pot += released;
+        band = t1.taxable > A.additional_threshold.v ? 'additional' : t1.taxable > A.basic_rate_band.v ? 'higher' : 'basic';
+        Object.assign(row, { pre: coll - opex - int - fees, tax, cash, toYou: cash, taxable: t1.taxable, band });
         T.tax += tax; T.toYou += cash; cfs.push(cash);
       } else {
         const dl = loan * o.dlRate;                                   // interest the company pays you on your loan
-        let profit = coll - opex - int - dl - rep - ctLoss; ctLoss = Math.max(0, -profit);
-        const ct = corpTax(Math.max(0, profit), A); coCash += coll - opex - int - prin - dl - ct;
+        let profit = coll - opex - int - fees - dl - rep - ctLoss; ctLoss = Math.max(0, -profit);
+        const ct = corpTax(Math.max(0, profit), A); coCash += coll - opex - int - fees - prin - dl - ct;
+        if (o.refi === 'take') coCash += released; else if (o.refi === 'buy') pot += released;
         let repaid = 0, div = 0, lent = 0;
         if (coCash < 0) { lent = -coCash; loan += lent; coCash = 0; }   // a shortfall: you lend the company the difference
         else if (o.policy === 'pay') { repaid = Math.min(coCash, loan); loan -= repaid; div = coCash - repaid; coCash = 0; }
+        else if (o.refi === 'buy') { pot += coCash; coCash = 0; }      // keeping its profit to buy more homes
         const t0 = personalTax(A, other, 0, 0, y27), t1 = personalTax(A, other, 0, div, y27, dl), yt = t1.total - t0.total;
         const toYou = dl + repaid + div - lent - yt;
-        Object.assign(row, { pre: coll - opex - int - dl, ct, dl, repaid, div, lent, yourTax: yt, toYou, kept: coCash });
+        Object.assign(row, { pre: coll - opex - int - fees - dl, ct, dl, repaid, div, lent, yourTax: yt, toYou, kept: coCash });
         T.ct += ct; T.dl += dl; T.yourTax += yt; T.toYou += toYou; T.tax += ct + yt; cfs.push(toYou);
+      }
+      // more homes like the first one, bought at the end of the year with what has built up
+      if (o.refi === 'buy' && t < H) {
+        const price = base.price * (1 + gP) ** t, nd = { ...base, price, works: 0, epc: 0, improve: 0 }, pd = projectDeal(nd, A);
+        while (pd.cashIn > 0 && pot >= pd.cashIn) { pot -= pd.cashIn; T.bought += 1; P_.push({ d: nd, s: t, bal: price * (1 - base.dep), rate: refiRate, cost: price, sdlt: pd.tax }); }
       }
       if (t === 1) y1 = row;
       if (t === H) T.last = row;
     }
     // the sale at the end of the holding period: every home sold, mortgages repaid
-    const values = ds.map((d) => d.price * (1 + gP) ** H), net = values.reduce((s, v) => s + v * (1 - sell), 0), debt = bal.reduce((s, b) => s + b, 0);
-    const gain = ds.reduce((s, d, i) => s + values[i] * (1 - sell) - (d.price + projectDeal(d, A).tax + d.legal + d.improve), 0);
-    const S = { sold: net, debt, gain, value: values.reduce((s, v) => s + v, 0) };
+    const values = P_.map((hm) => hm.cost * (1 + gP) ** (H - hm.s)), net = values.reduce((s, v) => s + v * (1 - sell), 0), debt = P_.reduce((s, hm) => s + hm.bal, 0);
+    const gain = P_.reduce((s, hm, i) => s + values[i] * (1 - sell) - (hm.cost + hm.sdlt + hm.d.legal + hm.d.improve), 0);
+    const S = { sold: net, debt, gain, value: values.reduce((s, v) => s + v, 0), homes: P_.length };
     if (!company) {
-      S.tax = cgt(A, gain, T.last.taxable); S.toYou = net - debt - S.tax;
+      S.kept = pot; S.tax = cgt(A, gain, T.last.taxable); S.toYou = net - debt - S.tax + pot;
       const cf = cfs.slice(); cf[H] += S.toYou;
-      return { company, n, cashIn, y1, T, S, exits: { own: { tax: S.tax, toYou: S.toYou, cf } } };
+      return { company, cashIn, y1, T, S, exits: { own: { tax: S.tax, toYou: S.toYou, cf } } };
     }
     // the company pays corporation tax on the gain on top of that year's profit (losses brought forward go against it too)
+    coCash += pot; S.kept = coCash;
     const lastProfit = Math.max(0, T.last.pre - ctLoss);
     S.ct = corpTax(Math.max(0, lastProfit + gain), A) - corpTax(lastProfit, A);
     const left = coCash + net - debt - S.ct, repay = Math.min(Math.max(0, left), loan), rest = Math.max(0, left - repay);
@@ -118,7 +150,7 @@ window.DPM_PORT = (h) => {
     const back = Math.min(rest, capital), d0 = personalTax(A, other, 0, 0, true), d1 = personalTax(A, other, 0, rest - back, true), divT = d1.total - d0.total;
     const mk = (tax, cost) => { const cf = cfs.slice(); cf[H] += repay + rest - cost - tax; return { tax, cost, toYou: repay + rest - cost - tax, cf }; };
     Object.assign(S, { coCash, repay, rest, loan });
-    return { company, n, cashIn, y1, T, S, exits: { close: mk(close, mvl), divs: mk(divT, 0) } };
+    return { company, cashIn, y1, T, S, exits: { close: mk(close, mvl), divs: mk(divT, 0) } };
   };
 
   // the lender's view of the whole portfolio: rent cover at the stress rate and borrowing against value (year 1)
@@ -151,7 +183,7 @@ window.DPM_PORT = (h) => {
     if (srcSel) { const opt = srcSel.querySelector('option[value="saved"]'); opt.disabled = !savedN; opt.textContent = savedN ? `Your ${savedN} saved home${savedN > 1 ? 's' : ''} and this one` : 'Your saved homes and this one (none saved with a deal yet)'; if (!savedN) srcSel.value = 'copies'; }
     const src = srcSel ? srcSel.value : 'copies', n = Math.max(1, Math.round(num(val('#co-homes'))) || A.ltd_homes.v);
     const homes = homesOf(A, base, src, n), N = homes.length;
-    const o = { prem: (num(val('#co-prem')) || 0) / 100, coCost: num(val('#co-cost')) || 0, dlRate: (num(val('#co-dlrate')) || 0) / 100, policy: val('#co-policy') || 'pay', funding: val('#co-funding') || 'loan' };
+    const o = { prem: (num(val('#co-prem')) || 0) / 100, coCost: num(val('#co-cost')) || 0, dlRate: (num(val('#co-dlrate')) || 0) / 100, policy: val('#co-policy') || 'pay', funding: val('#co-funding') || 'loan', refi: val('#co-refi') || 'keep', refiRate: num(val('#co-refirate')) / 100 };
     const otherT = isFinite(base.income) ? base.income : A.cgt_other_income.v; o.other = grossOf(A, otherT);
     const P = project(A, homes, 'basic', o), C = project(A, homes, 'company', o), p1 = P.y1, c1 = C.y1;
     const LP = lenderView(A, homes, 'basic', o.prem, p1.band !== 'basic'), LC = lenderView(A, homes, 'company', o.prem, false);
@@ -190,13 +222,16 @@ window.DPM_PORT = (h) => {
       [`Rent collected over ${H} years`, gbp(P.T.rent), gbp(C.T.rent), gbp(C.T.rent)],
       ['Mortgage interest', gbp(-P.T.interest), gbp(-C.T.interest), gbp(-C.T.interest)],
       ['Interest the company paid you on your loan', '—', gbp(C.T.dl), gbp(C.T.dl)],
+      ['Remortgage fees', gbp(-P.T.fees), gbp(-C.T.fees), gbp(-C.T.fees)],
+      ...(o.refi !== 'keep' ? [[o.refi === 'take' ? 'Cash released by remortgaging, taken out' : 'Cash released by remortgaging, put into more homes', gbp(P.T.released), gbp(C.T.released), gbp(C.T.released)]] : []),
+      ...(o.refi === 'buy' ? [['Homes bought with it (and, if the company keeps its profit, with that)', String(P.T.bought), String(C.T.bought), String(C.T.bought)]] : []),
       ['Income tax, or corporation tax, on the rent', gbp(-P.T.tax), gbp(-C.T.ct), gbp(-C.T.ct)],
       ['Your tax on interest and dividends paid each year', '—', gbp(-C.T.yourTax), gbp(-C.T.yourTax)],
       [`Cash to you during the ${H} years`, gbp(P.T.toYou), gbp(C.T.toYou), gbp(C.T.toYou), true],
-      [`Homes sold in year ${H}, after selling costs`, gbp(P.S.sold), gbp(C.S.sold), gbp(C.S.sold)],
+      [`Homes sold in year ${H}, after selling costs`, `${gbp(P.S.sold)}${P.S.homes !== N ? ` (${P.S.homes} homes)` : ''}`, `${gbp(C.S.sold)}${C.S.homes !== N ? ` (${C.S.homes} homes)` : ''}`, `${gbp(C.S.sold)}${C.S.homes !== N ? ` (${C.S.homes} homes)` : ''}`],
       ['Mortgages repaid', gbp(-P.S.debt), gbp(-C.S.debt), gbp(-C.S.debt)],
       ['Tax on the gain: capital gains tax, or corporation tax', gbp(-P.S.tax), gbp(-C.S.ct), gbp(-C.S.ct)],
-      ['Cash the company kept, added back', '—', gbp(C.S.coCash), gbp(C.S.coCash)],
+      ['Cash kept back: in the company, or remortgage money not yet spent', gbp(P.S.kept), gbp(C.S.kept), gbp(C.S.kept)],
       [o.funding === 'shares' ? 'Your shortfall loans repaid (tax-free)' : 'Your loan repaid (tax-free)', '—', gbp(C.S.repay), gbp(C.S.repay)],
       ['Closing the company (liquidator)', '—', gbp(-Cl.cost), '—'],
       ['Your tax on taking the rest out', '—', gbp(-Cl.tax), gbp(-Dv.tax)],
@@ -211,7 +246,9 @@ window.DPM_PORT = (h) => {
       + (o.funding === 'shares' ? 'Your money went in as share capital, so what the company pays you is dividends. ' : 'Your money went in as a loan to the company, so it can pay it back to you tax-free before any dividends. ')
       + `Lenders test the whole portfolio: The Mortgage Works, for one, wants 125% rent cover for a company and 145% for a higher-rate taxpayer, and at most 75% borrowing across personally owned homes.`
       + (homes.some((x) => x.d.price > 500000) ? ' A company buying a home for over £500,000 can pay a flat 17% stamp duty instead (with reliefs for letting businesses), which this doesn\'t model.' : '');
-    $('#port-10y-note').textContent = `Rents, costs and prices grow at the deal's projection rates; the tax bands stay frozen. Each year the company ${o.policy === 'pay' ? 'pays you what it can, your loan first and then dividends' : 'keeps its profit'}${o.dlRate ? ` and pays you ${pct(o.dlRate * 100, 2)} interest on your loan (it withholds 20% and pays it to HMRC quarterly on form CT61; your tax return settles the rest)` : ''}; when it's short of cash, you lend it the difference. `
+    const F = base.fix5 ? 5 : 2, refiTxt = `Each home is remortgaged when its ${F}-year fix ends, at ${pct((isFinite(o.refiRate) ? o.refiRate : base.rate - base.prem) * 100, 2)}${o.prem ? ' (plus the company premium)' : ''} with a new ${gbp(base.fee)} fee`
+      + (o.refi === 'keep' ? ', keeping the same loan. ' : `, borrowing back up to ${pct((1 - base.dep) * 100, 0)} of its value as far as the rent passes the lender's test, and ${o.refi === 'take' ? 'paying the cash out' : 'buying more homes like this one with it'}. Borrowing more than a home cost doesn't get the interest credit when you own it yourself (HMRC PIM2105). `);
+    $('#port-10y-note').textContent = `Rents, costs and prices grow at the deal's projection rates; the tax bands stay frozen. ${refiTxt}Each year the company ${o.policy === 'pay' ? 'pays you what it can, your loan first and then dividends' : 'keeps its profit'}${o.dlRate ? ` and pays you ${pct(o.dlRate * 100, 2)} interest on your loan (it withholds 20% and pays it to HMRC quarterly on form CT61; your tax return settles the rest)` : ''}; when it's short of cash, you lend it the difference. `
       + `In year ${H} every home is sold. Closing the company through a members' voluntary liquidation (median fees ${gbp(A.mvl_cost.v)}) turns what's left into a capital gain at ${pct(A.cgt_basic.v, 0)}/${pct(A.cgt_higher.v, 0)}; letting isn't a trade, so Business Asset Disposal Relief doesn't apply, and if you carry on letting through another company within two years HMRC can tax it as a dividend instead. Paying it all as dividends in one tax year pushes most of it into the top rate.`;
   };
   return { render, personalTax, grossOf, cgt, project };
