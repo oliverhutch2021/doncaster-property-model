@@ -4,7 +4,7 @@ mix_S,1.0189,"Rent adjustment for the rented mix, semi-detached: (value of all �
 mix_T,1.0443,"Rent adjustment for the rented mix, terraced: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=19,940, 6,475 privately rented); values from 2024+ LSOA £/m² x floor area"
 mix_F,1.0224,"Rent adjustment for the rented mix, flats and maisonettes: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=3,378, 1,527 privately rented); values from 2024+ LSOA £/m² x floor area"
 reprice_share,0.3,Share of private tenancies whose rent is reset to the market each year (assumption),"English Housing Survey 2023-24: 20% of private renters moved in within the last year, plus sitting tenants moved to market rents"
-rent_growth_2y,0.0563,"Doncaster rent growth a year, Aug 2024 to Aug 2026","ONS Price Index of Private Rents, all homes"
-newlet_premium,0.1244,New-let rent over rent being paid: (1 - (1 - p) / (1 + g)) / p - 1,Same
-as_of,2026-08,Month of the ONS rents used,ONS Price Index of Private Rents
+rent_growth_2y,0.0567,"Doncaster rent growth a year, Sep 2024 to Sep 2026","ONS Price Index of Private Rents, all homes"
+newlet_premium,0.1252,New-let rent over rent being paid: (1 - (1 - p) / (1 + g)) / p - 1,Same
+as_of,2026-09,Month of the ONS rents used,ONS Price Index of Private Rents
 check_zoopla_terraced,1.1463,"Check only: Zoopla's Doncaster new-let rent ÷ the formula at Zoopla's buy-to-let price, terraced anchor (Sep 2025)","Zoopla, highest-yielding buy-to-let areas, data to Sep 2025; ONS and UK HPI Doncaster terraced, Sep 2025"
