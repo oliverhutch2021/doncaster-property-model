@@ -77,6 +77,11 @@
         <p class="note" id="v-tested" data-source="confidence accuracy"></p>
         <p class="muted" id="v-local"></p>
         <div class="cond-row" id="cond-row" hidden><span class="label" id="v-cond-label">If in this condition</span><span class="mid" id="v-cond">—</span><span class="muted" id="v-cond-note"></span></div>
+        <div class="mini" id="v-btl" data-source="rent_model rent_newlet assumptions" hidden>
+          <div><span class="label">Rent</span><span class="mid" id="v-rent">—</span><span class="muted" id="v-rent-note"></span></div>
+          <div><span class="label">Yield</span><span class="mid" id="v-yield">—</span><span class="muted" id="v-yield-note"></span></div>
+          <div><span class="label">Cash flow</span><span class="mid" id="v-cash">—</span><span class="muted" id="v-cash-note"></span></div>
+        </div>
         <div class="mini">
           <div id="ask-tile"><span class="label">Asking price check</span><span class="mid" id="v-ask">—</span><span class="muted" id="v-ask-note">Add an asking price or paste a listing</span></div>
           <div><span class="label">Neighbourhood</span><span class="mid" id="v-imd">—</span><span class="muted" id="v-imd-note">—</span></div>
@@ -119,7 +124,7 @@
         <p class="muted" id="comps-note"></p>
       </div>
       <div class="card" id="comps-map-card">
-        <header><h2>Where the comparables are</h2><p class="note">Darker dots sold for more in today's money; the ring is this property.</p></header>
+        <header><h2>Where the comparables are</h2><p class="note">Darker dots sold for more in today's money; the ring is this property. Each sale sits at the centre of its postcode. Drag to move; + and − or Ctrl + scroll to zoom.</p></header>
         <div class="chart" id="comps-map" data-source="comps postcodes price_index"></div>
       </div>
     </div>
@@ -718,5 +723,5 @@
 </div>
 <script src="market_accuracy.js"></script>
 <script src="deal_charts.js"></script>
-<script src="value_extras.js"></script>
+<script src="map.js"></script><script src="value_extras.js"></script>
 <script src="app.js"></script>

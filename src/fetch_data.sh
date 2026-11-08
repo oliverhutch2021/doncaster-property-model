@@ -8,8 +8,8 @@ curl -sS -o ppd_doncaster.csv "https://landregistry.data.gov.uk/app/ppd/ppd_data
 curl -sS -o ppd_doncaster_1995_2014.csv "https://landregistry.data.gov.uk/app/ppd/ppd_data.csv?district=DONCASTER&min_date=1995-01-01&max_date=2014-12-31&limit=all&header=true"
 # English Indices of Deprivation 2025, File 7
 curl -sS -o imd2025_file7.csv "https://assets.publishing.service.gov.uk/media/691ded56d140bbbaa59a2a7d/File_7_IoD2025_All_Ranks_Scores_Deciles_Population_Denominators.csv"
-# ONS Price Index of Private Rents (16 Sep 2026 edition)
-curl -sS -o pipr.xlsx "https://www.ons.gov.uk/file?uri=/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics/16september2026/priceindexofprivaterentsukmonthlypricestatistics.xlsx"
+# ONS Price Index of Private Rents (21 Oct 2026 edition, to Sep 2026; src/refresh_ons_rents.py brings outputs up to a new one)
+curl -sS -o pipr.xlsx "https://www.ons.gov.uk/file?uri=/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics/21october2026/priceindexofprivaterentsukmonthlypricestatistics.xlsx"
 python3 - <<'PY'
 import openpyxl, csv
 ws = openpyxl.load_workbook('pipr.xlsx', read_only=True)['Table 1']; it = ws.iter_rows(values_only=True)
@@ -43,8 +43,10 @@ mkdir -p inspire && curl -sSL -c /tmp/lr.cj -b /tmp/lr.cj -o /dev/null "https://
 curl -sSL -c /tmp/lr.cj -b /tmp/lr.cj -o inspire/Doncaster.zip "https://use-land-property-data.service.gov.uk/datasets/inspire/download/Doncaster_Metropolitan_Borough_Council.zip" && unzip -oq inspire/Doncaster.zip -d inspire
 # VOA Council Tax stock of properties 2025 (band x type x bedrooms, and band x build period, by LSOA)
 mkdir -p voa && for f in 6a0ad444c75cc34a8ff8f397/CTSOP1.1.zip 6a0ad462229555d0fe8266f4/CTSOP3.1.zip 6a0ad479f7c2e79c33db907d/CTSOP4.1.zip; do curl -sSL -o voa/$(basename $f) "https://assets.publishing.service.gov.uk/media/$f" && unzip -oq voa/$(basename $f) -d voa/$(basename $f .zip); done
-# OS OpenMap Local building outlines (SE and SK grid squares)
-mkdir -p osmap && for t in SE SK; do curl -sSL -o osmap/oml_$t.zip "https://api.os.uk/downloads/v1/products/OpenMapLocal/downloads?area=$t&format=ESRI%C2%AE+Shapefile&redirect" && unzip -oqj osmap/oml_$t.zip "*/data/${t}_Building.*" -d osmap; done
+# OS OpenMap Local (SE and SK grid squares): building outlines, and the street map layers for src/basemap.py
+mkdir -p osmap && for t in SE SK; do curl -sSL -o osmap/oml_$t.zip "https://api.os.uk/downloads/v1/products/OpenMapLocal/downloads?area=$t&format=ESRI%C2%AE+Shapefile&redirect" && for l in Building Road ImportantBuilding Woodland SurfaceWater_Area SurfaceWater_Line RailwayTrack FunctionalSite; do unzip -oqj osmap/oml_$t.zip "*/data/${t}_${l}.*" -d osmap; done; done
+# OS Open Greenspace (parks, playing fields, allotments, cemeteries) for src/basemap.py
+mkdir -p greenspace && for t in SE SK; do curl -sSL -o greenspace/gs_$t.zip "https://api.os.uk/downloads/v1/products/OpenGreenspace/downloads?area=$t&format=ESRI%C2%AE+Shapefile&redirect" && unzip -oqj greenspace/gs_$t.zip -d greenspace/$t; done
 # UK House Price Index full file (HM Land Registry / ONS), for src/compare_methods.py
 mkdir -p ukhpi && curl -sSL -o ukhpi/UK-HPI-full-file-2026-07.csv "https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/UK-HPI-full-file-2026-07.csv"
 # ONS Census 2021 tables by LSOA, local authority and country (Nomis bulk downloads), for src/census_profile.py

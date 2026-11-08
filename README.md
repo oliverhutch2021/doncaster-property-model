@@ -38,8 +38,9 @@ two months old, as published Land Registry data would allow.
 ## What the dashboard does
 
 - **Value a property:** pick an address or paste a Rightmove or Zoopla listing; get the estimate, range, confidence,
-  a condition adjustment calibrated on repeat sales, an asking-price check, comparable sales adjusted to this home by
-  the model, where each detail comes from, a breakdown of what moved the value (SHAP, computed in the browser), a
+  a condition adjustment calibrated on repeat sales, an asking-price check, the new-tenancy rent, yield and cash flow at
+  today's mortgage rate, comparable sales adjusted to this home by the model and shown on a zoomable street map, where
+  each detail comes from, a breakdown of what moved the value (SHAP, computed in the browser), a
   Census 2021 profile of the neighbourhood, and a one-page printable report.
 - **Investing:** the home against recent sales in its neighbourhood; a rent estimate for a new tenancy (provisional); a full buy-to-let deal analyser
   (stamp duty, Section 24, limited company, capital gains tax, lender stress test, 10-year after-tax IRR); what the
@@ -107,6 +108,7 @@ outputs/      evaluation results and dashboard data   docs/        PDF guide, te
 | OS Open UPRN | Places each EPC home on its title plan (in the model) |
 | VOA Council Tax stock of properties (2025) | Council tax band check; band mix tested in the model |
 | OS OpenMap Local building outlines (Apr 2026) | Possible-extension prompt (tested in the model) |
+| OS OpenMap Local and OS Open Greenspace (Nov 2026) | Street map of the comparables (`src/basemap.py`) |
 | less.co.uk and planwatch.co.uk 2026 cost guides | Extension and loft conversion costs in the what-if tool |
 | gov.uk / HMRC / MHCLG guidance | Stamp duty, landlord tax, EPC rules, Renters' Rights Act (each with a source link in the dashboard) |
 

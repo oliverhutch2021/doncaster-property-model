@@ -154,8 +154,8 @@ most sales appear in Land Registry's published data (new builds and some others 
 - **Returns**: a cash purchase at the local median price, let at Doncaster's ONS rent for the type (no open source
   gives rents for smaller areas, so cheaper areas get higher yields). Net yield takes off the dashboard's running-cost
   assumptions and spreads stamp duty (with surcharge), legal and selling costs over a 10-year hold; total return = net
-  yield + past price growth a year; the opportunity cost defaults to the 10-year gilt (5.48% at the close on 8 Oct 2026), with Bank
-  Rate (3.75%) or any rate from 0% to 30% as alternatives. Past growth isn't a forecast.
+  yield + past price growth a year; the opportunity cost defaults to the 10-year gilt (5.16% on 6 Nov 2026), with Bank
+  Rate (4.00% since 5 Nov 2026) or any rate from 0% to 30% as alternatives. Past growth isn't a forecast.
 
 ## Rent estimate (v10, `src/invest_v10.py`)
 
@@ -205,6 +205,24 @@ sets a new rent, so the estimate is moved to a new tenancy in two steps:
 - **One-page report.** A print stylesheet shows only a report built from the Value tab (estimate, rent, details and
   sources, adjusted comparables, the area, Census); the browser's print or Save as PDF gives one A4 page
   (`tests/test_ui.py` S5).
+
+## Version 33
+
+- **Street map of the comparables** (`src/basemap.py`, `dashboard/map.js`). OS OpenMap Local (buildings, important
+  buildings, roads with names and numbers, woodland, water, rail, school and hospital grounds) and OS Open Greenspace
+  (parks, playing fields, allotments, cemeteries), each feature assigned to the postcode district of its nearest
+  postcode centroid (kept within 1.5 km), simplified to about a metre and stored as encoded polylines: one dataset per
+  district the comparables cover (16, about 4 MB in all). The page loads the districts in reach of the view, draws one
+  SVG path per kind in metres around the property (so zooming rescales rather than redraws), joins named road segments
+  end to end and labels the longest stretch in view. Sales sit at their postcode centroid; sales sharing one are spread
+  in a ring. Wheel zoom needs Ctrl or ⌘, so scrolling the page isn't captured. `tests/test_ui.py` SM1.
+- **Buy-to-let in the estimate box.** The Investing tab's deal (price, new-tenancy rent, deposit, mortgage, costs,
+  ownership) gives the rent with its likely range, gross yield, net yield (after letting, maintenance, voids, insurance
+  and compliance) and first-year cash flow before and after tax. `tests/test_ui.py` B1.
+- **Rates, November 2026.** Bank Rate 4.00%, gilt 5.16%, buy-to-let rate 5.79%, property income tax 24%/44% from
+  April 2027 with relief at 24%, compliance +£65 for the landlord register (`config/assumptions.csv` gives each
+  source). ONS rents to September 2026 come from `src/refresh_ons_rents.py`, which rewrites `rents.csv` and the new-let
+  premium without the raw EPC file; the rent model's anchors stay on August 2026, the month they were fitted with.
 
 ## Tenant risk (v11, `src/tenants_v11.py`)
 

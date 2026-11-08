@@ -52,6 +52,7 @@ STEPS = [
     ("export", S("invest_v10.py"), "rent model and neighbourhood sale spreads"),
     ("export", S("rent_newlet.py"), "provisional new-tenancy rent adjustment: the rented mix and the new-let premium"),
     ("export", S("census_profile.py"), "Census 2021 profile per neighbourhood, with Doncaster and England"),
+    ("export", S("basemap.py"), "street map per postcode district for the comparables map (OS OpenMap Local, OS Open Greenspace)"),
     ("export", S("tenants_v11.py"), "landlord court claims and anti-social behaviour"),
     ("export", S("refurb_v13.py"), "refurbishment costs, into config/assumptions.csv"),
     ("train", S("production_v18.py"), "the production model: every kept sale before the last 12 months, with the shared cleaning rule"),

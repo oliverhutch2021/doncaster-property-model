@@ -23,7 +23,7 @@
 .dpm .tab:focus-visible, .dpm button:focus-visible, .dpm input:focus-visible, .dpm select:focus-visible, .dpm summary:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
 
 /* layout */
-.dpm .grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+.dpm .grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: stretch; }   /* cards side by side share a height */
 .dpm .grid.two { gap: var(--cds-gap-lg); }
 .dpm .grid-wide { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); }
 .dpm .split { display: grid; gap: var(--cds-gap-md); grid-template-columns: minmax(0, 1fr); align-items: start; }
@@ -318,6 +318,30 @@
 .dpm .changelog ul { list-style: disc; margin: 0; padding-left: 1.1em; display: grid; gap: 2px; }
 .dpm .changelog .cl-now { margin-left: 6px; vertical-align: middle; font-family: var(--font-anthropic-sans); }
 @media (max-width: 560px) { .dpm .changelog > li { grid-template-columns: minmax(0, 1fr); } }
+/* comparables street map (map.js): colours mixed from the theme, so it follows light and dark */
+.dpm #comps-map-card { grid-template-rows: auto 1fr; align-content: stretch; }
+.dpm #comps-map { min-height: 340px; overflow: hidden; border-radius: calc(var(--cds-radius) - 2px); }
+.dpm #comps-map svg.map { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.dpm #comps-map svg.map:active { cursor: grabbing; }
+.dpm .map .land { fill: color-mix(in srgb, var(--color-fg) 3%, var(--color-panel)); }
+.dpm .map .k-g { fill: color-mix(in srgb, #3f9b4f 16%, var(--color-panel)); }
+.dpm .map .k-w { fill: color-mix(in srgb, #2f7d3e 24%, var(--color-panel)); }
+.dpm .map .k-s { fill: color-mix(in srgb, #c98500 9%, var(--color-panel)); }
+.dpm .map .k-a { fill: color-mix(in srgb, #3987e5 26%, var(--color-panel)); }
+.dpm .map .k-l { fill: none; stroke: color-mix(in srgb, #3987e5 40%, var(--color-panel)); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.dpm .map .k-b { fill: color-mix(in srgb, var(--color-fg) 11%, var(--color-panel)); stroke: color-mix(in srgb, var(--color-fg) 17%, var(--color-panel)); stroke-width: .5px; vector-effect: non-scaling-stroke; }
+.dpm .map .k-i { fill: color-mix(in srgb, var(--color-fg) 16%, var(--color-panel)); }
+.dpm .map .k-t { fill: none; stroke: color-mix(in srgb, var(--color-fg) 35%, var(--color-panel)); stroke-width: 1.5px; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
+.dpm .map .k-r { fill: none; stroke: color-mix(in srgb, var(--color-fg) 22%, var(--color-panel)); stroke-linecap: round; stroke-linejoin: round; }
+.dpm .map .k-r.major { stroke: color-mix(in srgb, var(--color-warn) 40%, var(--color-panel)); }
+.dpm .map text { font-size: 11px; fill: var(--color-fg-muted); paint-order: stroke; stroke: var(--color-panel); stroke-width: 3px; stroke-linejoin: round; }
+.dpm .map .map-place { font-style: italic; }
+.dpm .map .map-attr { font-size: 10px; }
+.dpm .map .map-scale path { fill: none; stroke: var(--color-fg-muted); stroke-width: 1.5px; }
+.dpm .map-ui { position: absolute; top: 8px; right: 8px; display: grid; gap: 4px; }
+.dpm .map-ui button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); font-size: 16px; line-height: 1; cursor: pointer; }
+.dpm .map-hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); padding: 6px 10px; font-size: var(--cds-font-size-caption); color: var(--color-fg); pointer-events: none; }
+
 </style>
 
 <div class="dpm">
@@ -398,6 +422,11 @@
         <p class="note" id="v-tested" data-source="confidence accuracy"></p>
         <p class="muted" id="v-local"></p>
         <div class="cond-row" id="cond-row" hidden><span class="label" id="v-cond-label">If in this condition</span><span class="mid" id="v-cond">—</span><span class="muted" id="v-cond-note"></span></div>
+        <div class="mini" id="v-btl" data-source="rent_model rent_newlet assumptions" hidden>
+          <div><span class="label">Rent</span><span class="mid" id="v-rent">—</span><span class="muted" id="v-rent-note"></span></div>
+          <div><span class="label">Yield</span><span class="mid" id="v-yield">—</span><span class="muted" id="v-yield-note"></span></div>
+          <div><span class="label">Cash flow</span><span class="mid" id="v-cash">—</span><span class="muted" id="v-cash-note"></span></div>
+        </div>
         <div class="mini">
           <div id="ask-tile"><span class="label">Asking price check</span><span class="mid" id="v-ask">—</span><span class="muted" id="v-ask-note">Add an asking price or paste a listing</span></div>
           <div><span class="label">Neighbourhood</span><span class="mid" id="v-imd">—</span><span class="muted" id="v-imd-note">—</span></div>
@@ -440,7 +469,7 @@
         <p class="muted" id="comps-note"></p>
       </div>
       <div class="card" id="comps-map-card">
-        <header><h2>Where the comparables are</h2><p class="note">Darker dots sold for more in today's money; the ring is this property.</p></header>
+        <header><h2>Where the comparables are</h2><p class="note">Darker dots sold for more in today's money; the ring is this property. Each sale sits at the centre of its postcode. Drag to move; + and − or Ctrl + scroll to zoom.</p></header>
         <div class="chart" id="comps-map" data-source="comps postcodes price_index"></div>
       </div>
     </div>
@@ -1039,5 +1068,5 @@
 </div>
 <script src="market_accuracy.js"></script>
 <script src="deal_charts.js"></script>
-<script src="value_extras.js"></script>
+<script src="map.js"></script><script src="value_extras.js"></script>
 <script src="app.js"></script>

@@ -61,7 +61,7 @@
 
   // ================= cached data =================
   const cache = {};
-  let VX = null;                                         // value_extras.js, set once the helpers below exist
+  let VX = null, MAPX = null;                                         // value_extras.js, set once the helpers below exist
   // trees are stored compactly (left child = next node; default-left, kind and missing type packed in one flag):
   // internal [f, thr, right, flags, count], leaf [-1, value, count] -> [f, thr, left, right, dl, kind, mt, count]
   const expandTree = (nodes) => nodes.map((n, i) => (n.length === 8 ? n
@@ -677,6 +677,21 @@
     renderCt(v, inp);
     renderHist(inp);
     renderWhatIf(v, inp, cond);
+    renderBtlHead();
+  };
+  // buy-to-let at a glance in the estimate box: the new-tenancy rent, yields and cash flow of the Investing tab's deal
+  const renderBtlHead = () => {
+    const el = $('#v-btl'), R = rentEstimate(), A = getAss(); if (!el) return; el.hidden = true; if (!R || !A) return;
+    syncDefaults(); const d = readDeal(); if (![d.price, d.rent, d.dep, d.rate].every(isFinite) || d.price <= 0 || d.rent <= 0) return;
+    const y = yearCalc(d, A, { rent: d.rent, costMult: 1, balance: d.price * (1 - d.dep), year2027: d.taxYear === '2027' }), m = y.pre / 12;
+    const who = { basic: 'basic-rate', higher: 'higher-rate', company: 'company' }[d.owner] || '';
+    el.hidden = false;
+    $('#v-rent').textContent = `${gbp(d.rent)} a month`;
+    $('#v-rent-note').textContent = (d.rent === R.est ? 'For a new tenancy; likely ' : `Estimate ${gbp(R.est)}; likely `) + `${gbp(R.lo)} to ${gbp(R.hi)}`;
+    $('#v-yield').textContent = `${pct(y.annualRent / d.price * 100)} gross`;
+    $('#v-yield-note').textContent = `${pct((y.collected - y.opex) / d.price * 100)} after letting, upkeep, voids and insurance, at ${gbpK(d.price)}`;
+    $('#v-cash').textContent = `${gbp(m)} a month`; $('#v-cash').className = 'mid ' + (m >= 0 ? 'good' : 'badc');
+    $('#v-cash-note').textContent = `Before tax, with a ${pct(d.dep * 100, 0)} deposit and a ${pct(d.rate * 100, 2)} ${d.mtype === 'io' ? 'interest-only' : 'repayment'} mortgage; ${gbp(y.post / 12)} after ${who} tax. Change any of it under Investing`;
   };
   // the 80% range as a bar, the estimate as a marker, and the asking price if given
   const drawRangeBar = (box, v, asking) => {
@@ -891,22 +906,7 @@
       ['Value added less cost', gbp(gain - cost), gain - cost >= 0 ? 'good' : 'badc'], ...(cost > 0 ? [['Value added per £1 spent', d3.format('.2f')(gain / cost)]] : [])]);
     note.textContent = (R ? `${R.label}, ${R.finish}: ${refurbText(R)}. ` + (tooLittle ? `A home that ${cond.label.toLowerCase() === 'needs full renovation' ? 'needs a full renovation' : 'is in this condition'} needs more than ${R.label.toLowerCase()} to sell as ${toC.label.toLowerCase()}, so no rise in value is counted; pick Full renovation to see that. ` : toC && toC.adj <= base ? 'Your condition setting is already at or above what these works leave, so the value doesn\'t change. ' : '') : '') + (cost === 0 && gain === 0 ? 'Choose some works above.' : add > 0 && gain <= 0 ? 'The model doesn\'t value this extra space here: for about 1 home in 50 a small addition lands on one of its steps and reads as no gain. Treat it as roughly zero and compare with sold prices of extended homes nearby.' : 'The model has learned what bigger, better-rated or refurbished homes sell for nearby, not what one particular extension adds: treat this as a first check before getting quotes. Estimates move slightly with every input, so small gains are within the model\'s noise.');
   };
-  const drawCompsMap = (v, list) => {
-    const box = $('#comps-map'); fresh(box); if (!list.length) return;
-    const W = Math.max(260, box.clientWidth), H = 260, m = 14, k = Math.cos(v.lat * Math.PI / 180);
-    const pts = list.map((r) => ({ ...r, x: (r.lonN - v.lon) * k, y: r.latN - v.lat }));
-    const ext = Math.max(0.002, d3.max(pts, (p) => Math.max(Math.abs(p.x), Math.abs(p.y)))) * 1.1, s = Math.min(W - 2 * m, H - 2 * m) / (2 * ext), cx = W / 2, cy = H / 2;
-    const col = d3.scaleLinear().domain(d3.extent(pts, (p) => p.today)).range([0.3, 1]);
-    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Map of comparable sales');
-    [0.5, 1].forEach((f) => svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', ext * s * f).attr('fill', 'none').attr('stroke', 'var(--cds-chart-grid)'));
-    svg.append('text').attr('x', cx + ext * s * 0.36 + 4).attr('y', cy - ext * s * 0.36).attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text(d3.format('.1f')(ext * 0.5 * 111.2) + ' km');
-    const t = tip(box);
-    svg.selectAll('circle.pt').data(pts).join('circle').attr('class', 'pt').attr('cx', (p) => cx + p.x * s).attr('cy', (p) => cy - p.y * s).attr('r', 6)
-      .attr('fill', dash.colors[0]).attr('fill-opacity', (p) => (isFinite(p.today) ? col(p.today) : 0.5)).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2)
-      .on('mousemove', (e, p) => { const [x, y] = d3.pointer(e, box); t.show([['t', p.address || p.postcode], ['', `${gbp(p.priceN)} (${d3.utcFormat('%b %Y')(new Date(p.date))})`], ['', `${gbp(p.today)} in today's money`]], x, y); })
-      .on('mouseleave', () => t.hide());
-    svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 9).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
-  };
+  const drawCompsMap = (v, list) => { if (MAPX) MAPX.draw(v, list); };      // the street map lives in map.js
 
   // ================= SAVED PROPERTIES (private to each viewer, in the dashboard's own store) =================
   const WL = { col: null, items: [], off: false, err: null };
@@ -2587,6 +2587,7 @@
   // in a file of their own, loaded first: one page file can't exceed 256 KB. They get the helpers they use from here
   const missingTabs = (name) => () => { throw new Error(`market_accuracy.js didn't load, so ${name} can't be drawn`); };
   // the Value tab's source tags, Census card and one-page report (value_extras.js, its own file for the 256 KB limit)
+  MAPX = window.DPM_MAP ? window.DPM_MAP({ gbp, tip, rows }) : null;
   VX = window.DPM_VALUE ? window.DPM_VALUE({ $, state, monthLabel, num, gbp, gbpK, pct, parseSales, kv, cell, TYPE_NAME, getModel, rentEstimate, ok, rows }) : null;
   const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip }) : {};
   const renderMarket = tabs2.renderMarket || missingTabs('the Market tab'), renderAccuracy = tabs2.renderAccuracy || missingTabs('the Accuracy tab');

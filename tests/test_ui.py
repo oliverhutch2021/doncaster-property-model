@@ -412,6 +412,13 @@ with sync_playwright() as p:
     pages = len(re.findall(rb"/Type\s*/Page[^s]", pdf))
     check("S5 the printed report is one A4 page with the estimate, details, comparables and rent", pages == 1 and "Valuation report" in rep and vb in rep and "Like this home" in rep and "new tenancy" in rep, (pages, rep[:90]))
     pg.click("#tab-value"); pg.wait_for_timeout(500)
+    # version 33: rent, yield and cash flow in the estimate box, the same deal as the Investing tab
+    hr, hy = money(txt("#v-rent")), txt("#v-yield") or ""; price = money(v("#b-price"))
+    check("B1 the estimate box shows the deal's new-tenancy rent and its gross yield", hr == money(v("#b-rent")) and abs(float(hy.split("%")[0]) - 1200 * hr / price) < 0.06 and "a month" in (txt("#v-cash") or ""), (hr, hy, price))
+    # the street map: buildings, roads and street names around the property, a dot per comparable, and zoom that keeps the dots
+    mp = lambda: pg.evaluate("() => { const s = document.querySelector('#comps-map svg.map'); return s && { b: (s.querySelector('.k-b') || {getAttribute: () => ''}).getAttribute('d').split('M').length - 1, r: s.querySelectorAll('.k-r').length, dots: s.querySelectorAll('circle.pt').length, names: [...s.querySelectorAll('.map-road')].map((e) => e.textContent), bar: (s.querySelector('.map-scale text') || {}).textContent }; }")
+    m0 = mp(); pg.click("#comps-map .map-ui button"); pg.wait_for_timeout(700); m1 = mp()
+    check("SM1 the comparables map draws the streets around the property, a dot per sale, and zooms", m0 and m0["b"] > 50 and m0["r"] >= 2 and m0["dots"] == len(crow) and "Shakespeare Avenue" in m0["names"] and m1["bar"] != m0["bar"] and m1["dots"] == m0["dots"], (m0 and {k: m0[k] for k in ("b", "r", "dots", "bar")}, m1 and m1["bar"]))
     check("no page errors", not errs, errs[:3])
     b.close()
 print(f"{sum(results)} of {len(results)} passed"); sys.exit(0 if all(results) else 1)
