@@ -281,7 +281,7 @@ with sync_playwright() as p:
     # M3: capital gains tax within the basic-rate band; improvements no bigger than the works
     pg.select_option("#b-owner", "basic"); pg.fill("#b-income", "0"); pg.fill("#p-price", "6"); pg.wait_for_timeout(900); n_basic = txt("#r-irr-note") or ""
     shown = pg.is_visible("#b-income")
-    pg.select_option("#b-owner", "higher"); pg.wait_for_timeout(800); n_high = txt("#r-irr-note") or ""; hidden = not pg.is_visible("#b-income")
+    pg.select_option("#b-owner", "higher"); pg.wait_for_timeout(800); n_high = txt("#r-irr-note") or ""; hidden = pg.is_visible("#b-income")   # since version 34 it always shows: it also sets the portfolio's band and dividend tax
     pg.select_option("#b-owner", "basic"); pg.fill("#b-income", ""); pg.fill("#b-works", "5000"); pg.fill("#b-improve", "9000"); pg.wait_for_timeout(800); n_bad = txt("#b-notes") or ""
     pg.fill("#b-improve", "0"); pg.fill("#b-works", "0"); pg.wait_for_timeout(600)
     check("M3 a basic-rate owner's gain is split across the band; improvements can't exceed the works", "18% on" in n_basic and "24% on" in n_basic and shown and hidden and "18% on" not in n_high
@@ -419,6 +419,27 @@ with sync_playwright() as p:
     mp = lambda: pg.evaluate("() => { const s = document.querySelector('#comps-map svg.map'); return s && { b: (s.querySelector('.k-b') || {getAttribute: () => ''}).getAttribute('d').split('M').length - 1, r: s.querySelectorAll('.k-r').length, dots: s.querySelectorAll('circle.pt').length, names: [...s.querySelectorAll('.map-road')].map((e) => e.textContent), bar: (s.querySelector('.map-scale text') || {}).textContent }; }")
     m0 = mp(); pg.click("#comps-map .map-ui button"); pg.wait_for_timeout(700); m1 = mp()
     check("SM1 the comparables map draws the streets around the property, a dot per sale, and zooms", m0 and m0["b"] > 50 and m0["r"] >= 2 and m0["dots"] == len(crow) and "Shakespeare Avenue" in m0["names"] and m1["bar"] != m0["bar"] and m1["dots"] == m0["dots"], (m0 and {k: m0[k] for k in ("b", "r", "dots", "bar")}, m1 and m1["bar"]))
+    # version 34: personal tax on a whole portfolio, and a portfolio of homes like this one, owned personally or by a company
+    tx = pg.evaluate("""() => { const A = Object.fromEntries(dash.data('assumptions').data.map((r) => [r.key, { v: Number(r.value) }])), P = window.DPM_PORT({});
+      const t = (o, pr, dv, y) => { const x = P.personalTax(A, o, pr, dv, y); return Math.round((x.other + x.prop + x.div) * 100) / 100; };
+      return [t(32570, 30000, 0, false), t(32570, 30000, 0, true), t(32570, 0, 10000, true), t(110000, 0, 0, false), P.grossOf(A, 102430)]; }""")
+    # by hand: £20,000 taxable other income (£4,000 tax) + £30,000 property: 17,700 at 20% + 12,300 at 40%; from April 2027 at 24%/44%;
+    # £10,000 dividends: £500 at 0% + 9,500 at 10.75%; £110,000 income: allowance tapered to £7,570, 37,700 at 20% + 64,730 at 40%
+    check("P1 personal tax: bands, property rates from April 2027, dividend allowance, allowance taper", tx == [12460, 13660, 5021.25, 33432, 110000], tx)
+    pg.click("#tab-invest"); pg.wait_for_timeout(800); pg.select_option("#b-owner", "company"); pg.fill("#co-homes", "10"); pg.dispatch_event("#co-homes", "input"); pg.wait_for_timeout(1200)
+    rows_ = pg.eval_on_selector_all("#port-table tbody tr", "trs => Object.fromEntries(trs.map(tr => [tr.cells[0].innerText, [...tr.cells].slice(1).map(c => c.innerText)]))")
+    per = pg.eval_on_selector("#r-detail", "dl => dl.innerText")
+    mny = lambda s: float(s.split(" ")[0].replace("£", "").replace(",", "").replace("−", "-"))
+    pre_home = mny(per.split("Cash flow before tax")[1].split("\n")[1]); pre_co = mny(rows_["Profit before tax"][1])
+    pre_p, int_p = mny(rows_["Profit before tax"][0]), -mny(rows_["Mortgage interest"][0]); prop = pre_p + int_p; left = 37700 - mny(v("#b-income"))
+    want = min(prop, left) * 0.2 + max(0, prop - left) * 0.4 - 0.2 * min(int_p, prop)
+    tax_p = -mny(rows_["Tax on the profit: income tax (less the interest credit) or corporation tax"][0])
+    check("P2 the portfolio card: 10 times the company deal's own profit, personal tax worked out on the whole portfolio", abs(pre_co - 10 * pre_home) <= 10 and abs(tax_p - max(0, want)) <= 2 and abs(float(rows_["Mortgage rate"][1][:-1]) - float(rows_["Mortgage rate"][0][:-1]) - 0.3) < 0.001,
+          (pre_home, pre_co, round(want), tax_p, rows_["Mortgage rate"]))
+    pg.select_option("#b-fix", "2"); pg.wait_for_timeout(800); s2 = txt("#r-stress") or ""; pg.select_option("#b-fix", "5"); pg.wait_for_timeout(800); s5 = txt("#r-stress") or ""
+    rc = float(rows_["Mortgage rate"][1][:-1])
+    check("P3 a 5-year fix is stress-tested at its own rate, a 2-year fix at the rate + 2 points", f"at {rc:.2f}%" in s5 and f"at {max(5.5, rc + 2):.2f}%" in s2, (rc, s5[:90], s2[:90]))
+    pg.select_option("#b-owner", "basic"); pg.wait_for_timeout(500); pg.click("#tab-value"); pg.wait_for_timeout(500)
     check("no page errors", not errs, errs[:3])
     b.close()
 print(f"{sum(results)} of {len(results)} passed"); sys.exit(0 if all(results) else 1)

@@ -88,3 +88,15 @@ sens_voids_weeks,Sensitivity: void weeks moved by,2,weeks a year,Round swing for
 sens_maint_pct,Sensitivity: maintenance moved by,50,pct of itself,Round swing for the sensitivity chart; the stress tests double it (assumption - edit)
 sens_deposit_pts,Sensitivity: deposit moved by,10,pct points,Round swing for the sensitivity chart (assumption - edit)
 btl_min_deposit,Usual minimum buy-to-let deposit,25,pct,Most buy-to-let mortgages lend up to 75% of the value; the sensitivity chart lowers the deposit no further (assumption - edit)
+ltd_homes,Portfolio: homes in the company,10,homes,Your plan of 10 or more homes in a limited company (assumption - edit on the page)
+ltd_rate_premium,Limited company mortgage premium over the personal rate,0.3,pct points,"Moneyfacts: average limited company 5-year buy-to-let fix 5.50% and 2-year 5.04% (6 Oct 2025) against 5.21% and 4.88% for all buy-to-let (1 Sep 2025), so about 0.3 and 0.2 points; lenders price companies a fraction of a percent above personal borrowers (Mortgage One). Get a quote"
+ltd_company_costs,Limited company running costs (whole company),3050,GBP per year,"Accounts and corporation tax return for a 10-property company £2,500-£3,500 (UK Property Accountants, cost to file company accounts, Apr 2026): £3,000, plus the £50 Companies House confirmation statement (from 1 Feb 2026). Estimate - get a quote"
+tax_additional,"Income tax on property income, additional rate (2026-27)",45,pct,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28): charged at the main rates"
+tax_additional_2027,Property income additional rate from April 2027,49,pct,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+div_ordinary,"Dividend tax, ordinary rate",10.75,pct,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+div_upper,"Dividend tax, upper rate",35.75,pct,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+div_additional,"Dividend tax, additional rate",39.35,pct,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+div_allowance,"Dividend allowance (taxed at 0%, still uses the band)",500,GBP,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+personal_allowance,Personal allowance,12570,GBP,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28); frozen to April 2031"
+pa_taper_start,Personal allowance falls £1 for every £2 of income over,100000,GBP,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"
+additional_threshold,Additional rate from taxable income over,125140,GBP,"gov.uk Budget 2026, Annex A rates and allowances (2026-27 and 2027-28)"

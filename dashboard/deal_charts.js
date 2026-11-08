@@ -24,8 +24,9 @@ window.DPM_DEAL = (h) => {
     const icr = (d.owner === 'higher' ? A.icr_higher.v : A.icr_basic.v) / 100, loan = d.price * (1 - d.dep), floor = A.stress_rate.v / 100;
     if (!(loan > 0)) return { none: true };
     const cover = d.rent * 12 / (loan * icr);   // the highest stress rate the rent covers
+    if (d.fix5) return { maxRate: cover };      // a fix of 5 years or more is tested at its own rate (PRA SS13/16)
     if (cover < floor) return { failsAll: true };
-    return { maxRate: cover - 0.02 };            // the rate tested is the larger of the floor and the rate + 2 points
+    return { maxRate: cover - 0.02 };            // a shorter fix: the larger of the floor and the rate + 2 points
   };
 
   // ================= 1. the mortgage rate =================
@@ -43,8 +44,9 @@ window.DPM_DEAL = (h) => {
     const moved = slider.getBoundingClientRect().top - before; if (Math.abs(moved) >= 0.5) window.scrollBy(0, moved);
     requestAnimationFrame(() => { root.style.overflowAnchor = ''; });
   };
+  let prem = 0;                              // a company's mortgage premium: the slider shows the rate paid, the field the quote without it
   const setRate = (v) => {
-    const r = Math.round(clamp(v, 0, 25) * 20) / 20; if (String(r) === $('#b-rate').value && pendingRate === null) return;
+    const r = Math.round(Math.max(0, clamp(v, 0, 25) - prem * 100) * 20) / 20; if (String(r) === $('#b-rate').value && pendingRate === null) return;
     if (pendingRate === null) requestAnimationFrame(() => { const x = pendingRate; pendingRate = null; if (String(x) !== $('#b-rate').value) { $('#b-rate').value = String(x); steady(renderInvest); } });
     pendingRate = r;
   };
@@ -58,7 +60,7 @@ window.DPM_DEAL = (h) => {
     ['pointerup', 'pointercancel', 'change'].forEach((ev) => slider.addEventListener(ev, endDrag));
   }
   const drawRate = (d, A, y1) => {
-    const box = $('#rate-chart'); if (!box) return;
+    const box = $('#rate-chart'); if (!box) return; prem = d.prem || 0;
     const top = rateDrag && box._top ? box._top : Math.min(25, Math.max(12, Math.ceil(d.rate * 100 + 3))); box._top = top; slider.max = String(top); slider.value = String(fix0(d.rate * 100, 2)); out.textContent = pct(d.rate * 100, 2);
     $('#rate-top').textContent = pct(top, 0);
     const loan = d.price * (1 - d.dep), st = stressOf(d, A), W = Math.max(300, box.clientWidth), H = 230, m = { t: 22, r: 14, b: 28, l: 10 };

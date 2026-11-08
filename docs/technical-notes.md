@@ -224,6 +224,26 @@ sets a new rent, so the estimate is moved to a new tenancy in two steps:
   source). ONS rents to September 2026 come from `src/refresh_ons_rents.py`, which rewrites `rents.csv` and the new-let
   premium without the raw EPC file; the rent model's anchors stay on August 2026, the month they were fitted with.
 
+## Version 34: a company portfolio (`dashboard/portfolio.js`)
+
+- **Portfolio card.** The deal's home bought N times (default 10). Year 1 in the deal's tax year for three owners: you,
+  a company keeping its profit (or repaying your loan, which is tax-free), and a company paying it out as dividends.
+  Everything per home comes from `yearCalc`; the taxes are worked out on the totals.
+- **Personal tax on the whole portfolio** (`personalTax`): other income at the main rates, property profit at the property
+  rates (24%/44%/49% from April 2027), dividends at 10.75%/35.75%/39.35% with the £500 allowance using its band; the
+  personal allowance goes against other income first (HMRC's order from April 2027) and tapers above £100,000; bands on
+  taxable income (£37,700, £125,140). Section 24 credit at the property basic rate on the lowest of interest, property
+  profit and taxable income. The deal's "other taxable income" is after the allowance; `grossOf` turns it back.
+  `tests/test_ui.py` P1 checks four hand-worked cases.
+- **Company in the deal.** Mortgage premium (0.3 points: Moneyfacts' company averages against all buy-to-let, autumn
+  2025), running costs (£3,050: accounts and CT600 for a 10-property company, £2,500-£3,500, plus £50 confirmation
+  statement) shared across the homes, corporation tax on all of them (`corpTax(n × profit) / n`), and on a sale the gain
+  on top of the whole company's profit. P2 checks the card against the deal.
+- **Stress test by fix length.** A fix of 5 years or more is tested at its own rate; a shorter one at the larger of 5.5%
+  and the rate + 2 points (PRA SS13/16). Rent cover 125% for a company or basic-rate taxpayer, 145% higher-rate. P3.
+- Not modelled: associated companies (which share the corporation tax limits), loan interest paid to you, the 17% rate
+  for company purchases over £500,000 (flagged), extraction of sale proceeds, and portfolio lenders' own aggregate tests.
+
 ## Tenant risk (v11, `src/tenants_v11.py`)
 
 - **Court claims** (Market tab): Ministry of Justice landlord possession statistics to April-June 2026, per 1,000

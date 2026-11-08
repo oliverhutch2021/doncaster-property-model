@@ -318,6 +318,14 @@
 .dpm .changelog ul { list-style: disc; margin: 0; padding-left: 1.1em; display: grid; gap: 2px; }
 .dpm .changelog .cl-now { margin-left: 6px; vertical-align: middle; font-family: var(--font-anthropic-sans); }
 @media (max-width: 560px) { .dpm .changelog > li { grid-template-columns: minmax(0, 1fr); } }
+/* portfolio card (portfolio.js) */
+.dpm #port-table tr.strong td { font-weight: var(--cds-font-weight-medium); }
+.dpm #port-card .tbl-wrap { max-height: none; }
+.dpm #port-table th { white-space: normal; vertical-align: bottom; width: 22%; }
+.dpm #port-table th:first-child { width: auto; }
+.dpm #port-table td:first-child { white-space: normal; min-width: 11rem; }
+.dpm #port-table td.r { white-space: normal; }
+.dpm .port-list { margin: 8px 0 0; padding-left: 1.1rem; display: grid; gap: 6px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 /* comparables street map (map.js): colours mixed from the theme, so it follows light and dark */
 .dpm #comps-map-card { grid-template-rows: auto 1fr; align-content: stretch; }
 .dpm #comps-map { min-height: 340px; overflow: hidden; border-radius: calc(var(--cds-radius) - 2px); }
@@ -549,6 +557,7 @@
           <label class="fld">Deposit (%) <input id="b-deposit" type="number" min="0" max="100" step="1"></label>
           <label class="fld">Mortgage rate (%) <input id="b-rate" type="number" min="0" step="0.05"></label>
           <label class="fld">Mortgage type <select id="b-mtype"><option value="io">Interest-only</option><option value="rep">Repayment</option></select></label>
+          <label class="fld" title="Lenders test the rent against the interest at a stress rate. The PRA expects at least 5.5% or the rate + 2 points for shorter fixes; a fix of 5 years or more can be tested at its own rate (SS13/16).">Fixed for <select id="b-fix"><option value="5">5 years or more</option><option value="2">2 years</option></select></label>
           <label class="fld">Term (years) <input id="b-term" type="number" min="5" max="40" step="1"></label>
           <label class="fld">Arrangement fee (£) <input id="b-fee" type="number" min="0" step="100"></label>
         </div></fieldset>
@@ -567,7 +576,12 @@
           <label class="fld">Works before letting (£) <input id="b-works" type="number" min="0" step="500"></label>
           <label class="fld">EPC upgrade to C (£) <input id="b-epc" type="number" min="0" step="100"></label>
           <label class="fld" title="Only improvements come off the gain when you sell: something the home didn't have, such as an extension or a loft conversion. Repairs, decorating and like-for-like replacements don't (gov.uk); the projection sets them against the first year's rental profit instead.">Of these, improvements (£) <input id="b-improve" type="number" min="0" step="500" value="0"></label>
-          <label class="fld" id="b-income-wrap" title="Your taxable income in the year you sell, after the personal allowance, not counting this home's rent (the projection adds that). Gains that fit in what's left of the £37,700 basic-rate band pay 18%, the rest 24% (gov.uk; HMRC's own example uses £20,000).">Other taxable income when you sell (£) <input id="b-income" type="number" min="0" step="1000"></label>
+          <label class="fld" id="b-income-wrap" title="Your taxable income each year from other sources (salary, pension), after the personal allowance, not counting these homes' rent. It sets the capital gains tax rate when you sell (gains that fit in what's left of the £37,700 basic-rate band pay 18%, the rest 24%; HMRC's example uses £20,000), your tax band on a personal portfolio, and the tax on dividends from a company.">Your other taxable income (£/yr) <input id="b-income" type="number" min="0" step="1000"></label>
+        </div></fieldset>
+        <fieldset><legend>Portfolio and company</legend><div class="form">
+          <label class="fld" title="The portfolio card below buys this home this many times. With Limited company chosen, the company's running costs are shared across them and corporation tax is worked out on all of them together.">Homes in the portfolio <input id="co-homes" type="number" min="1" max="200" step="1"></label>
+          <label class="fld" title="Limited company buy-to-let mortgages cost a little more than personal ones: Moneyfacts' averages were about 0.3 points higher for 5-year fixes in autumn 2025. Added to the mortgage rate above when the owner is a company.">Company mortgage premium (% points) <input id="co-prem" type="number" min="0" max="5" step="0.05"></label>
+          <label class="fld span2" title="Annual accounts and corporation tax return (£2,500 to £3,500 for a company with 10 or more homes, UK Property Accountants, 2026), plus the £50 Companies House confirmation statement. A company with fewer homes typically pays £1,500 to £3,500.">Company running costs, whole company (£/yr) <input id="co-cost" type="number" min="0" step="100"></label>
         </div></fieldset>
       </div>
       <p class="note" id="b-notes"></p>
@@ -590,6 +604,23 @@
         <header><h2>Stress tests</h2><p class="note">Monthly cash flow after tax if things go wrong, one at a time and all together.</p></header>
         <div class="tbl-wrap"><table id="stress-table" class="wrap-first"><thead><tr><th>Scenario</th><th class="r">Monthly cash flow</th><th class="r">Change</th></tr></thead><tbody></tbody></table></div>
       </div>
+    </div>
+
+    <div class="card" id="port-card" data-source="assumptions">
+      <header><h2>A portfolio of homes like this</h2><p class="note">The deal above bought as many times as you set under Portfolio and company, owned by you or by a limited company, in the deal's tax year. Your tax band and corporation tax depend on the whole portfolio, so they're worked out on the total.</p></header>
+      <div class="tbl-wrap"><table id="port-table" class="wrap-first"><thead><tr><th></th><th class="r">You own them</th><th class="r">Company: profit kept in, or repaying your loan</th><th class="r">Company: profit paid out as dividends</th></tr></thead><tbody></tbody></table></div>
+      <p class="note" id="port-note"></p>
+      <details class="srcs"><summary>Running a portfolio through a company: what else to know</summary>
+        <ul class="port-list">
+          <li><strong>Lenders look at everything you own.</strong> With four or more mortgaged buy-to-let homes you're a portfolio landlord: lenders must assess the whole portfolio, not just the new loan (<a href="https://www.bankofengland.co.uk/-/media/boe/files/news/2016/september/pra-issues-buy-to-let-underwriting-standards-expectations.pdf" target="_blank" rel="noopener">PRA SS13/16</a>), and expect a schedule of your homes, their rents and mortgages, cash flow and your plans. Rent cover is usually tested at 125% for a company and up to 145% for a higher-rate taxpayer.</li>
+          <li><strong>You'll usually guarantee the company's loans personally</strong>, and company mortgages cost a little more (the premium above).</li>
+          <li><strong>Taking money out.</strong> Repaying money you lent the company (deposits, stamp duty, fees) is tax-free, so lending rather than investing share capital keeps that route open. After that, dividends are taxed at 10.75%, 35.75% or 39.35% above a £500 allowance (<a href="https://www.gov.uk/government/publications/budget-2026-overview-of-tax-legislation-and-rates-ootlar/annex-a-rates-and-allowances" target="_blank" rel="noopener">gov.uk</a>). The company can also pay you interest on your loan: a cost for the company, savings income for you.</li>
+          <li><strong>Corporation tax is on the whole company:</strong> 19% up to £50,000 of profit, 25% from £250,000, with marginal relief between. Both limits are shared between associated companies, so another company you control lowers them.</li>
+          <li><strong>Profit kept in the company is the engine.</strong> Taxed at 19% rather than your income tax rate, it can pay down loans or go towards the next deposit; this is why companies suit portfolios that keep growing.</li>
+          <li><strong>Selling:</strong> the company pays corporation tax on the gain, with no annual exempt amount, and you pay tax again to take the proceeds out beyond what you lent it.</li>
+          <li><strong>Homes you already own personally</strong> can't simply be moved in: transferring them to a company counts as selling at market value, with capital gains tax and stamp duty, unless a relief applies. Take advice first.</li>
+        </ul>
+      </details>
     </div>
 
     <div class="grid">
@@ -1068,5 +1099,5 @@
 </div>
 <script src="market_accuracy.js"></script>
 <script src="deal_charts.js"></script>
-<script src="map.js"></script><script src="value_extras.js"></script>
+<script src="map.js"></script><script src="portfolio.js"></script><script src="value_extras.js"></script>
 <script src="app.js"></script>

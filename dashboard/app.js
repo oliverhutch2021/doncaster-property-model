@@ -61,7 +61,7 @@
 
   // ================= cached data =================
   const cache = {};
-  let VX = null, MAPX = null;                                         // value_extras.js, set once the helpers below exist
+  let VX = null, MAPX = null, PORT = null;                                         // value_extras.js, set once the helpers below exist
   // trees are stored compactly (left child = next node; default-left, kind and missing type packed in one flag):
   // internal [f, thr, right, flags, count], leaf [-1, value, count] -> [f, thr, left, right, dl, kind, mt, count]
   const expandTree = (nodes) => nodes.map((n, i) => (n.length === 8 ? n
@@ -1002,7 +1002,7 @@
     return tax;
   };
   const DEFAULTS = [['#b-deposit', 'deposit'], ['#b-rate', 'mortgage_rate'], ['#b-term', 'mortgage_term'], ['#b-fee', 'product_fee'], ['#b-letting', 'letting_fee'], ['#b-maint', 'maintenance'],
-    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income']];
+    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income'], ['#co-homes', 'ltd_homes'], ['#co-prem', 'ltd_rate_premium'], ['#co-cost', 'ltd_company_costs']];
   const syncDefaults = () => {
     const A = getAss(); if (!A) return;
     DEFAULTS.forEach(([s, k]) => { if ($(s).value === '' && A[k] && document.activeElement !== $(s)) $(s).value = String(A[k].v); });
@@ -1022,9 +1022,9 @@
     if (!state.touched.farea) $('#f-area').value = String(L && isFinite(L.inp.area) ? Math.round(L.inp.area) : A.floor_area.v);
   };
   [['#b-price', 'price'], ['#b-rent', 'rent'], ['#b-epc', 'epcCost'], ['#f-area', 'farea'], ['#p-price', 'gPrice']].forEach(([s, k]) => $(s).addEventListener('input', () => { state.touched[k] = true; renderInvest(); }));
-  ['#b-deposit', '#b-rate', '#b-term', '#b-fee', '#b-letting', '#b-maint', '#b-voids', '#b-ins', '#b-comp', '#b-legal', '#b-works', '#b-improve', '#b-income', '#p-rent', '#p-cost', '#f-baths', '#f-quote', '#f-cont', '#f-months', '#f-fin', '#f-ltv']
+  ['#b-deposit', '#b-rate', '#b-term', '#b-fee', '#b-letting', '#b-maint', '#b-voids', '#b-ins', '#b-comp', '#b-legal', '#b-works', '#b-improve', '#b-income', '#co-homes', '#co-prem', '#co-cost', '#p-rent', '#p-cost', '#f-baths', '#f-quote', '#f-cont', '#f-months', '#f-fin', '#f-ltv']
     .forEach((s) => $(s).addEventListener('input', () => renderInvest()));
-  ['#b-owner', '#b-taxyear', '#b-mtype'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
+  ['#b-owner', '#b-taxyear', '#b-mtype', '#b-fix'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
   ['#f-scope', '#f-finish', '#f-vat'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
 
   const readDeal = () => ({
@@ -1032,8 +1032,15 @@
     mtype: val('#b-mtype'), term: num(val('#b-term')), fee: num(val('#b-fee')) || 0, letting: num(val('#b-letting')) / 100, maint: num(val('#b-maint')) / 100, voids: num(val('#b-voids')),
     ins: num(val('#b-ins')) || 0, comp: num(val('#b-comp')) || 0, legal: num(val('#b-legal')) || 0, works: num(val('#b-works')) || 0, epc: num(val('#b-epc')) || 0,
     improve: num(val('#b-improve')) || 0, income: num(val('#b-income')),
-    gRent: num(val('#p-rent')) / 100, gPrice: num(val('#p-price')) / 100, gCost: num(val('#p-cost')) / 100
+    gRent: num(val('#p-rent')) / 100, gPrice: num(val('#p-price')) / 100, gCost: num(val('#p-cost')) / 100, fix5: val('#b-fix') !== '2', ...coTerms(val('#b-owner'))
   });
+  // a company pays its lender's premium on the rate, shares its running costs across its homes and pays corporation tax on
+  // all of them together (portfolio.js has the whole portfolio, personal and company)
+  const coTerms = (owner) => {
+    if (owner !== 'company') return { n: 1, prem: 0, co: 0, rate: num(val('#b-rate')) / 100 };
+    const n = Math.max(1, Math.round(num(val('#co-homes'))) || 1), prem = (num(val('#co-prem')) || 0) / 100;
+    return { n, prem, co: (num(val('#co-cost')) || 0) / n, rate: num(val('#b-rate')) / 100 + prem };
+  };
   const taxRates = (A, owner, year2027) => {
     if (owner === 'company') return { company: true, rate: A.corp_tax_small.v / 100, credit: 0 };
     const rate = owner === 'higher' ? (year2027 ? A.tax_higher_2027.v : A.tax_higher.v) : (year2027 ? A.tax_basic_2027.v : A.tax_basic.v);
@@ -1055,7 +1062,7 @@
   const gainsTaxDetail = (d, A, gain, profitThatYear = 0) => {
     const v = (k, dflt) => (A[k] ? A[k].v : dflt), none = { tax: 0, low: 0, high: 0, taxable: 0 };
     if (!(gain > 0)) return none;
-    if (d.owner === 'company') return { ...none, tax: corpTax(Math.max(0, profitThatYear + gain), A) - corpTax(Math.max(0, profitThatYear), A), taxable: gain };   // a company's carried losses go against the gain too (CTA 2010 s62)
+    if (d.owner === 'company') { const n = d.n || 1; return { ...none, tax: corpTax(Math.max(0, n * profitThatYear + gain), A) - corpTax(Math.max(0, n * profitThatYear), A), taxable: gain }; }   // a company's carried losses go against the gain too (CTA 2010 s62)
     const taxable = Math.max(0, gain - v('cgt_aea', 3000)), hi = v('cgt_higher', 24) / 100, lo = v('cgt_basic', 18) / 100;
     if (d.owner === 'higher') return { tax: taxable * hi, low: 0, high: taxable, taxable };
     const income = isFinite(d.income) ? d.income : v('cgt_other_income', 20000), left = Math.max(0, v('basic_rate_band', 37700) - income - Math.max(0, profitThatYear));
@@ -1069,7 +1076,7 @@
   // changes the tax, not the cash flow, since the works are already in the cash put in
   const yearCalc = (d, A, { rent, costMult, balance, year2027, rateAdj = 0, voids = d.voids, maintMult = 1, carry = { fin: 0, loss: 0 }, oneOff = 0 }) => {
     const r = d.rate + rateAdj, annualRent = rent * 12, collected = annualRent * (52 - voids) / 52;
-    const opex = collected * (d.letting + d.maint * maintMult) + (d.ins + d.comp) * costMult;
+    const opex = collected * (d.letting + d.maint * maintMult) + (d.ins + d.comp + (d.co || 0)) * costMult;
     let interest = 0, principal = 0;
     if (d.mtype === 'io') interest = balance * r;
     else {
@@ -1081,7 +1088,7 @@
     if (tr.company) {
       // a company deducts interest; a loss is carried forward against later profits
       taxable = collected - opex - interest - carry.loss - oneOff; if (taxable < 0) { lossCF = -taxable; taxable = 0; }
-      tax = corpTax(taxable, A);
+      tax = corpTax(taxable * (d.n || 1), A) / (d.n || 1);        // the company's tax on all its homes, this home's share
     } else {
       // individuals: interest isn't deducted; the tax credit is the basic rate on the lowest of the finance costs (with any
       // brought forward) and the property profits (after losses brought forward). HMRC's third limit, adjusted total income
@@ -1186,7 +1193,6 @@
     const d = readDeal(), problem = dealProblem(d);
     if (problem) { clearDeal(problem + ' The results are cleared until it is fixed.'); renderFlip(A); return; }
     $('#b-notes').className = 'note';
-    const iw = $('#b-income-wrap'); if (iw) iw.hidden = d.owner !== 'basic';       // only a basic-rate owner's band matters for the gain
     const P = projectDeal(d, A), { loan, tax, cashIn } = P;
     const y1 = yearCalc(d, A, { rent: d.rent, costMult: 1, balance: loan, year2027: d.taxYear === '2027' });
     $('#r-gross').textContent = pct(y1.annualRent / d.price * 100, 1);
@@ -1195,17 +1201,18 @@
     $('#r-cash-note').textContent = `${gbp(y1.pre / 12)} before tax`;
     $('#r-coc').textContent = pct(y1.post / cashIn * 100, 1);
     kv($('#r-detail'), [['Rent, full year', gbp(y1.annualRent)], [`Rent after ${d.voids} void weeks`, gbp(y1.collected)], ['Letting and maintenance', gbp(-(y1.collected * (d.letting + d.maint)))],
-      ['Insurance, safety checks, licences', gbp(-(d.ins + d.comp))], [`Mortgage interest (${pct(d.rate * 100, 2)})`, gbp(-y1.interest)],
+      ['Insurance, safety checks, licences', gbp(-(d.ins + d.comp))], ...(d.co ? [[`Company running costs (${gbp(d.co * d.n)} a year shared by ${d.n} homes)`, gbp(-d.co)]] : []),
+      [`Mortgage interest (${pct(d.rate * 100, 2)}${d.prem ? `, with the ${pct(d.prem * 100, 2)} company premium` : ''})`, gbp(-y1.interest)],
       ...(!y1.tr.company && y1.relieved < y1.interest - 0.5 ? [[`Interest relieved this year (capped at the property profit; ${gbp(y1.interest - y1.relieved)} carried forward)`, gbp(y1.relieved)]] : []), ...(d.mtype === 'rep' ? [['Mortgage capital repaid', gbp(-y1.principal)]] : []),
       ['Cash flow before tax', gbp(y1.pre), y1.pre < 0 ? 'badc' : ''], [y1.tr.company ? `Corporation tax (${y1.taxable > 0 ? pct(y1.tax / y1.taxable * 100, 1) : pct(y1.tr.rate * 100, 0)} with marginal relief)` : `Income tax (${pct(y1.tr.rate * 100, 0)}, less ${pct(y1.tr.credit * 100, 0)} interest credit)`, gbp(-y1.tax)],
       ['Cash flow after tax', gbp(y1.post), y1.post < 0 ? 'badc' : 'good'], 'sep',
       ['Deposit', gbp(d.price * d.dep)], ['Stamp duty incl. 5% surcharge', gbp(tax)], ['Legal, survey, arrangement fee', gbp(d.legal + d.fee)], ['Works and EPC upgrade', gbp(d.works + d.epc)], ['Cash invested', gbp(cashIn)]]);
-    $('#pl-note').textContent = y1.tr.company ? 'Limited company: interest is a deductible cost and losses are carried forward; corporation tax is 19% on profits up to £50,000, rising to 25% at £250,000 (marginal relief in between). Taking money out (dividends) is taxed again and not modelled.' : 'Personal ownership: mortgage interest isn\'t deductible; you get a basic-rate tax credit instead (Section 24), on the interest or the property profit, whichever is lower. Interest above the profit, and any loss, is carried forward to later years in the projection. Assumes your other income uses your personal allowance and nothing is brought forward into year 1.';
+    $('#pl-note').textContent = y1.tr.company ? 'Limited company: interest is a deductible cost and losses are carried forward; corporation tax is 19% on profits up to £50,000, rising to 25% at £250,000 (marginal relief in between), worked out on all the company\'s homes together. Cash flow after tax is money in the company: what taking it out costs is in the portfolio card below.' : 'Personal ownership: mortgage interest isn\'t deductible; you get a basic-rate tax credit instead (Section 24), on the interest or the property profit, whichever is lower. Interest above the profit, and any loss, is carried forward to later years in the projection. Assumes your other income uses your personal allowance and nothing is brought forward into year 1.';
     const rep_ = Math.max(0, d.works + d.epc - d.improve);
     if (d.works + d.epc > 0) $('#pl-note').textContent += ` Of the works and EPC upgrade, ${gbp(d.improve)} counts as improvements, taken off the gain when sold; the other ${gbp(rep_)} counts as repairs, set against year 1's rental profit in the projection (not in the yearly figures above, which show a typical year).`;
-    const icr = (d.owner === 'higher' ? A.icr_higher.v : A.icr_basic.v) / 100, sr = Math.max(A.stress_rate.v / 100, d.rate + 0.02), need = loan * sr * icr / 12, pass = d.rent >= need;
+    const icr = (d.owner === 'higher' ? A.icr_higher.v : A.icr_basic.v) / 100, sr = d.fix5 ? d.rate : Math.max(A.stress_rate.v / 100, d.rate + 0.02), need = loan * sr * icr / 12, pass = d.rent >= need;
     const s = $('#r-stress');
-    s.textContent = `Lender stress test (assumption): rent must cover ${pct(icr * 100, 0)} of interest at ${pct(sr * 100, 2)}, so at least ${gbp(need)} a month. This rent ${pass ? 'passes' : `fails; the largest loan this rent supports is about ${gbp(d.rent * 12 / (sr * icr))}`}.`;
+    s.textContent = `Lender stress test (assumption): rent must cover ${pct(icr * 100, 0)} of interest at ${pct(sr * 100, 2)}${d.fix5 ? ' (a fix of 5 years or more is tested at its own rate)' : ' (the rate + 2 points, at least ' + pct(A.stress_rate.v, 1) + ', for a shorter fix)'}, so at least ${gbp(need)} a month. This rent ${pass ? 'passes' : `fails; the largest loan this rent supports is about ${gbp(d.rent * 12 / (sr * icr))}`}.`;
     s.className = 'note ' + (pass ? '' : 'warnc');
     const notes = [];
     const lr = state.last && latestRent({ 1: '1 bed', 2: '2 bed', 3: '3 bed', 4: '4+ bed' }[state.last.inp.beds]);
@@ -1246,7 +1253,7 @@
     renderFlip(A);
     renderRules();
   };
-  const renderInvest = () => { safe('the deal analyser', renderDeal); safe('the rent estimate', renderRent); safe('the investment scorecard', renderScore); };
+  const renderInvest = () => { safe('the deal analyser', renderDeal); safe('the rent estimate', renderRent); safe('the investment scorecard', renderScore); safe('the portfolio', () => PORT && PORT.render()); };
   const drawProjection = (proj, cashIn) => {
     const box = $('#proj-chart'); fresh(box);
     const start = getModel() ? +getModel().valMonth.slice(0, 4) : 2026;
@@ -2587,6 +2594,7 @@
   // in a file of their own, loaded first: one page file can't exceed 256 KB. They get the helpers they use from here
   const missingTabs = (name) => () => { throw new Error(`market_accuracy.js didn't load, so ${name} can't be drawn`); };
   // the Value tab's source tags, Census card and one-page report (value_extras.js, its own file for the 256 KB limit)
+  PORT = window.DPM_PORT ? window.DPM_PORT({ $, gbp, pct, num, val, cell, readDeal, getAss, yearCalc, corpTax, projectDeal }) : null;
   MAPX = window.DPM_MAP ? window.DPM_MAP({ gbp, tip, rows }) : null;
   VX = window.DPM_VALUE ? window.DPM_VALUE({ $, state, monthLabel, num, gbp, gbpK, pct, parseSales, kv, cell, TYPE_NAME, getModel, rentEstimate, ok, rows }) : null;
   const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip }) : {};

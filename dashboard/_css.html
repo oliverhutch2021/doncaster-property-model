@@ -318,6 +318,14 @@
 .dpm .changelog ul { list-style: disc; margin: 0; padding-left: 1.1em; display: grid; gap: 2px; }
 .dpm .changelog .cl-now { margin-left: 6px; vertical-align: middle; font-family: var(--font-anthropic-sans); }
 @media (max-width: 560px) { .dpm .changelog > li { grid-template-columns: minmax(0, 1fr); } }
+/* portfolio card (portfolio.js) */
+.dpm #port-table tr.strong td { font-weight: var(--cds-font-weight-medium); }
+.dpm #port-card .tbl-wrap { max-height: none; }
+.dpm #port-table th { white-space: normal; vertical-align: bottom; width: 22%; }
+.dpm #port-table th:first-child { width: auto; }
+.dpm #port-table td:first-child { white-space: normal; min-width: 11rem; }
+.dpm #port-table td.r { white-space: normal; }
+.dpm .port-list { margin: 8px 0 0; padding-left: 1.1rem; display: grid; gap: 6px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 /* comparables street map (map.js): colours mixed from the theme, so it follows light and dark */
 .dpm #comps-map-card { grid-template-rows: auto 1fr; align-content: stretch; }
 .dpm #comps-map { min-height: 340px; overflow: hidden; border-radius: calc(var(--cds-radius) - 2px); }
