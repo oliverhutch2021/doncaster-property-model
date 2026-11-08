@@ -321,6 +321,8 @@
 /* portfolio card (portfolio.js) */
 .dpm #port-table tr.strong td { font-weight: var(--cds-font-weight-medium); }
 .dpm #port-card .tbl-wrap { max-height: none; }
+.dpm .port-h { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-sm) 0 0; }
+.dpm #port-10y th { white-space: normal; vertical-align: bottom; width: 22%; } .dpm #port-10y th:first-child { width: auto; } .dpm #port-10y td:first-child { white-space: normal; min-width: 11rem; } .dpm #port-10y td.r { white-space: normal; }
 .dpm #port-table th { white-space: normal; vertical-align: bottom; width: 22%; }
 .dpm #port-table th:first-child { width: auto; }
 .dpm #port-table td:first-child { white-space: normal; min-width: 11rem; }
@@ -581,6 +583,10 @@
         <fieldset><legend>Portfolio and company</legend><div class="form">
           <label class="fld" title="The portfolio card below buys this home this many times. With Limited company chosen, the company's running costs are shared across them and corporation tax is worked out on all of them together.">Homes in the portfolio <input id="co-homes" type="number" min="1" max="200" step="1"></label>
           <label class="fld" title="Limited company buy-to-let mortgages cost a little more than personal ones: Moneyfacts' averages were about 0.3 points higher for 5-year fixes in autumn 2025. Added to the mortgage rate above when the owner is a company.">Company mortgage premium (% points) <input id="co-prem" type="number" min="0" max="5" step="0.05"></label>
+          <label class="fld span2" id="co-source-wrap" title="Copies of this home, or the homes on your Saved list (each at the price and rent saved with it) with this one, all on this deal's deposit, mortgage and running costs. Save homes from the Value tab after looking at their deal.">Homes <select id="co-source"><option value="copies">Copies of this home</option><option value="saved">Your saved homes and this one</option></select></label>
+          <label class="fld span2" title="Lend the company your deposits and costs and it can pay them back tax-free before any dividends; put them in as share capital and what it pays you is dividends (the capital comes back tax-free at the end).">Your money goes in as <select id="co-funding"><option value="loan">A loan to the company</option><option value="shares">Share capital</option></select></label>
+          <label class="fld" title="The company can pay you interest on your loan: a cost for it (saving corporation tax), savings income for you (your personal savings allowance and the starting rate for savings can cover some). It withholds 20% and pays it to HMRC quarterly on form CT61 (gov.uk). Set the rate you'd charge; 0% leaves it out.">Interest on your loan (%) <input id="co-dlrate" type="number" min="0" max="15" step="0.25"></label>
+          <label class="fld" title="For the holding-period figures: pay you what it can each year (your loan first, then dividends), or keep its profit until the homes are sold.">Each year the company <select id="co-policy"><option value="pay">Pays you what it can</option><option value="keep">Keeps its profit</option></select></label>
           <label class="fld span2" title="Annual accounts and corporation tax return (£2,500 to £3,500 for a company with 10 or more homes, UK Property Accountants, 2026), plus the £50 Companies House confirmation statement. A company with fewer homes typically pays £1,500 to £3,500.">Company running costs, whole company (£/yr) <input id="co-cost" type="number" min="0" step="100"></label>
         </div></fieldset>
       </div>
@@ -607,9 +613,12 @@
     </div>
 
     <div class="card" id="port-card" data-source="assumptions">
-      <header><h2>A portfolio of homes like this</h2><p class="note">The deal above bought as many times as you set under Portfolio and company, owned by you or by a limited company, in the deal's tax year. Your tax band and corporation tax depend on the whole portfolio, so they're worked out on the total.</p></header>
-      <div class="tbl-wrap"><table id="port-table" class="wrap-first"><thead><tr><th></th><th class="r">You own them</th><th class="r">Company: profit kept in, or repaying your loan</th><th class="r">Company: profit paid out as dividends</th></tr></thead><tbody></tbody></table></div>
+      <header><h2>A portfolio of homes</h2><p class="note">Copies of the deal above, or your saved homes with this one (set under Portfolio and company), owned by you or by a limited company: the first year in the deal's tax year, then the whole holding period with the sale. Your tax band and corporation tax depend on the whole portfolio, so they're worked out on the total.</p></header>
+      <div class="tbl-wrap"><table id="port-table" class="wrap-first"><thead><tr><th></th><th class="r">You own them</th><th class="r">Company keeps its profit</th><th class="r">Company pays you what it can</th></tr></thead><tbody></tbody></table></div>
       <p class="note" id="port-note"></p>
+      <h3 class="port-h">Over the holding period, then sold</h3>
+      <div class="tbl-wrap"><table id="port-10y" class="wrap-first"><thead><tr><th></th><th class="r">You own them</th><th class="r">Company, closed at the end</th><th class="r">Company, dividends at the end</th></tr></thead><tbody></tbody></table></div>
+      <p class="note" id="port-10y-note"></p>
       <details class="srcs"><summary>Running a portfolio through a company: what else to know</summary>
         <ul class="port-list">
           <li><strong>Lenders look at everything you own.</strong> With four or more mortgaged buy-to-let homes you're a portfolio landlord: lenders must assess the whole portfolio, not just the new loan (<a href="https://www.bankofengland.co.uk/-/media/boe/files/news/2016/september/pra-issues-buy-to-let-underwriting-standards-expectations.pdf" target="_blank" rel="noopener">PRA SS13/16</a>), and expect a schedule of your homes, their rents and mortgages, cash flow and your plans. Rent cover is usually tested at 125% for a company and up to 145% for a higher-rate taxpayer.</li>

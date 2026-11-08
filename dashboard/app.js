@@ -911,7 +911,7 @@
   // ================= SAVED PROPERTIES (private to each viewer, in the dashboard's own store) =================
   const WL = { col: null, items: [], off: false, err: null };
   // the public stand-alone copy has no private store or address register: hide what needs them
-  if (window.DPM_STANDALONE) { ['#save-card', '#tab-saved', '#hist-card'].forEach((s) => { const el = $(s); if (el) el.hidden = true; }); const al = $('#in-address').closest('label'); if (al) al.hidden = true; }
+  if (window.DPM_STANDALONE) { ['#save-card', '#tab-saved', '#hist-card', '#co-source-wrap'].forEach((s) => { const el = $(s); if (el) el.hidden = true; }); const al = $('#in-address').closest('label'); if (al) al.hidden = true; }
   const clean = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'number' && !isFinite(v) ? null : v)));
   const NUMK = ['area', 'rooms', 'form', 'age', 'sap', 'sapPot', 'gas', 'prevPrice', 'asking', 'plot', 'bungalow'];
   const restore = (inp) => { const o = { ...inp }; NUMK.forEach((k) => { o[k] = o[k] == null ? NaN : Number(o[k]); }); return o; };
@@ -922,7 +922,7 @@
       const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
       const uid = db && user ? await user.id() : null; if (!uid) throw new Error('none');
       WL.col = db.doc(`data/users/${uid}/watchlist`).collection('items');
-      WL.col.onSnapshot((snap) => { WL.items = snap.docs.map((d) => ({ id: d.id, ...d.data() })); if (state.tab === 'saved') renderSaved(); },
+      WL.col.onSnapshot((snap) => { WL.items = snap.docs.map((d) => ({ id: d.id, ...d.data() })); if (state.tab === 'saved') renderSaved(); if (state.tab === 'invest') renderInvest(); },
         (e) => { WL.err = e.code; WL.col = null; setSaveStatus(`Your saved list couldn't be read (${e.code}).`); });
       setSaveStatus();
     } catch (e) { WL.off = true; setSaveStatus(); }
@@ -1002,7 +1002,7 @@
     return tax;
   };
   const DEFAULTS = [['#b-deposit', 'deposit'], ['#b-rate', 'mortgage_rate'], ['#b-term', 'mortgage_term'], ['#b-fee', 'product_fee'], ['#b-letting', 'letting_fee'], ['#b-maint', 'maintenance'],
-    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income'], ['#co-homes', 'ltd_homes'], ['#co-prem', 'ltd_rate_premium'], ['#co-cost', 'ltd_company_costs']];
+    ['#b-voids', 'voids'], ['#b-ins', 'insurance'], ['#b-comp', 'compliance'], ['#b-legal', 'buying_costs'], ['#p-rent', 'rent_growth'], ['#p-price', 'price_growth'], ['#p-cost', 'cost_inflation'], ['#b-income', 'cgt_other_income'], ['#co-homes', 'ltd_homes'], ['#co-prem', 'ltd_rate_premium'], ['#co-cost', 'ltd_company_costs'], ['#co-dlrate', 'ltd_loan_rate']];
   const syncDefaults = () => {
     const A = getAss(); if (!A) return;
     DEFAULTS.forEach(([s, k]) => { if ($(s).value === '' && A[k] && document.activeElement !== $(s)) $(s).value = String(A[k].v); });
@@ -1022,9 +1022,9 @@
     if (!state.touched.farea) $('#f-area').value = String(L && isFinite(L.inp.area) ? Math.round(L.inp.area) : A.floor_area.v);
   };
   [['#b-price', 'price'], ['#b-rent', 'rent'], ['#b-epc', 'epcCost'], ['#f-area', 'farea'], ['#p-price', 'gPrice']].forEach(([s, k]) => $(s).addEventListener('input', () => { state.touched[k] = true; renderInvest(); }));
-  ['#b-deposit', '#b-rate', '#b-term', '#b-fee', '#b-letting', '#b-maint', '#b-voids', '#b-ins', '#b-comp', '#b-legal', '#b-works', '#b-improve', '#b-income', '#co-homes', '#co-prem', '#co-cost', '#p-rent', '#p-cost', '#f-baths', '#f-quote', '#f-cont', '#f-months', '#f-fin', '#f-ltv']
+  ['#b-deposit', '#b-rate', '#b-term', '#b-fee', '#b-letting', '#b-maint', '#b-voids', '#b-ins', '#b-comp', '#b-legal', '#b-works', '#b-improve', '#b-income', '#co-homes', '#co-prem', '#co-cost', '#co-dlrate', '#p-rent', '#p-cost', '#f-baths', '#f-quote', '#f-cont', '#f-months', '#f-fin', '#f-ltv']
     .forEach((s) => $(s).addEventListener('input', () => renderInvest()));
-  ['#b-owner', '#b-taxyear', '#b-mtype', '#b-fix'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
+  ['#b-owner', '#b-taxyear', '#b-mtype', '#b-fix', '#co-source', '#co-policy', '#co-funding'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
   ['#f-scope', '#f-finish', '#f-vat'].forEach((s) => $(s).addEventListener('change', () => renderInvest()));
 
   const readDeal = () => ({
@@ -2594,7 +2594,7 @@
   // in a file of their own, loaded first: one page file can't exceed 256 KB. They get the helpers they use from here
   const missingTabs = (name) => () => { throw new Error(`market_accuracy.js didn't load, so ${name} can't be drawn`); };
   // the Value tab's source tags, Census card and one-page report (value_extras.js, its own file for the 256 KB limit)
-  PORT = window.DPM_PORT ? window.DPM_PORT({ $, gbp, pct, num, val, cell, readDeal, getAss, yearCalc, corpTax, projectDeal }) : null;
+  PORT = window.DPM_PORT ? window.DPM_PORT({ $, gbp, pct, num, val, cell, readDeal, getAss, yearCalc, corpTax, projectDeal, irrRoots, savedHomes: () => WL.items }) : null;
   MAPX = window.DPM_MAP ? window.DPM_MAP({ gbp, tip, rows }) : null;
   VX = window.DPM_VALUE ? window.DPM_VALUE({ $, state, monthLabel, num, gbp, gbpK, pct, parseSales, kv, cell, TYPE_NAME, getModel, rentEstimate, ok, rows }) : null;
   const tabs2 = window.DPM_TABS ? window.DPM_TABS({ $, FEAT, TYPES, TYPE_NAME, TYPE_SHORT, bars, cell, cleanAxis, failed, fix0, fresh, gbp, gbpK, getConf, getIndex, getPoss, lineChart, median, num, ok, parseMonth, rows, safe, sgn, state, tip }) : {};

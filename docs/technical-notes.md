@@ -241,8 +241,30 @@ sets a new rent, so the estimate is moved to a new tenancy in two steps:
   on top of the whole company's profit. P2 checks the card against the deal.
 - **Stress test by fix length.** A fix of 5 years or more is tested at its own rate; a shorter one at the larger of 5.5%
   and the rate + 2 points (PRA SS13/16). Rent cover 125% for a company or basic-rate taxpayer, 145% higher-rate. P3.
-- Not modelled: associated companies (which share the corporation tax limits), loan interest paid to you, the 17% rate
-  for company purchases over £500,000 (flagged), extraction of sale proceeds, and portfolio lenders' own aggregate tests.
+- Not modelled: associated companies (which share the corporation tax limits) and the 17% rate for company purchases over
+  £500,000 (flagged).
+
+## Version 35: the whole holding period
+
+- **Homes.** Copies of the deal's home, or (private dashboard) the Saved list's homes at the price and rent saved with each,
+  plus this one, all on this deal's deposit, mortgage and cost rates.
+- **Each year** (`project`): every home through `yearCalc` with the deal's growth rates; personal tax on the portfolio's
+  property profit with losses and unrelieved finance costs carried forward (Section 24 credit on the lowest of interest,
+  profit and taxable income); a company pays interest on your loan (deductible; your savings income), corporation tax with
+  losses carried forward, then either pays you what it can (your loan back tax-free first, then dividends) or keeps it.
+  A cash shortfall is lent by you and added to the loan. Your tax each year is on the interest and dividends together.
+- **Sale in the last year.** Personal: capital gains tax on the total gain (one £3,000 exemption, 18% in what's left of the
+  basic-rate band). Company: corporation tax on the gain on top of that year's profit, then your loan back, then either a
+  members' voluntary liquidation (median £4,250 fees, Insolvency Service, Mar 2026; a capital gain above the share capital,
+  no Business Asset Disposal Relief because letting isn't a trade; the TAAR can tax it as a dividend if you carry on
+  letting within two years) or dividends in one tax year (share capital handed back tax-free first).
+- **Savings income** (`personalTax`, 6th argument): after other and property income, the starting rate for savings (£5,000
+  less taxable non-savings income) and the personal savings allowance (£1,000/£500/£0 by band) at 0%, then 20/40/45%
+  (24/44/49% from April 2027).
+- **Lender's view:** whole-portfolio rent cover at the stress rate against 125% (company, basic rate) or 145% (higher
+  rate), borrowing against value, and the weakest home's own cover.
+- Tests: P4 (savings and capital gains by hand), P5 (the holding period adds up), P6 (loan interest).
+
 
 ## Tenant risk (v11, `src/tenants_v11.py`)
 

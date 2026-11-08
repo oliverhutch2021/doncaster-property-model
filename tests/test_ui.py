@@ -439,6 +439,27 @@ with sync_playwright() as p:
     pg.select_option("#b-fix", "2"); pg.wait_for_timeout(800); s2 = txt("#r-stress") or ""; pg.select_option("#b-fix", "5"); pg.wait_for_timeout(800); s5 = txt("#r-stress") or ""
     rc = float(rows_["Mortgage rate"][1][:-1])
     check("P3 a 5-year fix is stress-tested at its own rate, a 2-year fix at the rate + 2 points", f"at {rc:.2f}%" in s5 and f"at {max(5.5, rc + 2):.2f}%" in s2, (rc, s5[:90], s2[:90]))
+    # version 35: savings income, capital gains, the holding period with the sale, and interest on your loan
+    tx2 = pg.evaluate("""() => { const A = Object.fromEntries(dash.data('assumptions').data.map((r) => [r.key, { v: Number(r.value) }])), P = window.DPM_PORT({});
+      const t = (o, s, y) => Math.round(P.personalTax(A, o, 0, 0, y, s).total * 100) / 100;
+      return [t(32570, 5000, true), t(0, 20000, false), Math.round(P.cgt(A, 100000, 20000) * 100) / 100]; }""")
+    # by hand: £20,000 taxable income + £5,000 interest from April 2027: no starting rate left, £1,000 allowance, 4,000 at 24% (+ £4,000 on
+    # the income); £20,000 interest alone: £12,570 allowance, £5,000 starting rate, £1,000 allowance, 1,430 at 20%; a £100,000 gain on
+    # £20,000 income: £3,000 exempt, 17,700 at 18%, 79,300 at 24%
+    check("P4 savings tax (starting rate, savings allowance) and capital gains tax by hand", tx2 == [4960, 286, 22218], tx2)
+    tbl = lambda s: pg.eval_on_selector_all(s + " tbody tr", "trs => Object.fromEntries(trs.map(tr => [tr.cells[0].innerText, [...tr.cells].slice(1).map(c => c.innerText)]))")
+    tY = tbl("#port-10y"); key = lambda k: next(v for kk, v in tY.items() if kk.startswith(k))
+    ok10 = True
+    for i in range(3):
+        cin, dur, end, tot = (mny(key(k)[i]) for k in ("Your cash in", "Cash to you during", "Cash to you at the end", "Total back"))
+        sold, debt, gtax = (mny(key(k)[i]) for k in ("Homes sold", "Mortgages repaid", "Tax on the gain"))
+        if i == 0: ok10 &= abs(end - (sold + debt + gtax)) <= 2
+        else: ok10 &= abs(end - (sold + debt + gtax + mny(key("Cash the company kept")[i]) + (mny(key("Closing")[i]) if i == 1 else 0) + mny(key("Your tax on taking")[i]))) <= 3
+        ok10 &= abs(tot - (cin + dur + end)) <= 2
+    check("P5 the holding period adds up: cash in + cash during + cash at the end, and the sale's own lines", ok10 and "%" in key("10-year return")[0], {k: v for k, v in tY.items() if k.startswith(("Cash to you at", "Total", "10-year"))})
+    cin1 = mny(rows_["Your cash in: deposits, stamp duty, fees, works"][1]); pg.fill("#co-dlrate", "5"); pg.dispatch_event("#co-dlrate", "input"); pg.wait_for_timeout(900)
+    r5 = tbl("#port-table"); dl = -mny(r5["Interest the company pays you on your loan"][1]); pg.fill("#co-dlrate", "0"); pg.dispatch_event("#co-dlrate", "input"); pg.wait_for_timeout(600)
+    check("P6 interest on your loan: the company pays 5% of what you put in, a cost before its profit", abs(dl - 0.05 * cin1) <= 2, (dl, cin1))
     pg.select_option("#b-owner", "basic"); pg.wait_for_timeout(500); pg.click("#tab-value"); pg.wait_for_timeout(500)
     check("no page errors", not errs, errs[:3])
     b.close()
