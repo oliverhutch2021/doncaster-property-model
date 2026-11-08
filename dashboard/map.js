@@ -52,11 +52,12 @@ window.DPM_MAP = (h) => {
     });
     const res = { all, lines }; decoded.set(id, res); return res;
   };
-  // the extent of each postcode district, from the postcode centroids, to know which districts a view needs
+  // the extent of each postcode district with a map (those the comparables cover, as in src/basemap.py), from the
+  // postcode centroids, to know which districts a view needs
   const districtBoxes = () => {
-    if (boxes) return boxes; const b = new Map();
+    if (boxes) return boxes; const b = new Map(), have = new Set(rows('comps').map((r) => String(r.postcode).split(' ')[0]));
     rows('postcodes').forEach((r) => {
-      const d = r.postcode.split(' ')[0], la = +r.lat, lo = +r.lon; if (!isFinite(la)) return;
+      const d = r.postcode.split(' ')[0], la = +r.lat, lo = +r.lon; if (!isFinite(la) || !have.has(d)) return;
       const o = b.get(d) || [Infinity, Infinity, -Infinity, -Infinity];
       b.set(d, [Math.min(o[0], lo), Math.min(o[1], la), Math.max(o[2], lo), Math.max(o[3], la)]);
     });
