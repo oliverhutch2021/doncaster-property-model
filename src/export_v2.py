@@ -106,6 +106,10 @@ print("condition v2:", [(c[0], c[2]) for c in cond], "control first-sale median"
 
 # ---------- lookups ----------
 con = duckdb.connect(str(ROOT / "data/processed/doncaster.duckdb"), read_only=True)
+# median price and number of standard sales per month by type, for the Market tab (this table had no script; the page drops the newest, part-registered month)
+(OUT / "dash").mkdir(exist_ok=True)
+con.execute("select strftime(sale_date, '%Y-%m') as month, property_type as type, cast(floor(median(price)) as bigint) as median_price, count(*) as sales "
+            "from sales where sale_date >= '2015-01-01' group by 1, 2 order by 1, 2").df().to_csv(OUT / "dash/market_monthly.csv", index=False)
 pcs = con.execute("select p.postcode, p.lat, p.lon, p.lsoa21, p.ward, i.* exclude (lsoa21) from postcodes p left join imd i using (lsoa21) where p.lat is not null").df()
 c = con.execute("select * from centre").fetchone()
 pcs["dist_centre_km"] = 2 * 6371 * np.arcsin(np.sqrt(np.sin(np.radians(pcs.lat - c[0]) / 2) ** 2 + np.cos(np.radians(c[0])) * np.cos(np.radians(pcs.lat)) * np.sin(np.radians(pcs.lon - c[1]) / 2) ** 2))
