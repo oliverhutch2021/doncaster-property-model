@@ -578,7 +578,7 @@
 
   <!-- ============ ACCURACY ============ -->
   <section id="accuracy" role="tabpanel" aria-labelledby="tab-accuracy" class="grid-wide" hidden>
-    <p class="note">Tested on 5,995 sales from January 2025 to August 2026 that the model never saw; trained on 2015-2023 and tuned on 2024. Median error and within 10% are scored the strict way: the model only sees sales at least two months old, as published Land Registry data allows, like the comparison below. Letting it see every earlier sale gives <span id="a-mdape-all">—</span> and <span id="a-w10-all">—</span>, the version used for within 20%, the range check and the breakdowns.</p>
+    <p class="note">Tested on 6,381 sales from January 2025 to September 2026 that the model never saw; trained on 2015-2023 and tuned on 2024. Median error and within 10% are scored the strict way: the model only sees sales at least two months old, as published Land Registry data allows, like the comparison below. Letting it see every earlier sale gives <span id="a-mdape-all">—</span> and <span id="a-w10-all">—</span>, the version used for within 20%, the range check and the breakdowns.</p>
     <div class="tiles">
       <div class="tile"><span class="label">Median error</span><span class="big" id="a-mdape" data-source="method_compare" data-field="mdape" data-where="method=model_realtime">—</span><span class="muted">Half of sales are within this</span></div>
       <div class="tile"><span class="label">Within 10% of the sale price</span><span class="big" id="a-w10" data-source="method_compare" data-field="within10" data-where="method=model_realtime">—</span><span class="muted">Share of test sales</span></div>
@@ -588,7 +588,7 @@
 
     <div class="grid">
       <div class="card" id="compare-card">
-        <header><h2>Against the usual quick methods</h2><p class="note">Median error on the same 2025-26 sales, each method using only sales at least two months old (by then most sales are published, though new builds and some others take months longer). Index methods need a previous sale, so they cover 72% of homes. The hedonic regression is the fair baseline: a linear model on this model's own features, with a fixed effect for each postcode sector, trained and tested the same way.</p></header>
+        <header><h2>Against the usual quick methods</h2><p class="note">Median error on the same 2025-26 sales, each method using only sales at least two months old (by then most sales are published, though new builds and some others take months longer). Index methods need a previous sale, so they cover 71% of homes. The hedonic regression is the fair baseline: a linear model on this model's own features, with a fixed effect for each postcode sector, trained and tested the same way.</p></header>
         <div class="chart" id="compare-chart" data-source="method_compare" style="min-height: 180px"></div>
         <p class="muted" id="compare-note"></p>
       </div>
@@ -639,7 +639,7 @@
     </div>
     <div class="grid">
       <div class="card" id="breakdown-card">
-        <header><h2>Where it is more and less accurate</h2><p class="note">Test sales, by group. Land Registry registers some sales months late, new builds most of all: they are 4% of the 2025 test sales and none from February 2026, and August 2026 has 82 sales against a usual 300 to 400. New builds are the easiest homes to value, so the lag doesn't flatter the 2026 part of the test: January to August 2026 scores much the same as the same months of 2025. It will be scored again once Land Registry catches up.</p></header>
+        <header><h2>Where it is more and less accurate</h2><p class="note">Test sales, by group. Land Registry registers some sales months late, new builds most of all: they are 5% of the 2025 test sales and none from February 2026, and September 2026 has 63 sales against a usual 300 to 400. New builds are the easiest homes to value, so the lag doesn't flatter the 2026 part of the test: January to September 2026 scores much the same as January to August 2025. It will be scored again once Land Registry catches up.</p></header>
         <div class="tbl-wrap"><table id="breakdown-table" data-source="accuracy_breakdown accuracy"><thead><tr><th>Group</th><th class="r">Sales</th><th class="r">Median error</th><th class="r">Within 10%</th></tr></thead><tbody></tbody></table></div>
       </div>
       <div class="card" id="importance-card">
@@ -654,12 +654,12 @@
     </div>
     <div class="grid">
       <div class="card wide" id="areabias-card">
-        <header><h2>Areas the model over- or under-values</h2><p class="note">Median gap between sale price and estimate on 2025-26 test sales, sectors with 40+ sales. Positive means homes sold for more than the estimate. The local correction shifts each estimate by half the model's median miss on the 40 nearest recent sales.</p></header>
+        <header><h2>Areas the model over- or under-values</h2><p class="note">Median gap between sale price and estimate on 2025-26 test sales, sectors with 40+ sales. Positive means homes sold for more than the estimate. The local correction shifts each estimate by three-quarters of the model's median miss on the 40 nearest recent sales.</p></header>
         <div class="tbl-wrap"><table id="areabias-table" data-source="area_bias">
           <thead><tr><th>Sector</th><th class="hide-narrow">Wards</th><th class="r">Sales</th><th class="r">Before</th><th class="r">After correction</th></tr></thead><tbody></tbody></table></div>
       </div>
       <div class="card wide" id="condition-card">
-        <header><h2>How the condition setting was calibrated</h2><p class="note">Homes resold within 3 to 18 months are mostly bought, refurbished and resold. Against a model without last-sale information, they bought 7.6% below the estimate and sold 7.7% above it. Homes resold after 5 years or more also sold about 1.4% above it, at both ends, for reasons that aren't a quick refurbishment, so that is taken off. Each home's sales are kept in the same fold, so the model never learns a home's price from its own other sale. With a last sale entered the full model already knows part of it: a purchase in need of renovation then sits 4.7% below (on the 546 purchases that had an earlier sale, a median 10 years before), and a quick resale only 0.6% above, so those figures apply when the last sale is known (for "good" and "recently refurbished" only when it was within 18 months; works since an older sale aren't visible to the model, and keep the first column).</p></header>
+        <header><h2>How the condition setting was calibrated</h2><p class="note">Homes resold within 3 to 18 months are mostly bought, refurbished and resold. Against a model without last-sale information, they bought 7.5% below the estimate and sold 7.4% above it. Homes resold after 5 years or more also sat above it, by about 0.9% when bought and 1.5% when resold, for reasons that aren't a quick refurbishment, so that is taken off. Each home's sales are kept in the same fold, so the model never learns a home's price from its own other sale. With a last sale entered the full model already knows part of it: a purchase in need of renovation then sits 4.5% below (on the 546 purchases that had an earlier sale, a median 10 years before), and a quick resale only 0.8% above, so those figures apply when the last sale is known (for "good" and "recently refurbished" only when it was within 18 months; works since an older sale aren't visible to the model, and keep the first column).</p></header>
         <div class="tbl-wrap"><table id="condition-table" class="wrap-first wrap-last" data-source="condition" data-row-key="condition"><thead><tr>
           <th data-field="label">Condition</th><th class="r" data-field="adjustment_pct">Adjustment</th><th class="r" data-field="range_low_pct">Middle half, low</th><th class="r" data-field="range_high_pct">Middle half, high</th><th class="r" data-field="adjustment_prev_pct">With a last sale</th><th class="hide-narrow" data-field="basis">Basis</th></tr></thead><tbody></tbody></table></div>
       </div>
@@ -671,11 +671,11 @@
     <div class="card">
       <header><h2>How a value is made</h2><p class="note">Every step only uses information that existed before the sale being valued.</p></header>
       <ol class="flow">
-        <li><b>Sales and certificates</b><span>50,042 Land Registry sales since 2015, 94% matched to their energy certificate (size, rooms, age, energy, walls, heating, certificate history).</span></li>
+        <li><b>Sales and certificates</b><span>50,438 Land Registry sales since 2015, 97% matched to their energy certificate (size, rooms, age, energy, walls, heating, certificate history).</span></li>
         <li><b>Location and prices nearby</b><span>Recent prices on the street, in the postcode, sector and neighbourhood; the 10 nearest sales; plot size from title plans; deprivation.</span></li>
         <li><b>The home's last sale</b><span>When known, its previous price moved to today with the index. It's one of the strongest inputs.</span></li>
-        <li><b>The model</b><span>LightGBM, 2,043 trees, predicting price relative to a monthly quality-adjusted Doncaster index. It runs here in the page.</span></li>
-        <li><b>Local correction</b><span>Half of the model's median miss on the 40 nearest sales of the last 12 months, for areas moving faster or slower than Doncaster.</span></li>
+        <li><b>The model</b><span>LightGBM, 1,513 trees, predicting price relative to a monthly quality-adjusted Doncaster index. It runs here in the page.</span></li>
+        <li><b>Local correction</b><span>Three-quarters of the model's median miss on the 40 nearest sales of the last 12 months, for areas moving faster or slower than Doncaster.</span></li>
         <li><b>Range and confidence</b><span>An 80% range and a typical error for this home, from the model's errors on years it hadn't seen.</span></li>
       </ol>
     </div>
@@ -683,8 +683,8 @@
       <div class="card">
         <h2>Data</h2>
         <ul>
-          <li><b>Sales:</b> HM Land Registry Price Paid Data for Doncaster, standard sales, 1995 to August 2026.</li>
-          <li><b>Energy certificates:</b> 130,780 Doncaster certificates (2012 to September 2026), matched on postcode plus the exact house and flat numbers. The energy rating only comes from a certificate lodged before the sale, so later work can't leak in. Size, rooms and build details can come from a certificate lodged after the sale when there is no earlier one; the strict check in Model accuracy finds little change overall across three seeds, though the few homes affected are valued less well without them. Neighbour price per m² still uses each neighbour's best-known floor area.</li>
+          <li><b>Sales:</b> HM Land Registry Price Paid Data for Doncaster, standard sales, 1995 to September 2026.</li>
+          <li><b>Energy certificates:</b> 157,033 Doncaster certificates (2008 to October 2026), matched on postcode plus the exact house and flat numbers. The energy rating only comes from a certificate lodged before the sale, so later work can't leak in. Size, rooms and build details can come from a certificate lodged after the sale when there is no earlier one; the strict check in Model accuracy finds little change overall across three seeds, though the few homes affected are valued less well without them. Neighbour price per m² still uses each neighbour's best-known floor area.</li>
           <li><b>Location:</b> postcodes.io coordinates and 2021 neighbourhoods; English Indices of Deprivation 2025.</li>
           <li><b>Plot:</b> HM Land Registry title plans with OS Open UPRN address points.</li>
           <li><b>Rents:</b> ONS Price Index of Private Rents and DWP Local Housing Allowance 2026-27, moved to new tenancies with the rented mix from energy certificate tenure and a premium from Doncaster's rent growth (provisional, to be tested on HMRC Valuation Office lettings).</li>
@@ -696,12 +696,12 @@
       <div class="card">
         <h2>Testing</h2>
         <ul>
-          <li><b>Split by time:</b> trained 2015-2023, tuned on 2024, tested on January 2025 to August 2026. The year-by-year backtest repeats this for every year since 2020.</li>
-          <li><b>No look-ahead:</b> the index for each test month only uses sales at least two months older. Limiting the local features the same way moves the result by 0.03 points.</li>
+          <li><b>Split by time:</b> trained 2015-2023, tuned on 2024, tested on January 2025 to September 2026. The year-by-year backtest repeats this for every year since 2020.</li>
+          <li><b>No look-ahead:</b> the index for each test month only uses sales at least two months older. Limiting the local features the same way moves the result by 0.09 points.</li>
           <li><b>Fair comparisons:</b> every change was fitted with 3 random seeds; smaller than the seed spread counts as noise.</li>
           <li><b>Ranges:</b> scaled on 2024 errors and checked on 2025-26.</li>
-          <li><b>Clean-up:</b> 224 training sales (0.5%) more than 2.2 times from the estimate were removed as likely non-market sales; for sales from January 2025 the same threshold is applied against the test model's estimate (14 of 2,757 removed).</li>
-          <li><b>The model on this page:</b> after testing, refitted on 46,566 kept sales from January 2015 to August 2025; the last 12 months drive the local correction.</li>
+          <li><b>Clean-up:</b> 205 training sales (0.5%) more than 2.2 times from the estimate were removed as likely non-market sales; for sales from January 2025 the same threshold is applied against the test model's estimate (17 of 3,155 removed).</li>
+          <li><b>The model on this page:</b> after testing, refitted on 46,990 kept sales from January 2015 to September 2025; the last 12 months drive the local correction.</li>
           <li><b>Explanations:</b> the page's SHAP values match LightGBM's to 9 decimal places, and its estimates match to within 0.00000004 on the log scale.</li>
         </ul>
       </div>

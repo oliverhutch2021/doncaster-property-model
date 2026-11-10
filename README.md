@@ -15,24 +15,24 @@ level, and turns that into buy-to-let, neighbourhood-screening and buy-refurbish
 
 ## Results
 
-Scored on 5,995 Doncaster sales from January 2025 to August 2026 that the model never saw. It was trained on
+Scored on 6,381 Doncaster sales from January 2025 to September 2026 that the model never saw. It was trained on
 2015-2023 sales and tuned on 2024, so it is judged the way it would be used. Each method below only sees sales at least
 two months old, as published Land Registry data would allow.
 
 | Method | Median error | Within 10% of the price |
 |---|---|---|
 | **This model** (LightGBM, 62 features, local correction) | **8.1%** | **59%** |
-| Hedonic regression on the same features, with a fixed effect per postcode sector | 9.8% | 51% |
+| Hedonic regression on the same features, with a fixed effect per postcode sector | 9.6% | 51% |
 | Last sale × UK House Price Index by type (how online "worth now" tools work) | 12.7% | 42% |
-| Median £/m² of the 10 nearest same-type sales × floor area | 13.6% | 39% |
-| Median price of same-type sales in the postcode sector | 17.5% | 31% |
+| Median £/m² of the 10 nearest same-type sales × floor area | 13.7% | 39% |
+| Median price of same-type sales in the postcode sector | 17.6% | 31% |
 
 - **Stable over time:** a year-by-year backtest from 2020, with the price index rebuilt as it was known at the time,
-  gives 7.7% to 8.4% median error every year.
-- **Honest ranges:** the 80% ranges held the sale price for 80.5% of test sales. A second model predicts each
-  estimate's confidence: High-confidence estimates had a 4.9% median error, Low ones 11.3%.
+  gives 7.8% to 8.3% median error every year.
+- **Honest ranges:** the 80% ranges held the sale price for 80.8% of test sales. A second model predicts each
+  estimate's confidence: High-confidence estimates had a 4.7% median error, Low ones 11.4%.
 - **Assessors' standard:** the IAAO ratio study gives a COD of 12.7, inside the standard of under 15.
-- The last-sale and nearest-sales methods can't value every home (72% to 98% of them); the model is scored on all of
+- The last-sale and nearest-sales methods can't value every home (71% to 98% of them); the model is scored on all of
   them. The full comparison, with coverage, is in the [technical notes](docs/technical-notes.md#how-it-compares-srccompare_methodspy).
 
 ## What the dashboard does
@@ -64,7 +64,8 @@ python src/predict.py --postcode "DN1 2EG" --type T --area 70 --prev-price 65000
 python src/build_standalone.py               # rebuild the single-file dashboard
 ```
 
-`pipeline.py` runs the whole build from raw data, which isn't committed (`src/fetch_data.sh` downloads it). The
+`pipeline.py` runs the whole build from raw data, which isn't committed (`src/fetch_data.sh` downloads it). Version 38 was
+built that way in one run, and a rerun on the same raw files gives the same model. The
 [technical notes](docs/technical-notes.md) cover each step.
 
 ## How it's built
@@ -73,7 +74,7 @@ python src/build_standalone.py               # rebuild the single-file dashboard
   from title plans, street and nearest-sale prices, and each home's certificate history. The raw files are joined
   in DuckDB SQL ([`sql/`](sql): cleaning, locations, repeat sales with window functions), with row-count checks
   after each step.
-- **Model:** LightGBM (2,043 trees) on log prices deflated by a quality-adjusted Doncaster index, with a local
+- **Model:** LightGBM (1,513 trees) on log prices deflated by a quality-adjusted Doncaster index, with a local
   correction from recent nearby errors. Every change was tested over three random seeds and kept only if it beat the
   noise between them.
 - **Checked like a real valuation tool:** temporal splits only, a strict timing check of what each feature could
@@ -93,12 +94,15 @@ outputs/      evaluation results and dashboard data   docs/        PDF guide, te
 | Source | Used for |
 |---|---|
 | HM Land Registry Price Paid Data, Doncaster, 1995-2026 | Sale prices, dates, type, tenure, new build, addresses, previous sales |
-| Energy Performance Certificates, Doncaster, 2012-2026 (MHCLG) | Floor area, rooms, built form, age, energy score, mains gas; tenure and EPC shares by area |
+| Energy Performance Certificates, Doncaster, 2008-2026 (MHCLG) | Floor area, rooms, built form, age, energy score, mains gas; tenure and EPC shares by area |
 | postcodes.io (ONS Postcode Directory) | Coordinates, 2021 LSOA, ward |
 | English Indices of Deprivation 2025 (MHCLG) | Neighbourhood deprivation, including crime and living environment |
 | ONS Price Index of Private Rents | Doncaster rents by bedrooms and type, rent growth |
 | ONS Census 2021 (Nomis) | Who lives nearby: tenure, qualifications, students, age, cars, per neighbourhood |
 | DWP Local Housing Allowance 2026-27 | Housing benefit caps, Doncaster BRMA |
+| ONS private rental market summary statistics, Oct 2022 - Sep 2023 | Doncaster rent quartiles by bedrooms |
+| Ministry of Justice mortgage and landlord possession statistics (to Apr-Jun 2026) | Landlord court claims per 1,000 rented homes |
+| House of Commons Library MSOA Names 2.2 | Neighbourhood names |
 | Environment Agency flood risk by postcode (NaFRA2, 2025) | Flood risk card, map, buy-to-let warning (tested in the model) |
 | DfT NaPTAN | Rail stations and bus stops (tested in the model) |
 | DfE Get Information about Schools, Ofsted outcomes (Mar 2026) | Nearest schools and their grades (tested in the model) |
@@ -142,5 +146,5 @@ download (see the script).
 - Condition isn't in any open dataset, so it is a user input calibrated from repeat sales.
 - Rents are Doncaster-wide averages by type, moved to a new tenancy by a provisional adjustment that hasn't yet been
   tested on local lettings, so area yields are indicative and overstate returns in the cheapest areas.
-- About 6% of sales have no matched EPC; they are valued without size, with a wider range.
+- About 3% of sales have no matched EPC; they are valued without size, with a wider range.
 - Not a survey, mortgage valuation or financial advice.

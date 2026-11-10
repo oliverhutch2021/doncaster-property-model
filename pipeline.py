@@ -11,9 +11,10 @@ export adds to or replaces the datasets of the ones before, so the order below i
 built in, and it matters. Experiments whose only output is a table of test results now live in experiments/ (their
 results are kept in outputs/*.json and read from there); nothing here needs them to run.
 
-What hasn't been done: a single rerun of every step from freshly downloaded data. Each step was run as the project
-grew, and rerunning the last ones reproduces the published model exactly (src/production_v18.py gives the same 2,043
-trees, byte for byte). Raw data refreshed since (new certificates, new sales) will move the numbers.
+Version 38 (November 2026) was built by one run of every step from freshly downloaded data: src/fetch_data.sh, then
+`python pipeline.py --from fetch_postcodes`, about 25 minutes. The sales tables are sorted (sql/02, sql/03), so a rerun
+on the same raw files trains the same model, byte for byte. Raw data refreshed since (new certificates, new sales) will
+move the numbers.
 Two steps need things that aren't downloadable for you: the EPC bulk file needs your own registration, and
 src/model_v5_tune.py takes hours (its settings are kept in outputs/metrics_v5_tests.json, so it's skipped unless asked).
 """

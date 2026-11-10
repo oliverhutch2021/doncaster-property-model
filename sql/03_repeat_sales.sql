@@ -6,4 +6,5 @@ SELECT *,
        lag(new_build) OVER w AS prev_new_build,
        row_number()   OVER w AS sale_seq
 FROM sales_loc
-WINDOW w AS (PARTITION BY address_key ORDER BY sale_date, unique_id);
+WINDOW w AS (PARTITION BY address_key ORDER BY sale_date, unique_id)
+ORDER BY sale_date, unique_id;          -- a fixed row order: training depends on it

@@ -17,7 +17,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]; RAW = ROOT / "data/raw"; R =
 BBOX = dict(lat=(53.25, 53.85), lon=(-1.55, -0.65))   # Doncaster plus a margin, so border homes see neighbouring stations and stops
 
 def flood_by_postcode() -> pd.DataFrame:
-    f = pd.read_csv(RAW / "flood/rofrs/RoFRS_Postcodes_in_Areas_at_Risk/DATA/NaFRA2client.RoFRS_Postcodes_AtRisk.csv", encoding="utf-8-sig")
+    data = RAW / "flood/rofrs/RoFRS_Postcodes_in_Areas_at_Risk/DATA"; found = sorted(data.glob("*Postcodes*AtRisk*.csv"))       # the file's name changes between editions
+    if len(found) != 1: raise SystemExit(f"expected one postcodes-at-risk CSV in {data}, found {len(found)}: run src/fetch_data.sh")
+    f = pd.read_csv(found[0], encoding="utf-8-sig")
     f["postcode"] = f.PC.str.upper().str.strip()
     res = f.RES_cntpc.where(f.RES_cntpc > 0)
     hm, anyr = f.RES_CNT_High + f.RES_CNT_Medium, f.RES_CNT_High + f.RES_CNT_Medium + f.RES_CNT_Low + f.RES_CNT_VeryLow

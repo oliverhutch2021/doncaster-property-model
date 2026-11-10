@@ -4,6 +4,12 @@ The detail behind the README: how each layer of the model was added and tested, 
 the investing calculations, the build pipeline and the dashboard. Headings carry the version or review that added them;
 the full decision log is [`DECISIONS.md`](DECISIONS.md). Back to the [README](../README.md).
 
+> **Version 38 (10 November 2026) refreshed the data**: sales to 25 September 2026 and 157,033 certificates back to 2008.
+> The figures in these notes are from the build before it (sales to 27 August 2026), which is when each test was run.
+> On the refreshed data the test set is 6,381 sales: 8.01% median error (three seeds 8.01% to 8.09%), 59% within 10%, 8.10%
+> with the two-month cut-off, 80.8% of sales inside their 80% range, 1,513 trees, and 46,990 sales in the production fit.
+> The README, the dashboard and `outputs/` carry the refreshed figures.
+
 ## Results (test set: 5,995 sales, Jan 2025 - Aug 2026, never seen in training)
 
 Each row adds one data layer to the LightGBM model (same temporal split throughout):
@@ -408,9 +414,11 @@ Modules the steps import: `features.py`, `price_index.py`, `correction.py`, `mod
 `epc_match.py`, `export_v7.py` (shared helpers, including the one training clean-up rule `production_rows`).
 
 The version numbers are history: the project grew a layer at a time, and each export adds to or replaces the
-datasets of the ones before, so the order matters. Rerunning the last steps reproduces the published model exactly
-(`production_v18.py` gives the same 2,043 trees, byte for byte). A single rerun of every step from freshly
-downloaded data hasn't been done in one go; refreshed raw data will move the numbers.
+datasets of the ones before, so the order matters. Version 38 was built by a single run of every step from
+freshly downloaded data (`python pipeline.py --from fetch_postcodes` after the downloads, about 25 minutes). The sales
+tables are sorted (`sql/02`, `sql/03`), so a rerun on the same raw files trains the same model, byte for byte; before
+that, the database returned the sales in a different order each run and every rebuild trained a slightly different
+model. Refreshed raw data will move the numbers.
 
 **Rebuilding the page.** The page source is `dashboard/`: `_css.html` and `_body.html` (joined into
 `index.html` by `src/build_page.py`), `market_accuracy.js`, `deal_charts.js` and `app.js` (the Market and Accuracy tabs

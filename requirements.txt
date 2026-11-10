@@ -6,6 +6,7 @@ scikit-learn>=1.5
 lightgbm>=4.5
 pyarrow>=17
 openpyxl>=3.1
+xlrd>=2.0
 pyproj>=3.6
 shapely>=2.0
 osmium>=4.0

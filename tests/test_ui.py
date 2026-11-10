@@ -291,7 +291,8 @@ with sync_playwright() as p:
     pg.fill("#in-prev-price", "200000"); pg.fill("#in-prev-month", "2026-03"); pg.wait_for_timeout(900); c_recent = txt("#v-cond-note") or ""
     pg.fill("#in-prev-month", "2014-03"); pg.wait_for_timeout(900); c_old = txt("#v-cond-note") or ""
     pg.fill("#in-prev-price", ""); pg.fill("#in-prev-month", ""); pg.select_option("#in-condition", "average"); pg.wait_for_timeout(700)
-    check("M4 the refurbished premium depends on whether the model already knows a recent last sale", c_none.startswith("+6.2%") and c_recent.startswith("+0.6%") and "recent" in c_recent and c_old.startswith("+6.2%") and "older last sale" in c_old,
+    cr = pd.read_csv(D / "condition.csv").set_index("condition").loc["recently_refurbished"]; full, known = f"+{cr.adjustment_pct:.1f}%", f"+{cr.adjustment_prev_pct:.1f}%"   # the calibration's own figures
+    check("M4 the refurbished premium depends on whether the model already knows a recent last sale", full != known and c_none.startswith(full) and c_recent.startswith(known) and "recent" in c_recent and c_old.startswith(full) and "older last sale" in c_old,
           (c_none[:40], c_recent[:60], c_old[:60]))
     # N1: the two tabs drawn by market_accuracy.js
     drawn = {}

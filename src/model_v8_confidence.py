@@ -84,6 +84,10 @@ if __name__ == "__main__":
     res["filter_curve"] = curve
     print(json.dumps(res, indent=1))
     json.dump(res, open(OUT / "confidence.json", "w"), indent=1)
+    acc = pd.read_csv(D / "accuracy.csv"); row = (acc.model == "dashboard") & (acc.split == "test_2025_26")          # the page reads its range coverage from here
+    acc = acc[~(row & (acc.metric == "coverage_80_fixed_ranges"))]; acc.loc[row & (acc.metric == "coverage_80"), "value"] = float(new_in.mean())
+    acc = pd.concat([acc, pd.DataFrame([["dashboard", "test_2025_26", "coverage_80_fixed_ranges", float(old_in.mean())]], columns=acc.columns)])
+    acc.to_csv(D / "accuracy.csv", index=False)
     trees = [compact(flat(t)) for t in m.dump_model()["tree_info"]]
     json.dump([{"tree": i, "nodes": json.dumps(t, separators=(",", ":"))} for i, t in enumerate(trees)], open(D / "conf_trees.json", "w"), separators=(",", ":"))
     m.save_model(str(OUT / "model/confidence_v8.txt"))

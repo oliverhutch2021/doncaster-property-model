@@ -52,7 +52,7 @@ f = D / "accuracy_breakdown.csv"; rows = list(csv.reader(open(f)))
 head, body = rows[0], [r for r in rows[1:] if r[0] not in ("year", "new_build")]
 ape = np.abs(np.exp(p) - te.price.values) / te.price.values
 add = []
-for dim, name, mask in (("year", "Sold in 2025", yr == 2025), ("year", "Sold Jan-Aug 2026 (registered so far)", yr == 2026),
+for dim, name, mask in (("year", "Sold in 2025", yr == 2025), ("year", f"Sold Jan-{te.sale_date[yr == 2026].max():%b} 2026 (registered so far)", yr == 2026),
                         ("new_build", "New build", nb), ("new_build", "Not new build", ~nb)):
     add.append([dim, name, int(mask.sum()), round(float(np.median(ape[mask])), 5), round(float((ape[mask] <= .1).mean()), 4)])
 with open(f, "w", newline="") as fh: w = csv.writer(fh); w.writerow(head); w.writerows(body + add)

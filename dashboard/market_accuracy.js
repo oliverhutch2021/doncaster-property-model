@@ -143,6 +143,7 @@ window.DPM_TABS = (h) => {
     if (!ok('backtest') || failed(box, ['backtest'])) return;
     fresh(box);
     const d = rows('backtest').map((r) => ({ y: String(r.year), md: num(r.mdape), w10: num(r.within10), n: num(r.n), part: r.partial === '1', to: r.trained_to })).sort((a, b) => a.y.localeCompare(b.y));
+    const last = ok('model_meta') ? (rows('model_meta').find((x) => x.key === 'latest_sale') || {}).value : null, partTo = last ? d3.utcFormat('%B')(new Date(last)) : null;   // the part year runs to the newest sale
     const W = Math.max(280, box.clientWidth), H = 200, m = { t: 22, r: 8, b: 26, l: 8 };
     const x = d3.scaleBand(d.map((r) => r.y), [m.l, W - m.r]).padding(0.28), y = d3.scaleLinear([0, d3.max(d, (r) => r.md) * 1.15], [H - m.b, m.t]);
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Median error by year');
@@ -152,12 +153,12 @@ window.DPM_TABS = (h) => {
     d.forEach((r) => {
       const xx = x(r.y) + (x.bandwidth() - bw) / 2;
       svg.append('rect').attr('x', xx).attr('width', bw).attr('y', y(r.md)).attr('height', y(0) - y(r.md)).attr('rx', 4).attr('fill', dash.colors[0])
-        .on('mousemove', (e) => { const [px, py] = d3.pointer(e, box); t.show([['t', r.y + (r.part ? ' (January to August)' : '')], ['', `Median error ${d3.format('.1%')(r.md)}`], ['', `${d3.format('.0%')(r.w10)} within 10%`], ['', `${d3.format(',')(r.n)} sales; trained to ${r.to}`]], px, py); })
+        .on('mousemove', (e) => { const [px, py] = d3.pointer(e, box); t.show([['t', r.y + (r.part ? (partTo ? ` (January to ${partTo})` : ' (part year)') : '')], ['', `Median error ${d3.format('.1%')(r.md)}`], ['', `${d3.format('.0%')(r.w10)} within 10%`], ['', `${d3.format(',')(r.n)} sales; trained to ${r.to}`]], px, py); })
         .on('mouseleave', () => t.hide());
       svg.append('text').attr('x', xx + bw / 2).attr('y', y(r.md) - 6).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').style('font-variant-numeric', 'tabular-nums').text(d3.format('.1%')(r.md));
     });
     const lo = d3.min(d, (r) => r.md), hi = d3.max(d, (r) => r.md);
-    $('#backtest-note').textContent = `Between ${d3.format('.1%')(lo)} and ${d3.format('.1%')(hi)} every year since 2020, including the 2021 stamp-duty rush and the 2022-23 rate rises.${d.some((r) => r.part) ? ' * January to August.' : ''}`;
+    $('#backtest-note').textContent = `Between ${d3.format('.1%')(lo)} and ${d3.format('.1%')(hi)} every year since 2020, including the 2021 stamp-duty rush and the 2022-23 rate rises.${d.some((r) => r.part) ? ` * January to ${partTo || 'the newest sale'}.` : ''}`;
   };
   // ---- confidence ----
   const renderConfidence = () => {

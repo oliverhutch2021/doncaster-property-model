@@ -44,7 +44,9 @@ p["key"] = p.postcode + "|" + p.paon.str.upper().str.strip() + "|" + p.saon.str.
 p = p.merge(pc[["postcode", "msoa21"]], on="postcode", how="inner"); p = p[p.msoa21.isin(MS)]
 p = p.sort_values(["key", "date"]).drop_duplicates(["key", "date"])
 p["per"] = p.date.dt.year + (p.date.dt.month >= 9).astype(int)          # years ending August: Sep 2025 - Aug 2026 = 2026
-LAST = int(p.per.max()); assert p[p.per == LAST].date.max() >= pd.Timestamp(f"{LAST}-08-01"), "latest year is complete"
+LAST = int(p.per.max())
+if p[p.per == LAST].date.max() < pd.Timestamp(f"{LAST}-08-01"):          # sales run past August: the part-year after it is left out
+    p = p[p.per < LAST].copy(); LAST -= 1
 g = p.groupby("key")
 for c in ("price", "date", "per", "new_build", "property_type"): p["prev_" + c] = g[c].shift()
 pr = p[p.prev_price.notna()].copy()

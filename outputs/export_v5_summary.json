@@ -1,39 +1,39 @@
 {
  "params": {
-  "learning_rate": 0.08,
+  "learning_rate": 0.06,
   "num_leaves": 31,
-  "min_data_in_leaf": 40,
-  "feature_fraction": 0.8,
-  "lambda_l2": 1.0
+  "min_data_in_leaf": 80,
+  "feature_fraction": 0.65,
+  "lambda_l2": 20.0
  },
- "alpha": 0.75,
+ "alpha": 0.25,
  "k": 40,
  "test": {
-  "n": 5995,
-  "mae": 23349.724356979317,
-  "mdape": 0.08247453675443597,
-  "within10": 0.5721434528773979,
-  "within20": 0.8385321100917431
+  "n": 6381,
+  "mae": 23654.58456057894,
+  "mdape": 0.08352567018745916,
+  "within10": 0.5782792665726375,
+  "within20": 0.8337251214543175
  },
  "test_without_correction": {
-  "n": 5995,
-  "mae": 23579.196612274183,
-  "mdape": 0.08341939890610862,
-  "within10": 0.5703085904920767,
-  "within20": 0.8350291909924937
+  "n": 6381,
+  "mae": 23891.786746345533,
+  "mdape": 0.08425878901788357,
+  "within10": 0.5740479548660085,
+  "within20": 0.8329415452123492
  },
- "coverage": 0.7906588824020017,
- "trees": 1107,
+ "coverage": 0.7983074753173484,
+ "trees": 982,
  "area_bias": {
-  "sd_before": 2.450414060047718,
-  "sd_after": 1.1766043424504329
+  "sd_before": 2.7726215472943037,
+  "sd_after": 2.0841362216105597
  },
- "train_end": "2025-08",
- "pool_from": "2025-09",
+ "train_end": "2025-09",
+ "pool_from": "2025-10",
  "candidates": [
   {
-   "val": 0.07964477224124511,
-   "mb": 2.397446,
+   "val": 0.08178945407211326,
+   "mb": 2.687897,
    "params": {
     "learning_rate": 0.08,
     "num_leaves": 31,
@@ -41,11 +41,11 @@
     "feature_fraction": 0.8,
     "lambda_l2": 1.0
    },
-   "trees": 1107
+   "trees": 1242
   },
   {
-   "val": 0.0799658156726662,
-   "mb": 2.431077,
+   "val": 0.0790558670667211,
+   "mb": 2.145362,
    "params": {
     "learning_rate": 0.06,
     "num_leaves": 31,
@@ -53,11 +53,11 @@
     "feature_fraction": 0.65,
     "lambda_l2": 20.0
    },
-   "trees": 1114
+   "trees": 982
   },
   {
-   "val": 0.07962832933484221,
-   "mb": 5.58757,
+   "val": 0.07989294389534085,
+   "mb": 2.335855,
    "params": {
     "learning_rate": 0.08,
     "num_leaves": 63,
@@ -65,11 +65,11 @@
     "feature_fraction": 0.65,
     "lambda_l2": 20.0
    },
-   "trees": 1253
+   "trees": 522
   },
   {
-   "val": 0.07991786849269997,
-   "mb": 3.197046,
+   "val": 0.08089308577711274,
+   "mb": 3.771558,
    "params": {
     "learning_rate": 0.05,
     "num_leaves": 31,
@@ -77,7 +77,7 @@
     "feature_fraction": 0.65,
     "lambda_l2": 20.0
    },
-   "trees": 1466
+   "trees": 1731
   }
  ]
 }

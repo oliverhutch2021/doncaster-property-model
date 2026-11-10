@@ -4,7 +4,8 @@ SELECT postcode, CAST(latitude AS DOUBLE) AS lat, CAST(longitude AS DOUBLE) AS l
        lsoa21, msoa21, lsoa_name, ward, terminated
 FROM read_csv('data/raw/postcodes.csv', header = true, all_varchar = true)
 -- a postcode can appear twice (live + terminated record): keep one row, preferring the live one
-QUALIFY row_number() OVER (PARTITION BY postcode ORDER BY terminated, lsoa21 NULLS LAST) = 1;
+QUALIFY row_number() OVER (PARTITION BY postcode ORDER BY terminated, lsoa21 NULLS LAST) = 1
+ORDER BY postcode;          -- a fixed row order, so every rerun trains the same model
 
 CREATE OR REPLACE TABLE imd AS
 SELECT "LSOA code (2021)"                                   AS lsoa21,
@@ -33,4 +34,5 @@ SELECT s.*, p.lat, p.lon, p.lsoa21, p.msoa21, p.ward,
 FROM sales s
 LEFT JOIN postcodes p USING (postcode)
 LEFT JOIN imd i USING (lsoa21)
-CROSS JOIN centre c;
+CROSS JOIN centre c
+ORDER BY s.sale_date, s.unique_id;

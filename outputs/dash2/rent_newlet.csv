@@ -1,10 +1,10 @@
 key,value,label,source
-mix_D,1.0716,"Rent adjustment for the rented mix, detached: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=13,316, 899 privately rented); values from 2024+ LSOA £/m² x floor area"
-mix_S,1.0189,"Rent adjustment for the rented mix, semi-detached: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=28,055, 4,169 privately rented); values from 2024+ LSOA £/m² x floor area"
-mix_T,1.0443,"Rent adjustment for the rented mix, terraced: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=19,940, 6,475 privately rented); values from 2024+ LSOA £/m² x floor area"
-mix_F,1.0224,"Rent adjustment for the rented mix, flats and maisonettes: (value of all ÷ value of privately rented)^0.596","EPC tenure, latest certificate per address 2016+ (n=3,378, 1,527 privately rented); values from 2024+ LSOA £/m² x floor area"
+mix_D,1.0707,"Rent adjustment for the rented mix, detached: (value of all ÷ value of privately rented)^0.598","EPC tenure, latest certificate per address 2016+ (n=13,508, 915 privately rented); values from 2024+ LSOA £/m² x floor area"
+mix_S,1.0191,"Rent adjustment for the rented mix, semi-detached: (value of all ÷ value of privately rented)^0.598","EPC tenure, latest certificate per address 2016+ (n=28,295, 4,218 privately rented); values from 2024+ LSOA £/m² x floor area"
+mix_T,1.045,"Rent adjustment for the rented mix, terraced: (value of all ÷ value of privately rented)^0.598","EPC tenure, latest certificate per address 2016+ (n=20,210, 6,574 privately rented); values from 2024+ LSOA £/m² x floor area"
+mix_F,1.0227,"Rent adjustment for the rented mix, flats and maisonettes: (value of all ÷ value of privately rented)^0.598","EPC tenure, latest certificate per address 2016+ (n=3,392, 1,534 privately rented); values from 2024+ LSOA £/m² x floor area"
 reprice_share,0.3,Share of private tenancies whose rent is reset to the market each year (assumption),"English Housing Survey 2023-24: 20% of private renters moved in within the last year, plus sitting tenants moved to market rents"
 rent_growth_2y,0.0567,"Doncaster rent growth a year, Sep 2024 to Sep 2026","ONS Price Index of Private Rents, all homes"
 newlet_premium,0.1252,New-let rent over rent being paid: (1 - (1 - p) / (1 + g)) / p - 1,Same
 as_of,2026-09,Month of the ONS rents used,ONS Price Index of Private Rents
-check_zoopla_terraced,1.1463,"Check only: Zoopla's Doncaster new-let rent ÷ the formula at Zoopla's buy-to-let price, terraced anchor (Sep 2025)","Zoopla, highest-yielding buy-to-let areas, data to Sep 2025; ONS and UK HPI Doncaster terraced, Sep 2025"
+check_zoopla_terraced,1.1464,"Check only: Zoopla's Doncaster new-let rent ÷ the formula at Zoopla's buy-to-let price, terraced anchor (Sep 2025)","Zoopla, highest-yielding buy-to-let areas, data to Sep 2025; ONS and UK HPI Doncaster terraced, Sep 2025"
